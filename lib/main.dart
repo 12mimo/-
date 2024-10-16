@@ -59,7 +59,7 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
         onTap: _onTabTapped,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.house_fill),
+            icon: Icon(CupertinoIcons.book_circle_fill),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.heart_circle_fill),
@@ -77,4 +77,5 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
       },
     );
   }
+
 }

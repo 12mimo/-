@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:xlfz/pages/login/register.dart';
 
-import 'forgot_password.dart';
+import 'login.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         middle: Text(
-          '登录',
+          '注册',
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.bold,
@@ -55,6 +54,16 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               CupertinoTextField(
+                placeholder: '邮箱',
+                padding: const EdgeInsets.all(16.0),
+                style: TextStyle(color: textColor),
+                decoration: BoxDecoration(
+                  color: isDarkMode ? Color(0xFF455A64) : Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              ),
+              const SizedBox(height: 20),
+              CupertinoTextField(
                 placeholder: '密码',
                 padding: const EdgeInsets.all(16.0),
                 obscureText: true,
@@ -64,34 +73,15 @@ class LoginPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    // 忘记密码点击事件
-                    Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => ForgotPasswordPage()));
-                  },
-                  child: Text(
-                    '忘记密码？',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: primaryColor,
-                    ),
-                  ),
-                ),
-              ),
               const SizedBox(height: 40),
               CupertinoButton(
                 color: primaryColor,
                 borderRadius: BorderRadius.circular(15.0),
                 onPressed: () {
-                  // 登录按钮点击事件处理
-
+                  // 注册按钮点击事件处理
                 },
                 child: Text(
-                  '登录',
+                  '注册',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -101,57 +91,20 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               CupertinoButton(
                 child: Text(
-                  '注册',
+                  '已有账号？登录',
                   style: TextStyle(
                     fontSize: 16,
                     color: primaryColor,
                   ),
                 ),
                 onPressed: () {
-                  // 跳转到注册页面
-                  Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => RegisterPage()));
+                  Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => LoginPage()));
                 },
               ),
               const SizedBox(height: 20),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CupertinoButton(
-                        onPressed: () {
-                          // Google 登录逻辑
-                        },
-                        child: Icon(
-                          Icons.mobile_friendly, // 临时使用一个系统图标替代
-                          size: 40,
-                          color: primaryColor,
-                        ),
-                      ),
-                      CupertinoButton(
-                        onPressed: () {
-                          // Apple 登录逻辑
-                        },
-                        child: Icon(
-                          Icons.apple, // 临时使用一个系统图标替代
-                          size: 40,
-                          color: primaryColor,
-                        ),
-                      ),
-                      CupertinoButton(
-                        onPressed: () {
-                          // Facebook 登录逻辑
-                        },
-                        child: Icon(
-                          Icons.wechat, // 临时使用一个系统图标替代
-                          size: 40,
-                          color: primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
                   Text(
                     '注册即表示同意',
                     style: TextStyle(

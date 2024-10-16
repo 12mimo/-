@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:xlfz/pages/personal/about.dart';
+import 'package:xlfz/pages/personal/privacy.dart';
+import 'package:xlfz/pages/personal/profile_page.dart';
 import '../login/login.dart';
+import 'account_security.dart';
+import 'help.dart'; // 确保导入的路径正确
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -11,14 +15,15 @@ class ProfilePage extends StatelessWidget {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
     final primaryColor =
-        isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
+    isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
     final backgroundColor =
-        isDarkMode ? const Color(0xFF37474F) : const Color(0xFFF5F5F5);
+    isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2);
     final textColor =
-        isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
+    isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
     final contentColor =
-        isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
-    final cardBackgroundColor = primaryColor.withOpacity(0.1);
+    isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
+    final cardBackgroundColor =
+    isDarkMode ? const Color(0xFF455A64) : const Color(0xFFE0F7FA);
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -33,22 +38,18 @@ class ProfilePage extends StatelessWidget {
         ),
         backgroundColor: backgroundColor,
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 0.0),
+      child: CupertinoScrollbar(
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildFullWidthSection(_buildProfileHeaderSection(
-                primaryColor, textColor, cardBackgroundColor)),
+            _buildFullWidthSection(
+                _buildProfileHeaderSection(primaryColor, textColor, cardBackgroundColor)),
             const SizedBox(height: 20),
-            _buildFullWidthSection(_buildInsightsSection(
-                primaryColor, contentColor, cardBackgroundColor)),
+            _buildFullWidthSection(
+                _buildInsightsSection(primaryColor, contentColor, cardBackgroundColor)),
             const SizedBox(height: 20),
-            _buildFullWidthSection(_buildSettingsSection(
-                primaryColor, contentColor, cardBackgroundColor)),
-            const SizedBox(height: 20),
-            _buildFullWidthSection(_buildAccountSection(
-                primaryColor, contentColor, cardBackgroundColor)),
+            _buildFullWidthSection(
+                _buildSettingsAndAccountSection(primaryColor, contentColor, cardBackgroundColor, context)),
             const SizedBox(height: 20),
             _buildLoginButton(context, primaryColor), // 增加登录按钮
             const SizedBox(height: 20),
@@ -77,13 +78,17 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: primaryColor,
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: primaryColor,
+            ),
             child: const Icon(
-              Icons.person,
+              CupertinoIcons.person_solid,
               size: 60,
-              color: Colors.white,
+              color: CupertinoColors.white,
             ),
           ),
           const SizedBox(height: 20),
@@ -94,7 +99,7 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '您的心理健康伙伴',
+            '您的心理健康伴侣',
             style: TextStyle(fontSize: 16, color: textColor),
           ),
         ],
@@ -120,12 +125,7 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '根据您的心理状态，我们建议您每天进行至少10分钟的冥想练习，以帮助减轻压力，提升心灵的平衡。',
-            style: TextStyle(fontSize: 16, color: contentColor),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            '您的情绪波动较大，建议保持良好的睡眠习惯，并记录每日心情，以便了解情绪变化规律。',
+            '根据您的心理状态，我们建议您每天进行至少・30分钟的净心练习，以作为再生的灵力支持。',
             style: TextStyle(fontSize: 16, color: contentColor),
           ),
         ],
@@ -133,8 +133,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsSection(
-      Color primaryColor, Color contentColor, Color cardBackgroundColor) {
+  Widget _buildSettingsAndAccountSection(Color primaryColor, Color contentColor,
+      Color cardBackgroundColor, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -144,50 +144,15 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '设置',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
-          ),
+          _buildSettingItem('个人信息', CupertinoIcons.person, contentColor, context, const PersonalInfoPage()),
           const SizedBox(height: 10),
-          _buildSettingItem('通知', Icons.notifications, contentColor),
-          const Divider(),
-          _buildSettingItem('隐私', Icons.lock, contentColor),
-          const Divider(),
-          _buildSettingItem('帮助与支持', Icons.help, contentColor),
-          const Divider(),
-          _buildSettingItem('数据分析', Icons.analytics, contentColor),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAccountSection(
-      Color primaryColor, Color contentColor, Color cardBackgroundColor) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cardBackgroundColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '账号设置',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
-          ),
+          _buildSettingItem('账号安全', CupertinoIcons.shield, contentColor, context, const AccountSecurityPage()),
           const SizedBox(height: 10),
-          _buildSettingItem('个人资料', Icons.person_outline, contentColor),
-          const Divider(),
-          _buildSettingItem('账号安全', Icons.security, contentColor),
-          const Divider(),
-          _buildSettingItem('外观设置', Icons.format_paint, contentColor),
-          const Divider(),
-          _buildSettingItem('音色设置', Icons.music_note, contentColor),
-          const Divider(),
-          _buildSettingItem('关于我们', Icons.info, contentColor),
+          _buildSettingItem('隐私', CupertinoIcons.lock, contentColor, context, const PrivacyPage()),
+          const SizedBox(height: 10),
+          _buildSettingItem('帮助与支持', CupertinoIcons.question_circle, contentColor, context, const HelpSupportPage()),
+          const SizedBox(height: 10),
+          _buildSettingItem('关于我们', CupertinoIcons.info, contentColor, context, const AboutUsPage()),
         ],
       ),
     );
@@ -209,12 +174,11 @@ class ProfilePage extends StatelessWidget {
   Widget _buildFooterSection(Color contentColor) {
     return Container(
       padding: const EdgeInsets.only(bottom: 5, left: 16, right: 16),
-      // 保留底部16的安全距离
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '© 2024 上海天乙鑫科技有限公司 版权所有',
+            '© 2024 上海天乙鑫科技有限公司 所有权利保留',
             style: TextStyle(fontSize: 14, color: contentColor),
             textAlign: TextAlign.center,
           ),
@@ -229,19 +193,33 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingItem(String label, IconData icon, Color contentColor) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: contentColor,
+  Widget _buildSettingItem(
+      String label, IconData icon, Color contentColor, BuildContext context, Widget? page) {
+    return GestureDetector(
+      onTap: () {
+        if (page != null) {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (context) => page),
+          );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0), // 调整行高
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: contentColor,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: TextStyle(fontSize: 16, color: contentColor),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        Text(
-          label,
-          style: TextStyle(fontSize: 16, color: contentColor),
-        ),
-      ],
+      ),
     );
   }
 }

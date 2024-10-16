@@ -64,7 +64,7 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25.0),
                 child: Container(
-                  height: 70.0, // 调整高度，使 TabBar 看起来更紧凑
+                  height: 60.0, // 调整高度，使 TabBar 看起来更紧凑
                   decoration: BoxDecoration(
                     color: isDarkMode ? const Color(0xFF37474F).withOpacity(0.9) : const Color(0xFFB2EBF2).withOpacity(0.9),
                     boxShadow: [
@@ -84,22 +84,22 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
                       backgroundColor: CupertinoColors.transparent,
                       activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
                       inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
-                      iconSize: 26.0,
+                      iconSize: 24.0,
                       currentIndex: _selectedIndex,
                       onTap: _onTabTapped,
                       border: null,
                       items: const [
                         BottomNavigationBarItem(
                           icon: Icon(CupertinoIcons.house_fill),
-                          label: '主页',
+                          // label: '主页',
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(CupertinoIcons.heart_circle_fill),
-                          label: '心灵顾问',
+                          // label: '心灵顾问',
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(CupertinoIcons.person_crop_circle_fill),
-                          label: '个人中心',
+                          // label: '个人中心',
                         ),
                       ],
                     ),

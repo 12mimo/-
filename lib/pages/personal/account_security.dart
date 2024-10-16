@@ -93,12 +93,9 @@ class AccountSecurityPage extends StatelessWidget {
     return CupertinoButton(
       color: primaryColor,
       onPressed: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(builder: (context) => const LoginPage()),
-        );
+
       },
-      child: const Text('登录'),
+      child: const Text('退出登录'),
     );
   }
 

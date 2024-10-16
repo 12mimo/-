@@ -50,62 +50,31 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
       const ProfilePage(),
     ];
 
-    return CupertinoPageScaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF263238) : const Color(0xFFE0F7FA),
-      child: Stack(
-        children: [
-          pages[_selectedIndex],  // 选中的页面
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0), // 减少底部 padding
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30.0),
-                child: Container(
-                  height: 56.0, // 调整高度为标准的 TabBar 高度
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? const Color(0xFF37474F).withOpacity(0.9) : const Color(0xFFB2EBF2).withOpacity(0.9),
-                    boxShadow: [
-                      BoxShadow(
-                        color: isDarkMode
-                            ? CupertinoColors.black.withOpacity(0.3)
-                            : CupertinoColors.systemGrey.withOpacity(0.3),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: CupertinoTabBar(
-                    backgroundColor: CupertinoColors.transparent,
-                    activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
-                    inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
-                    border: Border(top: BorderSide.none, bottom: BorderSide.none),
-                    iconSize: 28.0,
-                    currentIndex: _selectedIndex,
-                    onTap: _onTabTapped,
-                    items: const [
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.house_fill),
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.heart_circle_fill),
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.person_crop_circle_fill),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )
-
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        backgroundColor: isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2),
+        activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
+        inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
+        currentIndex: _selectedIndex,
+        onTap: _onTabTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.house_fill),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.heart_circle_fill),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.person_crop_circle_fill),
+          ),
         ],
       ),
+      tabBuilder: (BuildContext context, int index) {
+        return CupertinoPageScaffold(
+          backgroundColor: isDarkMode ? const Color(0xFF263238) : const Color(0xFFE0F7FA),
+          child: pages[index],
+        );
+      },
     );
   }
 }
-

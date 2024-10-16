@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 70.0),
+          padding: const EdgeInsets.only(bottom: 0.0),
           child: Container(
             color: backgroundColor,
             child: ListView(

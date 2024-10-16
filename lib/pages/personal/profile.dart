@@ -34,7 +34,7 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: backgroundColor,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 70.0),
+        padding: const EdgeInsets.only(bottom: 0.0),
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [

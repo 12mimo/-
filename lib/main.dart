@@ -60,10 +60,11 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0,top: 16.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25.0),
                 child: Container(
+                  height: 70.0, // 调整高度，使 TabBar 看起来更紧凑
                   decoration: BoxDecoration(
                     color: isDarkMode ? const Color(0xFF37474F).withOpacity(0.9) : const Color(0xFFB2EBF2).withOpacity(0.9),
                     boxShadow: [
@@ -77,33 +78,37 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
                       ),
                     ],
                   ),
-                  child: CupertinoTabBar(
-                    backgroundColor: CupertinoColors.transparent,
-                    activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
-                    inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
-                    iconSize: 26.0,
-                    currentIndex: _selectedIndex,
-                    onTap: _onTabTapped,
-                    border: null,
-                    items: const [
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.house_fill),
-                        label: '主页',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.heart_circle_fill),
-                        label: '心灵顾问',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.person_crop_circle_fill),
-                        label: '个人中心',
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // 设置上下 Padding，使内容居中
+                    child: CupertinoTabBar(
+                      backgroundColor: CupertinoColors.transparent,
+                      activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
+                      inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
+                      iconSize: 26.0,
+                      currentIndex: _selectedIndex,
+                      onTap: _onTabTapped,
+                      border: null,
+                      items: const [
+                        BottomNavigationBarItem(
+                          icon: Icon(CupertinoIcons.house_fill),
+                          label: '主页',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(CupertinoIcons.heart_circle_fill),
+                          label: '心灵顾问',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(CupertinoIcons.person_crop_circle_fill),
+                          label: '个人中心',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
+
         ],
       ),
     );

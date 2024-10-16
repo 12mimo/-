@@ -16,7 +16,7 @@ class HelpSupportPage extends StatelessWidget {
     final contentColor =
     isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
     final cardBackgroundColor =
-    isDarkMode ? const Color(0xFF455A64) : const Color(0xFFE0F7FA);
+    isDarkMode ? const Color(0xFF455A64) : primaryColor.withOpacity(0.1);
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,

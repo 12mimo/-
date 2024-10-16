@@ -15,8 +15,8 @@ class HomePageState extends State<HomePage> {
     final isDarkMode = brightness == Brightness.dark;
     final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
     final backgroundColor =
-    isDarkMode ? const Color(0xFF263238) : const Color(0xFFF0F4F8);
-    final cardBackgroundColor = isDarkMode ? Color(0xFF37474F) : Colors.white;
+    isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFFB2EBF2);
+    final cardBackgroundColor = isDarkMode ? Color(0xFF37474F) : Color(0xFFB2EBF2);
     final accentColor = isDarkMode ? Color(0xFF26A69A) : Color(0xFF00796B);
     final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF37474F);
 

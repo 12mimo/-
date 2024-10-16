@@ -23,7 +23,7 @@ class ProfilePage extends StatelessWidget {
     final contentColor =
     isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
     final cardBackgroundColor =
-    isDarkMode ? const Color(0xFF455A64) : const Color(0xFFE0F7FA);
+    isDarkMode ? const Color(0xFF80CBC4) : primaryColor.withOpacity(0.1);
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -39,7 +39,12 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: backgroundColor,
       ),
       child: CupertinoScrollbar(
+        controller: PrimaryScrollController.of(context),
+        thickness: 6.0,
+        radius: Radius.circular(10),
+        thumbVisibility: true,
         child: ListView(
+          controller: PrimaryScrollController.of(context),
           padding: const EdgeInsets.all(16),
           children: [
             _buildFullWidthSection(

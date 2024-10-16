@@ -17,7 +17,7 @@ class AboutUsPage extends StatelessWidget {
     final contentColor =
     isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
     final cardBackgroundColor =
-    isDarkMode ? const Color(0xFF455A64) : const Color(0xFFFFFFFF);
+    isDarkMode ? const Color(0xFF455A64) : primaryColor.withOpacity(0.1);
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,

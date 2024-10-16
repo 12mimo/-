@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:fl_chart/fl_chart.dart'; // 确保你已经添加了fl_chart库依赖
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
@@ -23,27 +26,17 @@ class HomePage extends StatelessWidget {
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
         backgroundColor: backgroundColor,
       ),
-      child: Container(
-        color: backgroundColor,
-        child: SafeArea(
+      child: SafeArea(
+        child: Container(
+          color: backgroundColor,
           child: ListView(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0, bottom: 90.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 76.0),
             children: [
-              _buildHealthDataLineChart('睡眠', [FlSpot(0, 6), FlSpot(4, 7), FlSpot(8, 6.5), FlSpot(12, 7.2), FlSpot(16, 6.8)], primaryColor, textColor, cardBackgroundColor),
-              const SizedBox(height: 20),
-              _buildHealthDataLineChart('步数', [FlSpot(0, 3000), FlSpot(4, 5000), FlSpot(8, 8000), FlSpot(12, 10000), FlSpot(16, 12000)], primaryColor, textColor, cardBackgroundColor),
-              const SizedBox(height: 20),
-              _buildHealthDataLineChart('心率', [FlSpot(0, 70), FlSpot(4, 75), FlSpot(8, 80), FlSpot(12, 85), FlSpot(16, 78)], primaryColor, textColor, cardBackgroundColor),
-              const SizedBox(height: 20),
-              _buildHealthDataLineChart('呼吸', [FlSpot(0, 15), FlSpot(4, 14), FlSpot(8, 16), FlSpot(12, 15), FlSpot(16, 14)], primaryColor, textColor, cardBackgroundColor),
-              const SizedBox(height: 20),
-              _buildHealthDataLineChart('活动能量', [FlSpot(0, 200), FlSpot(4, 300), FlSpot(8, 400), FlSpot(12, 500), FlSpot(16, 450)], primaryColor, textColor, cardBackgroundColor),
-              const SizedBox(height: 20),
               _buildCard(
                 title: '今日心理提示',
                 content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
@@ -64,76 +57,11 @@ class HomePage extends StatelessWidget {
               _buildMentalHealthKnowledgeSection(primaryColor, textColor, contentColor, primaryColor),
               const SizedBox(height: 20),
               _buildGratitudeJournalSection(primaryColor, textColor, contentColor, primaryColor),
+              const SizedBox(height: 20),
+              _buildPsychologicalTestsSection(primaryColor, textColor, contentColor, primaryColor),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // 折线图展示健康数据
-  Widget _buildHealthDataLineChart(String title, List<FlSpot> dataPoints, Color primaryColor, Color textColor, Color cardBackgroundColor) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: _buildBoxDecoration(cardBackgroundColor),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$title 数据趋势',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 200,
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(show: true, drawVerticalLine: true),
-                borderData: FlBorderData(show: true, border: Border.all(color: textColor)),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true, interval: 10, getTitlesWidget: (value, meta) => Text(value.toString(), style: TextStyle(color: textColor, fontSize: 12))),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true, getTitlesWidget: (value, meta) {
-                      switch (value.toInt()) {
-                        case 0:
-                          return Text('0:00', style: TextStyle(color: textColor, fontSize: 12));
-                        case 4:
-                          return Text('4:00', style: TextStyle(color: textColor, fontSize: 12));
-                        case 8:
-                          return Text('8:00', style: TextStyle(color: textColor, fontSize: 12));
-                        case 12:
-                          return Text('12:00', style: TextStyle(color: textColor, fontSize: 12));
-                        case 16:
-                          return Text('16:00', style: TextStyle(color: textColor, fontSize: 12));
-                        case 20:
-                          return Text('20:00', style: TextStyle(color: textColor, fontSize: 12));
-                        case 24:
-                          return Text('24:00', style: TextStyle(color: textColor, fontSize: 12));
-                      }
-                      return Text('', style: TextStyle(color: textColor, fontSize: 12));
-                    }),
-                  ),
-                ),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: dataPoints,
-                    isCurved: true,
-                    barWidth: 4,
-                    color: primaryColor,
-                    belowBarData: BarAreaData(show: true, color: primaryColor.withOpacity(0.3)),
-                    dotData: FlDotData(show: true),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -226,6 +154,57 @@ class HomePage extends StatelessWidget {
               fontSize: 18,
               color: contentColor,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 心理测试模块
+  Widget _buildPsychologicalTestsSection(Color primaryColor, Color titleColor, Color contentColor, Color titleBackgroundColor) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '心理测试',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: titleBackgroundColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Column(
+            children: List.generate(10, (index) {
+              return CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  // 测试点击事件处理
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '心理测试 ${index + 1}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: contentColor,
+                        ),
+                      ),
+                      Icon(
+                        CupertinoIcons.chevron_forward,
+                        color: primaryColor,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
           ),
         ],
       ),

@@ -22,7 +22,7 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
         backgroundColor: backgroundColor,
@@ -30,7 +30,6 @@ class ProfilePage extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const SizedBox(height: 20),
           _buildFullWidthSection(_buildProfileHeaderSection(primaryColor, textColor, cardBackgroundColor)),
           const SizedBox(height: 20),
           _buildFullWidthSection(_buildInsightsSection(primaryColor, contentColor, cardBackgroundColor)),

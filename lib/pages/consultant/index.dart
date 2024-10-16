@@ -22,7 +22,7 @@ class VirtualConsultantPage extends StatelessWidget {
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
         backgroundColor: backgroundColor,
@@ -34,7 +34,6 @@ class VirtualConsultantPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
               _buildFullWidthSection(_buildWelcomeSection(cardBackgroundColor, contentColor)),
               SizedBox(height: 30),
               _buildFullWidthSection(_buildVirtualAdvisorSection(primaryColor, textColor, cardBackgroundColor)),

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:xlfz/pages/consultant/index.dart';
 import 'package:xlfz/pages/index/index.dart';
 import 'package:xlfz/pages/personal/profile.dart';
@@ -61,7 +60,7 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25.0),
                 child: Container(

@@ -14,12 +14,14 @@ class _HomePageState extends State<HomePage> {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
     final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
-    final backgroundColor = isDarkMode ? const Color(0xFF37474F) : const Color(0xFFF5F5F5);
+    final backgroundColor =
+        isDarkMode ? const Color(0xFF37474F) : const Color(0xFFF5F5F5);
     final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF546E7A);
     final contentColor = isDarkMode ? Color(0xFFB0BEC5) : Color(0xFF455A64);
     final cardBackgroundColor = primaryColor.withOpacity(0.1);
 
     return CupertinoPageScaffold(
+      backgroundColor: backgroundColor,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           '心理健康助手',
@@ -32,34 +34,41 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: backgroundColor,
       ),
       child: SafeArea(
-        child: Container(
-          color: backgroundColor,
-          child: ListView(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 76.0),
-            children: [
-              _buildCard(
-                title: '今日心理提示',
-                content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
-                backgroundColor: cardBackgroundColor,
-                titleColor: primaryColor,
-                contentColor: contentColor,
-              ),
-              const SizedBox(height: 20),
-              _buildCard(
-                title: '推荐活动',
-                content:
-                '1. 每天进行10分钟的冥想，放松身心。\n2. 写下三件让你感到感激的事情。\n3. 与好友聊聊你最近的感受。',
-                backgroundColor: cardBackgroundColor,
-                titleColor: primaryColor,
-                contentColor: contentColor,
-              ),
-              const SizedBox(height: 20),
-              _buildMentalHealthKnowledgeSection(primaryColor, textColor, contentColor, primaryColor),
-              const SizedBox(height: 20),
-              _buildGratitudeJournalSection(primaryColor, textColor, contentColor, primaryColor),
-              const SizedBox(height: 20),
-              _buildPsychologicalTestsSection(primaryColor, textColor, contentColor, primaryColor),
-            ],
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 90.0),
+          child: Container(
+            color: backgroundColor,
+            child: ListView(
+              padding: const EdgeInsets.only(
+                  left: 16.0, right: 16.0, top: 16.0, bottom: 16.0),
+              children: [
+                _buildCard(
+                  title: '今日心理提示',
+                  content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
+                  backgroundColor: cardBackgroundColor,
+                  titleColor: primaryColor,
+                  contentColor: contentColor,
+                ),
+                const SizedBox(height: 20),
+                _buildCard(
+                  title: '推荐活动',
+                  content:
+                      '1. 每天进行10分钟的冥想，放松身心。\n2. 写下三件让你感到感激的事情。\n3. 与好友聊聊你最近的感受。',
+                  backgroundColor: cardBackgroundColor,
+                  titleColor: primaryColor,
+                  contentColor: contentColor,
+                ),
+                const SizedBox(height: 20),
+                _buildMentalHealthKnowledgeSection(
+                    primaryColor, textColor, contentColor, primaryColor),
+                const SizedBox(height: 20),
+                _buildGratitudeJournalSection(
+                    primaryColor, textColor, contentColor, primaryColor),
+                const SizedBox(height: 20),
+                _buildPsychologicalTestsSection(
+                    primaryColor, textColor, contentColor, primaryColor),
+              ],
+            ),
           ),
         ),
       ),
@@ -103,7 +112,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // 心理知识部分
-  Widget _buildMentalHealthKnowledgeSection(Color primaryColor, Color titleColor, Color contentColor, Color titleBackgroundColor) {
+  Widget _buildMentalHealthKnowledgeSection(Color primaryColor,
+      Color titleColor, Color contentColor, Color titleBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),
@@ -132,7 +142,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // 感恩日记部分
-  Widget _buildGratitudeJournalSection(Color primaryColor, Color titleColor, Color contentColor, Color titleBackgroundColor) {
+  Widget _buildGratitudeJournalSection(Color primaryColor, Color titleColor,
+      Color contentColor, Color titleBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),
@@ -161,7 +172,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   // 心理测试模块
-  Widget _buildPsychologicalTestsSection(Color primaryColor, Color titleColor, Color contentColor, Color titleBackgroundColor) {
+  Widget _buildPsychologicalTestsSection(Color primaryColor, Color titleColor,
+      Color contentColor, Color titleBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),

@@ -10,10 +10,14 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
-    final backgroundColor = isDarkMode ? const Color(0xFF37474F) : const Color(0xFFF5F5F5);
-    final textColor = isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
-    final contentColor = isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
+    final primaryColor =
+        isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
+    final backgroundColor =
+        isDarkMode ? const Color(0xFF37474F) : const Color(0xFFF5F5F5);
+    final textColor =
+        isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
+    final contentColor =
+        isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
     final cardBackgroundColor = primaryColor.withOpacity(0.1);
 
     return CupertinoPageScaffold(
@@ -29,22 +33,28 @@ class ProfilePage extends StatelessWidget {
         ),
         backgroundColor: backgroundColor,
       ),
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildFullWidthSection(_buildProfileHeaderSection(primaryColor, textColor, cardBackgroundColor)),
-          const SizedBox(height: 20),
-          _buildFullWidthSection(_buildInsightsSection(primaryColor, contentColor, cardBackgroundColor)),
-          const SizedBox(height: 20),
-          _buildFullWidthSection(_buildSettingsSection(primaryColor, contentColor, cardBackgroundColor)),
-          const SizedBox(height: 20),
-          _buildFullWidthSection(_buildAccountSection(primaryColor, contentColor, cardBackgroundColor)),
-          const SizedBox(height: 20),
-          _buildLoginButton(context, primaryColor), // 增加登录按钮
-          const SizedBox(height: 20),
-          _buildFooterSection(contentColor), // 将版权和备案号放在底部，并使其可以滚动
-          const SizedBox(height: 60), // 保留底部60的安全距离
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 90.0),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _buildFullWidthSection(_buildProfileHeaderSection(
+                primaryColor, textColor, cardBackgroundColor)),
+            const SizedBox(height: 20),
+            _buildFullWidthSection(_buildInsightsSection(
+                primaryColor, contentColor, cardBackgroundColor)),
+            const SizedBox(height: 20),
+            _buildFullWidthSection(_buildSettingsSection(
+                primaryColor, contentColor, cardBackgroundColor)),
+            const SizedBox(height: 20),
+            _buildFullWidthSection(_buildAccountSection(
+                primaryColor, contentColor, cardBackgroundColor)),
+            const SizedBox(height: 20),
+            _buildLoginButton(context, primaryColor), // 增加登录按钮
+            const SizedBox(height: 20),
+            _buildFooterSection(contentColor), // 将版权和备案号放在底部，并使其可以滚动
+          ],
+        ),
       ),
     );
   }
@@ -56,7 +66,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeaderSection(Color primaryColor, Color textColor, Color cardBackgroundColor) {
+  Widget _buildProfileHeaderSection(
+      Color primaryColor, Color textColor, Color cardBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -78,7 +89,8 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             '心灵昵称',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: textColor),
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: textColor),
           ),
           const SizedBox(height: 10),
           Text(
@@ -90,7 +102,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInsightsSection(Color primaryColor, Color contentColor, Color cardBackgroundColor) {
+  Widget _buildInsightsSection(
+      Color primaryColor, Color contentColor, Color cardBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -102,7 +115,8 @@ class ProfilePage extends StatelessWidget {
         children: [
           Text(
             '心灵洞察',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
           ),
           const SizedBox(height: 10),
           Text(
@@ -119,7 +133,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsSection(Color primaryColor, Color contentColor, Color cardBackgroundColor) {
+  Widget _buildSettingsSection(
+      Color primaryColor, Color contentColor, Color cardBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -131,7 +146,8 @@ class ProfilePage extends StatelessWidget {
         children: [
           Text(
             '设置',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
           ),
           const SizedBox(height: 10),
           _buildSettingItem('通知', Icons.notifications, contentColor),
@@ -146,7 +162,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountSection(Color primaryColor, Color contentColor, Color cardBackgroundColor) {
+  Widget _buildAccountSection(
+      Color primaryColor, Color contentColor, Color cardBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -158,7 +175,8 @@ class ProfilePage extends StatelessWidget {
         children: [
           Text(
             '账号设置',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
           ),
           const SizedBox(height: 10),
           _buildSettingItem('个人资料', Icons.person_outline, contentColor),
@@ -174,6 +192,7 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildLoginButton(BuildContext context, Color primaryColor) {
     return CupertinoButton(
       color: primaryColor,
@@ -189,18 +208,19 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildFooterSection(Color contentColor) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16), // 保留底部16的安全距离
+      padding: const EdgeInsets.only(bottom: 5, left: 16, right: 16),
+      // 保留底部16的安全距离
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '© 2024 心灵顾问 版权所有',
+            '© 2024 上海天乙鑫科技有限公司 版权所有',
             style: TextStyle(fontSize: 14, color: contentColor),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 5),
           Text(
-            '备案号：ICP 12345678',
+            '备案号：沪ICP备2022034017号',
             style: TextStyle(fontSize: 14, color: contentColor),
             textAlign: TextAlign.center,
           ),

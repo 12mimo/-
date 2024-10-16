@@ -54,64 +54,56 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
       backgroundColor: isDarkMode ? const Color(0xFF263238) : const Color(0xFFE0F7FA),
       child: Stack(
         children: [
-          // 添加选中的页面
-          pages[_selectedIndex],
+          pages[_selectedIndex],  // 选中的页面
 
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0,top: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0), // 增加底部 padding，使椭圆 TabBar 悬浮
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(25.0),
+                borderRadius: BorderRadius.circular(30.0), // 使背景变为椭圆形
                 child: Container(
-                  height: 60.0, // 调整高度，使 TabBar 看起来更紧凑
+                  height: 70.0, // 设置容器高度
+                  width: MediaQuery.of(context).size.width * 0.9, // 设置宽度为屏幕的 90%
                   decoration: BoxDecoration(
                     color: isDarkMode ? const Color(0xFF37474F).withOpacity(0.9) : const Color(0xFFB2EBF2).withOpacity(0.9),
                     boxShadow: [
                       BoxShadow(
                         color: isDarkMode
                             ? CupertinoColors.black.withOpacity(0.3)
-                            : CupertinoColors.systemGrey.withOpacity(0.2),
+                            : CupertinoColors.systemGrey.withOpacity(0.3),
                         blurRadius: 15,
                         spreadRadius: 1,
-                        offset: const Offset(0, 10),
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0), // 设置上下 Padding，使内容居中
-                    child: CupertinoTabBar(
-                      backgroundColor: CupertinoColors.transparent,
-                      activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
-                      inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
-                      iconSize: 24.0,
-                      currentIndex: _selectedIndex,
-                      onTap: _onTabTapped,
-                      border: null,
-                      items: const [
-                        BottomNavigationBarItem(
-                          icon: Icon(CupertinoIcons.house_fill),
-                          // label: '主页',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(CupertinoIcons.heart_circle_fill),
-                          // label: '心灵顾问',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(CupertinoIcons.person_crop_circle_fill),
-                          // label: '个人中心',
-                        ),
-                      ],
-                    ),
+                  child: CupertinoTabBar(
+                    backgroundColor: CupertinoColors.transparent, // 背景设置为透明
+                    activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
+                    inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
+                    iconSize: 28.0, // 增大图标尺寸，提升可点击性
+                    currentIndex: _selectedIndex,
+                    onTap: _onTabTapped,
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.house_fill),
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.heart_circle_fill),
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.person_crop_circle_fill),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-
         ],
       ),
     );
-
   }
 }
+

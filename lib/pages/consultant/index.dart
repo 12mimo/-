@@ -9,7 +9,7 @@ class VirtualConsultantPage extends StatelessWidget {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
     final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
-    final backgroundColor = isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2);
+    final backgroundColor = isDarkMode ? const Color(0xFF263238) : const Color(0xFFB2EBF2);
     final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF546E7A);
     final contentColor = isDarkMode ? Color(0xFFB0BEC5) : Color(0xFF455A64);
     final cardBackgroundColor = primaryColor.withOpacity(0.1);

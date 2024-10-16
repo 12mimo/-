@@ -15,10 +15,10 @@ class HomePageState extends State<HomePage> {
     final isDarkMode = brightness == Brightness.dark;
     final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
     final backgroundColor =
-    isDarkMode ? const Color(0xFF263238) : const Color(0xFFE0F7FA);
+    isDarkMode ? const Color(0xFF263238) : const Color(0xFFF0F4F8);
+    final cardBackgroundColor = isDarkMode ? Color(0xFF37474F) : Colors.white;
+    final accentColor = isDarkMode ? Color(0xFF26A69A) : Color(0xFF00796B);
     final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF37474F);
-    final contentColor = isDarkMode ? Color(0xFFB0BEC5) : Color(0xFF455A64);
-    final cardBackgroundColor = primaryColor.withOpacity(0.1);
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: 24,
           ),
         ),
         backgroundColor: backgroundColor,
@@ -37,216 +37,158 @@ class HomePageState extends State<HomePage> {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: Container(
-            color: backgroundColor,
-            child: ListView(
-              children: [
-                _buildCard(
-                  title: '今日心理提示',
-                  content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
-                  backgroundColor: cardBackgroundColor,
-                  titleColor: primaryColor,
-                  contentColor: contentColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderSection(primaryColor, accentColor),
+              const SizedBox(height: 20),
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildCard(
+                      title: '今日心理提示',
+                      content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
+                      backgroundColor: cardBackgroundColor,
+                      titleColor: primaryColor,
+                      contentColor: textColor,
+                      icon: Icons.self_improvement,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildCard(
+                      title: '推荐活动',
+                      content:
+                      '1. 每天进行10分钟的冥想，放松身心。\n2. 写下三件让你感到感激的事情。\n3. 与好友聊聊你最近的感受。',
+                      backgroundColor: cardBackgroundColor,
+                      titleColor: primaryColor,
+                      contentColor: textColor,
+                      icon: Icons.favorite,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildCard(
+                      title: '心理知识',
+                      content: '心理健康是指一种积极的心理状态...',
+                      backgroundColor: cardBackgroundColor,
+                      titleColor: primaryColor,
+                      contentColor: textColor,
+                      icon: Icons.psychology,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildCard(
+                      title: '感恩日记',
+                      content: '写下今天你感激的三件事情...',
+                      backgroundColor: cardBackgroundColor,
+                      titleColor: primaryColor,
+                      contentColor: textColor,
+                      icon: Icons.book,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                _buildCard(
-                  title: '推荐活动',
-                  content:
-                  '1. 每天进行10分钟的冥想，放松身心。\n2. 写下三件让你感到感激的事情。\n3. 与好友聊聊你最近的感受。',
-                  backgroundColor: cardBackgroundColor,
-                  titleColor: primaryColor,
-                  contentColor: contentColor,
-                ),
-                const SizedBox(height: 20),
-                _buildMentalHealthKnowledgeSection(
-                    primaryColor, textColor, contentColor, primaryColor),
-                const SizedBox(height: 20),
-                _buildGratitudeJournalSection(
-                    primaryColor, textColor, contentColor, primaryColor),
-                const SizedBox(height: 20),
-                _buildPsychologicalTestsSection(
-                    primaryColor, textColor, contentColor),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  // 样式统一的卡片
+  Widget _buildHeaderSection(Color primaryColor, Color accentColor) {
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [primaryColor.withOpacity(0.5), accentColor.withOpacity(0.5)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.mood,
+                color: accentColor,
+                size: 40,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  '欢迎来到心理健康助手',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '帮助你保持心理健康，找到内心的平静。',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white70,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCard({
     required String title,
     required String content,
     required Color backgroundColor,
     required Color titleColor,
     required Color contentColor,
+    required IconData icon,
   }) {
     return Container(
-      width: double.infinity,
       padding: const EdgeInsets.all(20.0),
       decoration: _buildBoxDecoration(backgroundColor),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: titleColor,
-            ),
+          Icon(
+            icon,
+            color: titleColor,
+            size: 40,
           ),
-          const SizedBox(height: 12),
-          Text(
-            content,
-            style: TextStyle(
-              fontSize: 18,
-              color: contentColor,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 心理知识部分
-  Widget _buildMentalHealthKnowledgeSection(Color primaryColor,
-      Color titleColor, Color contentColor, Color titleBackgroundColor) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '心理知识',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: titleBackgroundColor,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '心理健康是指一种积极的心理状态...',
-            style: TextStyle(
-              fontSize: 18,
-              color: contentColor,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 感恩日记部分
-  Widget _buildGratitudeJournalSection(Color primaryColor, Color titleColor,
-      Color contentColor, Color titleBackgroundColor) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '感恩日记',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: titleBackgroundColor,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '写下今天你感激的三件事情...',
-            style: TextStyle(
-              fontSize: 18,
-              color: contentColor,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 心理测试部分
-  Widget _buildPsychologicalTestsSection(Color primaryColor, Color titleColor,
-      Color contentColor) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: primaryColor.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withOpacity(0.15),
-            offset: const Offset(0, 6),
-            blurRadius: 12.0,
-          ),
-        ],
-      ),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 20.0,
-          mainAxisSpacing: 20.0,
-          childAspectRatio: 1.5,
-        ),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  primaryColor.withOpacity(0.15),
-                  primaryColor.withOpacity(0.25),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16.0),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryColor.withOpacity(0.15),
-                  offset: const Offset(0, 6),
-                  blurRadius: 10.0,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  content,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: contentColor,
+                    height: 1.5,
+                  ),
                 ),
               ],
             ),
-            child: CupertinoButton(
-              padding: const EdgeInsets.all(16.0),
-              onPressed: () {
-                // 测试点击事件处理
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    CupertinoIcons.heart_fill,
-                    color: primaryColor,
-                    size: 30.0,
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    '心理测试 ${index + 1}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: contentColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -254,7 +196,7 @@ class HomePageState extends State<HomePage> {
   BoxDecoration _buildBoxDecoration(Color color, {double opacity = 0.1}) {
     return BoxDecoration(
       color: color.withOpacity(opacity),
-      borderRadius: BorderRadius.circular(20.0),
+      borderRadius: BorderRadius.circular(16.0),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.1),

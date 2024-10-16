@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
     final primaryColor =
     isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
     final backgroundColor =
-    isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2);
+    isDarkMode ? const Color(0xFF263238) : const Color(0xFFB2EBF2);
     final textColor =
     isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
     final contentColor =

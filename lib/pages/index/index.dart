@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 90.0),
+          padding: const EdgeInsets.only(bottom: 70.0),
           child: Container(
             color: backgroundColor,
             child: ListView(
@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPsychologicalTestsSection(Color primaryColor, Color titleColor,
       Color contentColor, Color titleBackgroundColor) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(top: 16.0,left: 16.0,right: 16.0),
       decoration: _buildBoxDecoration(primaryColor, opacity: 0.1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

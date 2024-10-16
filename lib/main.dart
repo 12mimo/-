@@ -59,12 +59,12 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0), // 增加底部 padding，使椭圆 TabBar 悬浮
+              padding: const EdgeInsets.only(bottom: 8.0), // 减少底部 padding
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(30.0), // 使背景变为椭圆形
+                borderRadius: BorderRadius.circular(30.0),
                 child: Container(
-                  height: 70.0, // 设置容器高度
-                  width: MediaQuery.of(context).size.width * 0.9, // 设置宽度为屏幕的 90%
+                  height: 56.0, // 调整高度为标准的 TabBar 高度
+                  width: MediaQuery.of(context).size.width * 0.9,
                   decoration: BoxDecoration(
                     color: isDarkMode ? const Color(0xFF37474F).withOpacity(0.9) : const Color(0xFFB2EBF2).withOpacity(0.9),
                     boxShadow: [
@@ -79,10 +79,11 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
                     ],
                   ),
                   child: CupertinoTabBar(
-                    backgroundColor: CupertinoColors.transparent, // 背景设置为透明
+                    backgroundColor: CupertinoColors.transparent,
                     activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
                     inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
-                    iconSize: 28.0, // 增大图标尺寸，提升可点击性
+                    border: Border(top: BorderSide.none, bottom: BorderSide.none),
+                    iconSize: 28.0,
                     currentIndex: _selectedIndex,
                     onTap: _onTabTapped,
                     items: const [
@@ -100,7 +101,8 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
                 ),
               ),
             ),
-          ),
+          )
+
         ],
       ),
     );

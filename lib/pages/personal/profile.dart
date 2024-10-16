@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../login/login.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -37,6 +39,8 @@ class ProfilePage extends StatelessWidget {
           _buildFullWidthSection(_buildSettingsSection(primaryColor, contentColor, cardBackgroundColor)),
           const SizedBox(height: 20),
           _buildFullWidthSection(_buildAccountSection(primaryColor, contentColor, cardBackgroundColor)),
+          const SizedBox(height: 20),
+          _buildLoginButton(context, primaryColor), // 增加登录按钮
           const SizedBox(height: 20),
           _buildFooterSection(contentColor), // 将版权和备案号放在底部，并使其可以滚动
           const SizedBox(height: 60), // 保留底部60的安全距离
@@ -168,6 +172,18 @@ class ProfilePage extends StatelessWidget {
           _buildSettingItem('关于我们', Icons.info, contentColor),
         ],
       ),
+    );
+  }
+  Widget _buildLoginButton(BuildContext context, Color primaryColor) {
+    return CupertinoButton(
+      color: primaryColor,
+      onPressed: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(builder: (context) => const LoginPage()),
+        );
+      },
+      child: const Text('登录'),
     );
   }
 

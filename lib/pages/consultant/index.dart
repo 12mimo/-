@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../styles/index.dart';
+
 class VirtualConsultantPage extends StatelessWidget {
   const VirtualConsultantPage({super.key});
 
@@ -8,11 +10,12 @@ class VirtualConsultantPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
-    final backgroundColor = isDarkMode ? const Color(0xFF263238) : const Color(0xFFB2EBF2);
-    final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF546E7A);
-    final contentColor = isDarkMode ? Color(0xFFB0BEC5) : Color(0xFF455A64);
-    final cardBackgroundColor = primaryColor.withOpacity(0.1);
+    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    final backgroundColor =
+    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
+    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    final contentColor = isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
+    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xlfz/pages/personal/about.dart';
 import 'package:xlfz/pages/personal/privacy.dart';
 import 'package:xlfz/pages/personal/profile_page.dart';
+import '../../styles/index.dart';
 import '../login/login.dart';
 import 'account_security.dart';
 import 'help.dart'; // 确保导入的路径正确
@@ -12,18 +13,14 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor =
-    isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
-    final backgroundColor =
-    isDarkMode ? const Color(0xFF263238) : const Color(0xFFB2EBF2);
-    final textColor =
-    isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
-    final contentColor =
-    isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
-    final cardBackgroundColor =
-    isDarkMode ? const Color(0xFF80CBC4) : primaryColor.withOpacity(0.1);
+    var brightness = MediaQuery.of(context).platformBrightness;
+    var isDarkMode = brightness == Brightness.dark;
+    var primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    var backgroundColor =
+    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
+    var textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    var contentColor = isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
+    var cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -183,7 +180,7 @@ class ProfilePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '© 2024 上海天乙鑫科技有限公司 所有权利保留',
+            '© 2024 上海天乙鑫科技有限公司 版权所有',
             style: TextStyle(fontSize: 14, color: contentColor),
             textAlign: TextAlign.center,
           ),

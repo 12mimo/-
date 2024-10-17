@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../styles/index.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -13,12 +15,12 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
+    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
     final backgroundColor =
-    isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFFB2EBF2);
-    final cardBackgroundColor = isDarkMode ? Color(0xFF37474F) : Color(0xFFB2EBF2);
-    final accentColor = isDarkMode ? Color(0xFF26A69A) : Color(0xFF00796B);
-    final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF37474F);
+    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
+     var cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    final accentColor = isDarkMode ? AppColors.darkAccentColor : AppColors.lightAccentColor;
+    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -154,7 +156,7 @@ class HomePageState extends State<HomePage> {
     required IconData icon,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20),
       decoration: _buildBoxDecoration(backgroundColor),
       child: Row(
         children: [

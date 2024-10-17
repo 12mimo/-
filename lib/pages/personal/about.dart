@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../styles/index.dart';
+
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
 
@@ -8,16 +10,12 @@ class AboutUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor =
-    isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F);
-    final backgroundColor =
-    isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2);
-    final textColor =
-    isDarkMode ? const Color(0xFFCFD8DC) : const Color(0xFF546E7A);
-    final contentColor =
-    isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF455A64);
-    final cardBackgroundColor =
-    isDarkMode ? const Color(0xFF455A64) : primaryColor.withOpacity(0.1);
+    var primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    var backgroundColor =
+    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
+    var textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    var contentColor = isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
+    var cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -64,7 +62,7 @@ class AboutUsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: cardBackgroundColor,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

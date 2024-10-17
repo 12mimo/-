@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../styles/index.dart';
 import 'login.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -10,10 +11,11 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? Color(0xFF80CBC4) : Color(0xFF00838F);
-    final backgroundColor = isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2);
-    final textColor = isDarkMode ? Color(0xFFCFD8DC) : Color(0xFF546E7A);
-
+    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    final backgroundColor =
+    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
+    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
       navigationBar: CupertinoNavigationBar(
@@ -48,7 +50,7 @@ class RegisterPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 style: TextStyle(color: textColor),
                 decoration: BoxDecoration(
-                  color: isDarkMode ? Color(0xFF455A64) : Color(0xFFFFFFFF),
+                  color: cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
@@ -58,7 +60,7 @@ class RegisterPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 style: TextStyle(color: textColor),
                 decoration: BoxDecoration(
-                  color: isDarkMode ? Color(0xFF455A64) : Color(0xFFFFFFFF),
+                  color: cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
@@ -69,7 +71,7 @@ class RegisterPage extends StatelessWidget {
                 obscureText: true,
                 style: TextStyle(color: textColor),
                 decoration: BoxDecoration(
-                  color: isDarkMode ? Color(0xFF455A64) : Color(0xFFFFFFFF),
+                  color: cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),

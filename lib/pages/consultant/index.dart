@@ -38,9 +38,9 @@ class VirtualConsultantPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildFullWidthSection(_buildWelcomeSection(cardBackgroundColor, contentColor)),
-              SizedBox(height: 30),
+              SizedBox(height: 15),
               _buildFullWidthSection(_buildVirtualAdvisorSection(primaryColor, textColor, cardBackgroundColor)),
-              SizedBox(height: 30),
+              SizedBox(height: 15),
               _buildFullWidthSection(_buildMindAdvisorSection(primaryColor, textColor, cardBackgroundColor)),
             ],
           ),

@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:xlfz/pages/login/register.dart';
 
 import '../../styles/index.dart';
+import '../../utils/cache.dart';
+import '../../utils/http.dart';
+import '../../utils/sys.dart';
+import '../../utils/toast.dart';
+import '../personal/profile.dart';
 import 'forgot_password.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage  extends StatelessWidget  {
+   LoginPage({super.key});
+   final TextEditingController usernameController = TextEditingController();
+   final TextEditingController passwordController = TextEditingController();
+   final httpHelper = HttpHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +25,41 @@ class LoginPage extends StatelessWidget {
     isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
     final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
     final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    // 登录
+    void login () async {
+      String username = usernameController.text;
+      String password = passwordController.text;
 
+      if (username == ""){
+        showSimpleToast(context,"用户名不能为空");
+        return;
+      }
+      if (password == ""){
+        showSimpleToast(context,"密码不能为空");
+        return;
+      }
+
+      // 发送登录请求
+      var postResponse = await httpHelper.postRequest("/login", {
+        'username': username,
+        'password': password,
+      }, requireAuth: false);
+      if (postResponse['code'] == 0) {
+        // 登录成功
+        saveToCache("token",postResponse['data']["token"]);
+        goBack(context);
+      }else{
+        String errorMessage = postResponse['message'] ?? '登录失败';
+        showSimpleToast(context,errorMessage);
+      }
+
+    }
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
           onTap: () {
-            Navigator.pop(context); // 返回按钮点击事件处理
+            goBack(context,);
           },
           child: Icon(
             CupertinoIcons.back,
@@ -48,6 +84,7 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CupertinoTextField(
+                controller: usernameController,
                 placeholder: '用户名',
                 padding: const EdgeInsets.all(16.0),
                 style: TextStyle(color: textColor),
@@ -58,6 +95,7 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               CupertinoTextField(
+                controller: passwordController,
                 placeholder: '密码',
                 padding: const EdgeInsets.all(16.0),
                 obscureText: true,
@@ -91,7 +129,7 @@ class LoginPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
                 onPressed: () {
                   // 登录按钮点击事件处理
-
+                  login();
                 },
                 child: Text(
                   '登录',

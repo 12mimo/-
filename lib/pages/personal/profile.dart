@@ -3,16 +3,59 @@ import 'package:flutter/material.dart';
 import 'package:xlfz/pages/personal/about.dart';
 import 'package:xlfz/pages/personal/privacy.dart';
 import 'package:xlfz/pages/personal/profile_page.dart';
+import 'package:xlfz/utils/cache.dart';
 import '../../styles/index.dart';
 import '../login/login.dart';
 import 'account_security.dart';
 import 'help.dart'; // 确保导入的路径正确
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  bool loginSign = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLoginStatus();
+  }
+
+  void _loadLoginStatus() async {
+    var token = await loadFromCache("token");
+    if (token == null) {
+      // 没有 token，跳转到登录页面
+      Navigator.pushReplacement(
+        context,
+        CupertinoPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      setState(() {
+        loginSign = true;
+      });
+    }
+  }
+  void _checkLoginStatus() async {
+    var token = await loadFromCache("token");
+    if (token == null) {
+      // 没有 token，跳转到登录页面
+      Navigator.pushReplacement(
+        context,
+        CupertinoPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      setState(() {
+        loginSign = true;
+      });
+    }
+  }
+  @override
   Widget build(BuildContext context) {
+    _checkLoginStatus();
     var brightness = MediaQuery.of(context).platformBrightness;
     var isDarkMode = brightness == Brightness.dark;
     var primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
@@ -20,7 +63,8 @@ class ProfilePage extends StatelessWidget {
     isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
     var textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
     var contentColor = isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
-    var cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    var cardBackgroundColor =
+    isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -53,7 +97,7 @@ class ProfilePage extends StatelessWidget {
             _buildFullWidthSection(
                 _buildSettingsAndAccountSection(primaryColor, contentColor, cardBackgroundColor, context)),
             const SizedBox(height: 20),
-            _buildLoginButton(context, primaryColor), // 增加登录按钮
+            loginSign ? Container() : _buildLoginButton(context, primaryColor), // 增加登录按钮
             const SizedBox(height: 20),
             _buildFooterSection(contentColor), // 将版权和备案号放在底部，并使其可以滚动
           ],
@@ -166,7 +210,7 @@ class ProfilePage extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          CupertinoPageRoute(builder: (context) => const LoginPage()),
+          CupertinoPageRoute(builder: (context) => LoginPage()),
         );
       },
       child: const Text('登录'),
@@ -180,7 +224,7 @@ class ProfilePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '© 2024 上海天乙鑫科技有限公司 版权所有',
+            '© 2024 上海天乙鑫科技有限公司 所有权利保留',
             style: TextStyle(fontSize: 14, color: contentColor),
             textAlign: TextAlign.center,
           ),

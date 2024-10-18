@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../../styles/index.dart';
-import '../login/login.dart'; // 确保导入的路径正确
+import '../../utils/cache.dart';
 
 class AccountSecurityPage extends StatelessWidget {
   const AccountSecurityPage({super.key});
@@ -89,7 +89,8 @@ class AccountSecurityPage extends StatelessWidget {
     return CupertinoButton(
       color: primaryColor,
       onPressed: () {
-
+        removeFromCache("token");
+        Navigator.of(context).pop();
       },
       child: const Text('退出登录'),
     );

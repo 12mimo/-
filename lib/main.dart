@@ -47,7 +47,7 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
     final List<Widget> pages = [
       const HomePage(),
       const VirtualConsultantPage(),
-      const ProfilePage(),
+      ProfilePage(),
     ];
 
     return CupertinoTabScaffold(

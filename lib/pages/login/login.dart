@@ -7,14 +7,20 @@ import '../../utils/cache.dart';
 import '../../utils/http.dart';
 import '../../utils/sys.dart';
 import '../../utils/toast.dart';
-import '../personal/profile.dart';
 import 'forgot_password.dart';
 
-class LoginPage  extends StatelessWidget  {
+class LoginPage  extends StatefulWidget   {
    LoginPage({super.key});
    final TextEditingController usernameController = TextEditingController();
    final TextEditingController passwordController = TextEditingController();
    final httpHelper = HttpHelper();
+   @override
+   LoginPageState createState() => LoginPageState();
+}
+class LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final httpHelper = HttpHelper();
 
   @override
   Widget build(BuildContext context) {

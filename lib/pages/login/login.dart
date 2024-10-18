@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:xlfz/pages/login/register.dart';
+import 'package:xlfz/store/global.dart';
 
 import '../../styles/index.dart';
 import '../../utils/cache.dart';
@@ -9,67 +11,82 @@ import '../../utils/sys.dart';
 import '../../utils/toast.dart';
 import 'forgot_password.dart';
 
-class LoginPage  extends StatefulWidget   {
-   LoginPage({super.key});
-   final TextEditingController usernameController = TextEditingController();
-   final TextEditingController passwordController = TextEditingController();
-   final httpHelper = HttpHelper();
-   @override
-   LoginPageState createState() => LoginPageState();
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  LoginPageState createState() => LoginPageState();
 }
+
 class LoginPageState extends State<LoginPage> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final httpHelper = HttpHelper();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final HttpHelper _httpHelper = HttpHelper();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _login() async {
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+
+    if (username.isEmpty) {
+      showSimpleToast(context, "用户名不能为空");
+      return;
+    }
+    if (password.isEmpty) {
+      showSimpleToast(context, "密码不能为空");
+      return;
+    }
+
+    // 发送登录请求
+    var postResponse = await _httpHelper.postRequest(
+      "/login",
+      {
+        'username': username,
+        'password': password,
+      },
+      requireAuth: false,
+    );
+
+    if (postResponse['code'] == 0) {
+      // 登录成功
+      context.read<GlobalState>().setLogin(true);
+      saveToCache("token", postResponse['data']["token"]);
+      goBack(context);
+    } else {
+      String errorMessage = postResponse['message'] ?? '登录失败';
+      showSimpleToast(context, errorMessage);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
-    // 登录
-    void login () async {
-      String username = usernameController.text;
-      String password = passwordController.text;
+    final primaryColor =
+        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    final backgroundColor = isDarkMode
+        ? AppColors.darkBackgroundColor
+        : AppColors.lightBackgroundColor;
+    final textColor =
+        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    final cardBackgroundColor = isDarkMode
+        ? AppColors.darkCardBackgroundColor
+        : AppColors.lightCardBackgroundColor;
 
-      if (username == ""){
-        showSimpleToast(context,"用户名不能为空");
-        return;
-      }
-      if (password == ""){
-        showSimpleToast(context,"密码不能为空");
-        return;
-      }
-
-      // 发送登录请求
-      var postResponse = await httpHelper.postRequest("/login", {
-        'username': username,
-        'password': password,
-      }, requireAuth: false);
-      if (postResponse['code'] == 0) {
-        // 登录成功
-        saveToCache("token",postResponse['data']["token"]);
-        goBack(context);
-      }else{
-        String errorMessage = postResponse['message'] ?? '登录失败';
-        showSimpleToast(context,errorMessage);
-      }
-
-    }
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
-          onTap: () {
-            goBack(context,);
-          },
+          onTap: () => goBack(context),
           child: Icon(
             CupertinoIcons.back,
-            color: primaryColor, // 设置返回按钮的颜色
+            color: primaryColor,
           ),
         ),
         middle: Text(
@@ -89,37 +106,19 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CupertinoTextField(
-                controller: usernameController,
-                placeholder: '用户名',
-                padding: const EdgeInsets.all(16.0),
-                style: TextStyle(color: textColor),
-                decoration: BoxDecoration(
-                  color: cardBackgroundColor,
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-              ),
+              _buildTextField(_usernameController, '用户名', false, textColor,
+                  cardBackgroundColor),
               const SizedBox(height: 20),
-              CupertinoTextField(
-                controller: passwordController,
-                placeholder: '密码',
-                padding: const EdgeInsets.all(16.0),
-                obscureText: true,
-                style: TextStyle(color: textColor),
-                decoration: BoxDecoration(
-                  color: cardBackgroundColor,
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-              ),
+              _buildTextField(_passwordController, '密码', true, textColor,
+                  cardBackgroundColor),
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () {
-                    // 忘记密码点击事件
-                    Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => ForgotPasswordPage()));
-                  },
+                  onPressed: () => Navigator.of(context).pushReplacement(
+                      CupertinoPageRoute(
+                          builder: (context) => ForgotPasswordPage())),
                   child: Text(
                     '忘记密码？',
                     style: TextStyle(
@@ -130,101 +129,108 @@ class LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 40),
-              CupertinoButton(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(15.0),
-                onPressed: () {
-                  // 登录按钮点击事件处理
-                  login();
-                },
-                child: Text(
-                  '登录',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: textColor,
-                  ),
-                ),
-              ),
+              _buildButton('登录', primaryColor, textColor, _login),
               const SizedBox(height: 20),
-              CupertinoButton(
-                child: Text(
-                  '注册',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: primaryColor,
-                  ),
-                ),
-                onPressed: () {
-                  // 跳转到注册页面
-                  Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => RegisterPage()));
-                },
-              ),
+              _buildButton('注册', primaryColor, textColor, () {
+                Navigator.of(context).pushReplacement(
+                    CupertinoPageRoute(builder: (context) => RegisterPage()));
+              }),
               const SizedBox(height: 20),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CupertinoButton(
-                        onPressed: () {
-                          // Google 登录逻辑
-                        },
-                        child: Icon(
-                          Icons.mobile_friendly, // 临时使用一个系统图标替代
-                          size: 40,
-                          color: primaryColor,
-                        ),
-                      ),
-                      CupertinoButton(
-                        onPressed: () {
-                          // Apple 登录逻辑
-                        },
-                        child: Icon(
-                          Icons.apple, // 临时使用一个系统图标替代
-                          size: 40,
-                          color: primaryColor,
-                        ),
-                      ),
-                      CupertinoButton(
-                        onPressed: () {
-                          // Facebook 登录逻辑
-                        },
-                        child: Icon(
-                          Icons.wechat, // 临时使用一个系统图标替代
-                          size: 40,
-                          color: primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    '注册即表示同意',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: textColor,
-                    ),
-                  ),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      // 隐私协议点击事件
-                    },
-                    child: Text(
-                      '隐私协议',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildSocialLoginButtons(primaryColor),
+              const SizedBox(height: 20),
+              _buildPrivacyAgreement(textColor, primaryColor),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String placeholder,
+      bool obscureText, Color textColor, Color backgroundColor) {
+    return CupertinoTextField(
+      controller: controller,
+      placeholder: placeholder,
+      padding: const EdgeInsets.all(16.0),
+      obscureText: obscureText,
+      style: TextStyle(color: textColor),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+    );
+  }
+
+  Widget _buildButton(
+      String text, Color color, Color textColor, VoidCallback onPressed) {
+    return CupertinoButton(
+      color: color,
+      borderRadius: BorderRadius.circular(15.0),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 18,
+          color: textColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialLoginButtons(Color iconColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildSocialButton(Icons.mobile_friendly, iconColor, () {
+          // Google 登录逻辑
+        }),
+        _buildSocialButton(Icons.apple, iconColor, () {
+          // Apple 登录逻辑
+        }),
+        _buildSocialButton(Icons.wechat, iconColor, () {
+          // Facebook 登录逻辑
+        }),
+      ],
+    );
+  }
+
+  Widget _buildSocialButton(
+      IconData icon, Color color, VoidCallback onPressed) {
+    return CupertinoButton(
+      onPressed: onPressed,
+      child: Icon(
+        icon,
+        size: 40,
+        color: color,
+      ),
+    );
+  }
+
+  Widget _buildPrivacyAgreement(Color textColor, Color primaryColor) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '注册即表示同意',
+          style: TextStyle(
+            fontSize: 12,
+            color: textColor,
+          ),
+        ),
+        CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            // 隐私协议点击事件
+          },
+          child: Text(
+            '隐私协议',
+            style: TextStyle(
+              fontSize: 12,
+              color: primaryColor,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,10 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:xlfz/pages/consultant/index.dart';
 import 'package:xlfz/pages/index/index.dart';
 import 'package:xlfz/pages/personal/profile.dart';
+import 'package:xlfz/store/global.dart';
+import 'package:xlfz/utils/sys.dart';
 
 void main() {
-  runApp(const CupertinoStoreApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GlobalState()), // 提供全局状态
+      ],
+      child: CupertinoStoreApp(),
+    ),
+  );
 }
 
 class CupertinoStoreApp extends StatelessWidget {
@@ -13,8 +23,7 @@ class CupertinoStoreApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      theme: CupertinoThemeData(
-        brightness: MediaQuery.of(context).platformBrightness,
+      theme: const CupertinoThemeData(
         primaryColor: CupertinoColors.systemBlue,
       ),
       home: const CupertinoStoreHomePage(),
@@ -31,6 +40,13 @@ class CupertinoStoreHomePage extends StatefulWidget {
 
 class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
   int _selectedIndex = 0;
+  final NetworkUtil _networkUtil = NetworkUtil();
+
+  @override
+  void initState() {
+    super.initState();
+    _networkUtil.checkConnectivity();
+  }
 
   void _onTabTapped(int index) {
     setState(() {
@@ -44,17 +60,20 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
     final isDarkMode = brightness == Brightness.dark;
 
     // 自定义页面列表
-    final List<Widget> pages = [
-      const HomePage(),
-      const VirtualConsultantPage(),
+    final List<Widget> pages = const [
+      HomePage(),
+      VirtualConsultantPage(),
       ProfilePage(),
     ];
 
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        backgroundColor: isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2),
-        activeColor: isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
-        inactiveColor: isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
+        backgroundColor:
+            isDarkMode ? const Color(0xFF37474F) : const Color(0xFFB2EBF2),
+        activeColor:
+            isDarkMode ? const Color(0xFF80CBC4) : const Color(0xFF00838F),
+        inactiveColor:
+            isDarkMode ? const Color(0xFFB0BEC5) : const Color(0xFF80DEEA),
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,
         items: const [
@@ -71,11 +90,11 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
       ),
       tabBuilder: (BuildContext context, int index) {
         return CupertinoPageScaffold(
-          backgroundColor: isDarkMode ? const Color(0xFF263238) : const Color(0xFFE0F7FA),
+          backgroundColor:
+              isDarkMode ? const Color(0xFF263238) : const Color(0xFFE0F7FA),
           child: pages[index],
         );
       },
     );
   }
-
 }

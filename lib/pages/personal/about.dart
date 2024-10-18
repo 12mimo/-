@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import '../../styles/index.dart';
 
@@ -10,12 +9,18 @@ class AboutUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    var primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    var backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-    var textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    var contentColor = isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
-    var cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    var primaryColor =
+        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    var backgroundColor = isDarkMode
+        ? AppColors.darkBackgroundColor
+        : AppColors.lightBackgroundColor;
+    var textColor =
+        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    var contentColor =
+        isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
+    var cardBackgroundColor = isDarkMode
+        ? AppColors.darkCardBackgroundColor
+        : AppColors.lightCardBackgroundColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -43,7 +48,8 @@ class AboutUsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildCompanyInfoSection(primaryColor, textColor, cardBackgroundColor),
+              _buildCompanyInfoSection(
+                  primaryColor, textColor, cardBackgroundColor),
               const SizedBox(height: 20),
               _buildFooterSection(contentColor),
             ],
@@ -95,7 +101,6 @@ class AboutUsPage extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildFooterSection(Color contentColor) {
     return Container(

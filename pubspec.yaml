@@ -21,6 +21,8 @@ dependencies:
   http: ^1.2.2
   shared_preferences: ^2.3.2
   fluttertoast: ^8.2.8
+  connectivity_plus: ^6.1.0
+  
 
 
 dev_dependencies:

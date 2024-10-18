@@ -8,14 +8,16 @@ class HttpHelper {
   final String baseUrl;
   final Map<String, String> defaultHeaders;
 
-  HttpHelper({this.baseUrl = 'http://101.126.157.159/api',  this.defaultHeaders =  const {}});
+  HttpHelper(
+      {this.baseUrl = 'http://101.126.157.159/api',
+      this.defaultHeaders = const {}});
 
-  Future<bool> _checkAndSetAuthorization(Map<String, String> headers, bool requireAuth) async {
+  Future<bool> _checkAndSetAuthorization(
+      Map<String, String> headers, bool requireAuth) async {
     if (requireAuth) {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       if (token == null) {
-        print('Authorization token not found, request intercepted.');
         return false;
       }
       headers['Authorization'] = 'Bearer $token';
@@ -37,7 +39,8 @@ class HttpHelper {
   }
 
   // GET Request
-  Future<dynamic> getRequest(String endpoint, {Map<String, String>? headers, bool requireAuth = false}) async {
+  Future<dynamic> getRequest(String endpoint,
+      {Map<String, String>? headers, bool requireAuth = false}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final mergedHeaders = {...defaultHeaders, if (headers != null) ...headers};
     if (!mergedHeaders.containsKey('Content-Type')) {
@@ -52,7 +55,8 @@ class HttpHelper {
   }
 
   // POST Request
-  Future<dynamic> postRequest(String endpoint, Map<String, dynamic> body, {Map<String, String>? headers, bool requireAuth = false}) async {
+  Future<dynamic> postRequest(String endpoint, Map<String, dynamic> body,
+      {Map<String, String>? headers, bool requireAuth = false}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final mergedHeaders = {...defaultHeaders, if (headers != null) ...headers};
     if (!mergedHeaders.containsKey('Content-Type')) {
@@ -62,12 +66,14 @@ class HttpHelper {
     bool proceed = await _checkAndSetAuthorization(mergedHeaders, requireAuth);
     if (!proceed) return null;
 
-    final response = await http.post(url, headers: mergedHeaders, body: jsonEncode(body));
+    final response =
+        await http.post(url, headers: mergedHeaders, body: jsonEncode(body));
     return _handleResponse(response);
   }
 
   // File Upload (Multipart)
-  Future<dynamic> uploadFile(String endpoint, File file, {Map<String, String>? headers, bool requireAuth = false}) async {
+  Future<dynamic> uploadFile(String endpoint, File file,
+      {Map<String, String>? headers, bool requireAuth = false}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final mergedHeaders = {...defaultHeaders, if (headers != null) ...headers};
 

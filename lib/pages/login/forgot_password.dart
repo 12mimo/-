@@ -8,21 +8,26 @@ class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
+  ForgotPasswordPageState createState() => ForgotPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class ForgotPasswordPageState extends State<ForgotPasswordPage> {
   bool isPhoneSelected = true;
 
   @override
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    final primaryColor =
+        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    final backgroundColor = isDarkMode
+        ? AppColors.darkBackgroundColor
+        : AppColors.lightBackgroundColor;
+    final textColor =
+        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    final cardBackgroundColor = isDarkMode
+        ? AppColors.darkCardBackgroundColor
+        : AppColors.lightCardBackgroundColor;
 
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
@@ -60,11 +65,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     children: {
                       true: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text('手机号找回', style: TextStyle(color: isPhoneSelected ? Colors.white : primaryColor)),
+                        child: Text('手机号找回',
+                            style: TextStyle(
+                                color: isPhoneSelected
+                                    ? Colors.white
+                                    : primaryColor)),
                       ),
                       false: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text('邮箱找回', style: TextStyle(color: !isPhoneSelected ? Colors.white : primaryColor)),
+                        child: Text('邮箱找回',
+                            style: TextStyle(
+                                color: !isPhoneSelected
+                                    ? Colors.white
+                                    : primaryColor)),
                       ),
                     },
                     groupValue: isPhoneSelected,
@@ -84,7 +97,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 placeholder: isPhoneSelected ? '请输入您的手机号' : '请输入您的邮箱',
                 padding: const EdgeInsets.all(16.0),
                 style: TextStyle(color: textColor),
-                keyboardType: isPhoneSelected ? TextInputType.phone : TextInputType.emailAddress,
+                keyboardType: isPhoneSelected
+                    ? TextInputType.phone
+                    : TextInputType.emailAddress,
                 decoration: BoxDecoration(
                   color: cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
@@ -97,7 +112,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 onPressed: () {
                   // Navigate to the next step after sending verification code or reset link
                   Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) => VerificationPage(isPhoneSelected: isPhoneSelected),
+                    builder: (context) =>
+                        VerificationPage(isPhoneSelected: isPhoneSelected),
                   ));
                 },
                 child: Text(
@@ -114,7 +130,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 child: CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => LoginPage()));
+                    Navigator.of(context).pushReplacement(
+                        CupertinoPageRoute(builder: (context) => LoginPage()));
                   },
                   child: Text(
                     '返回登录',
@@ -142,11 +159,16 @@ class VerificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    final primaryColor =
+        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+    final backgroundColor = isDarkMode
+        ? AppColors.darkBackgroundColor
+        : AppColors.lightBackgroundColor;
+    final textColor =
+        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    final cardBackgroundColor = isDarkMode
+        ? AppColors.darkCardBackgroundColor
+        : AppColors.lightCardBackgroundColor;
     return CupertinoPageScaffold(
       backgroundColor: backgroundColor,
       navigationBar: CupertinoNavigationBar(

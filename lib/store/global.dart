@@ -21,7 +21,7 @@ class GlobalState with ChangeNotifier {
   bool get login => _login;
 
   Map<String, dynamic> get user {
-    if (_user.isEmpty) {
+    if (_user.isEmpty && _login) {
       getUserInfo();
     }
     return _user;

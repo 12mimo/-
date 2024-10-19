@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xlfz/pages/consultant/test.dart';
 
 import '../../styles/color.dart';
+import 'cell.dart';
 import 'chat.dart';
 
 class VirtualConsultantPage extends StatelessWidget {
@@ -148,11 +149,11 @@ class VirtualConsultantPage extends StatelessWidget {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => const ChatPage(),
+                  builder: (context) => CounselorCallPage(),
                 ),
               );
             },
-            child: const Text('开始对话', style: TextStyle(color: Colors.white)),
+            child: const Text('开始语音对话', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -191,9 +192,14 @@ class VirtualConsultantPage extends StatelessWidget {
           CupertinoButton(
             color: primaryColor,
             onPressed: () {
-              // 在此添加导航逻辑，例如跳转到建议页面
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const ChatPage(),
+                ),
+              );
             },
-            child: const Text('获取建议', style: TextStyle(color: Colors.white)),
+            child: const Text('开启对话', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

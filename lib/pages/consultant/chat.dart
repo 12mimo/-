@@ -1,5 +1,3 @@
-// lib/pages/consultant/chat.dart
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -7,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../styles/color.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// 消息模型
 class Message {
@@ -41,14 +40,20 @@ class _ChatPageState extends State<ChatPage> {
   final int _lineThreshold = 3; // 超过多少行时显示全屏编辑按钮
   bool _showEmojiPicker = false;
   bool _isListening = false;
-  late stt.SpeechToText _speech;
+  late stt.SpeechToText? _speech;
   late AppStyle appStyle;
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(_updateLineCount);
-    _speech = stt.SpeechToText();
+
+    // 初始化语音识别，仅在安卓和iOS上
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+      _speech = stt.SpeechToText();
+    } else {
+      _speech = null;
+    }
   }
 
   @override
@@ -56,7 +61,12 @@ class _ChatPageState extends State<ChatPage> {
     _controller.removeListener(_updateLineCount);
     _controller.dispose();
     _scrollController.dispose();
-    _speech.stop();
+
+    // 停止语音识别，仅在安卓和iOS上
+    if (_speech != null) {
+      _speech!.stop();
+    }
+
     super.dispose();
   }
 
@@ -101,7 +111,6 @@ class _ChatPageState extends State<ChatPage> {
 
   /// 模拟虚拟咨询师回复
   String _getBotResponse(String userMessage) {
-    // 这里可以集成实际的对话逻辑或API调用
     return "感谢您的分享。您能详细说明一下吗？";
   }
 
@@ -150,15 +159,14 @@ class _ChatPageState extends State<ChatPage> {
       }
     } catch (e) {
       print('Image picker error: $e');
-      // 您可以在这里添加用户提示，例如使用SnackBar或CupertinoAlertDialog
       _showErrorDialog('无法选择图片，请重试。');
     }
   }
 
-  /// 开始语音识别
+  /// 开始语音识别，仅在安卓和iOS上有效
   Future<void> _listen() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
+    if (!_isListening && _speech != null) {
+      bool available = await _speech!.initialize(
         onStatus: (val) {
           print('Speech status: $val');
           if (val == 'done' || val == 'notListening') {
@@ -176,7 +184,7 @@ class _ChatPageState extends State<ChatPage> {
       );
       if (available) {
         setState(() => _isListening = true);
-        _speech.listen(
+        _speech!.listen(
           onResult: (val) {
             setState(() {
               _controller.text = val.recognizedWords;
@@ -185,40 +193,17 @@ class _ChatPageState extends State<ChatPage> {
             });
             _updateLineCount();
           },
-          // 移除 ListenOptions 并使用命名参数
           listenFor: Duration(seconds: 60),
           pauseFor: Duration(seconds: 3),
           partialResults: true,
           localeId: 'zh_CN',
-          // 根据需要设置语言
           cancelOnError: true,
           listenMode: stt.ListenMode.confirmation,
         );
-        print('Started listening');
       } else {
-        print('The user has denied the use of speech recognition.');
         _showErrorDialog('无法启动语音识别，请检查权限设置。');
       }
-    } else {
-      setState(() => _isListening = false);
-      _speech.stop();
-      print('Stopped listening');
     }
-  }
-
-  /// 切换表情选择器
-  void _toggleEmojiPicker() {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      _showEmojiPicker = !_showEmojiPicker;
-    });
-  }
-
-  /// 格式化时间戳
-  String _formatTimestamp(DateTime timestamp) {
-    final hours = timestamp.hour.toString().padLeft(2, '0');
-    final minutes = timestamp.minute.toString().padLeft(2, '0');
-    return '$hours:$minutes';
   }
 
   /// 显示错误对话框
@@ -238,11 +223,28 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  /// 格式化时间戳
+  String _formatTimestamp(DateTime timestamp) {
+    final hours = timestamp.hour.toString().padLeft(2, '0');
+    final minutes = timestamp.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
+  }
+
   @override
   Widget build(BuildContext context) {
     appStyle = AppStyle(context);
     return CupertinoPageScaffold(
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context); // 返回上一页
+          },
+          child: Icon(
+            CupertinoIcons.back,
+            color: appStyle.primaryColor,
+          ),
+        ),
         middle: Text(
           '虚拟咨询师',
           style: TextStyle(
@@ -353,28 +355,25 @@ class _ChatPageState extends State<ChatPage> {
                 },
               ),
             ),
-            // 分割线
             Divider(color: appStyle.dividerColor ?? Colors.grey),
-            // 输入框和按钮
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
                 children: [
-                  // 语音输入按钮
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: _listen,
-                    child: Icon(
-                      _isListening
-                          ? CupertinoIcons.mic_fill
-                          : CupertinoIcons.mic,
-                      color: appStyle.primaryColor,
-                      size: 28,
+                  if (_speech != null)
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _listen,
+                      child: Icon(
+                        _isListening
+                            ? CupertinoIcons.mic_fill
+                            : CupertinoIcons.mic,
+                        color: appStyle.primaryColor,
+                        size: 28,
+                      ),
                     ),
-                  ),
                   const SizedBox(width: 5),
-                  // 输入框
                   Expanded(
                     child: CupertinoTextField(
                       controller: _controller,
@@ -386,25 +385,11 @@ class _ChatPageState extends State<ChatPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 16),
                       maxLines: _maxVisibleLines,
-                      // 设置最大行数
                       minLines: 1,
-                      // 设置最小行数
-                      textInputAction: TextInputAction.newline, // 允许换行
+                      textInputAction: TextInputAction.newline,
                     ),
                   ),
                   const SizedBox(width: 5),
-                  // 表情按钮
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: _toggleEmojiPicker,
-                    child: Icon(
-                      CupertinoIcons.smiley,
-                      color: appStyle.primaryColor,
-                      size: 28,
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  // 附件按钮
                   CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: _pickImage,
@@ -415,7 +400,6 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   const SizedBox(width: 5),
-                  // 按钮区域
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -424,17 +408,17 @@ class _ChatPageState extends State<ChatPage> {
                           padding: EdgeInsets.zero,
                           onPressed: _openFullScreenEditor,
                           child: const Icon(
-                            CupertinoIcons.arrow_up_right_square, // 有效的图标
-                            color: Color(0xFF4A90E2), // 主色调
+                            CupertinoIcons.arrow_up_right_square,
+                            color: Color(0xFF4A90E2),
                             size: 28,
                           ),
                         ),
                       CupertinoButton(
                         padding: EdgeInsets.zero,
                         onPressed: () => _sendMessage(_controller.text),
-                        child: const Icon(
+                        child: Icon(
                           CupertinoIcons.arrow_up_circle_fill,
-                          color: Color(0xFF4A90E2), // 主色调
+                          color: appStyle.primaryColor,
                           size: 32,
                         ),
                       ),
@@ -443,48 +427,6 @@ class _ChatPageState extends State<ChatPage> {
                 ],
               ),
             ),
-            // 表情选择器
-            _showEmojiPicker
-                ? SizedBox(
-                    height: 250,
-                    child: EmojiPicker(
-                      onEmojiSelected: (Category? category, Emoji emoji) {
-                        setState(() {
-                          _controller.text += emoji.emoji;
-                          _controller.selection = TextSelection.fromPosition(
-                              TextPosition(offset: _controller.text.length));
-                        });
-                        _updateLineCount();
-                      },
-                      config: Config(
-                        columns: 7,
-                        emojiSizeMax: 32,
-                        verticalSpacing: 0,
-                        horizontalSpacing: 0,
-                        initCategory: Category.SMILEYS,
-                        bgColor: MediaQuery.of(context).platformBrightness ==
-                                Brightness.dark
-                            ? Colors.black
-                            : Colors.white,
-                        indicatorColor: appStyle.primaryColor,
-                        iconColor: appStyle.primaryColor,
-                        iconColorSelected: Colors.blue,
-                        backspaceColor: appStyle.primaryColor,
-                        skinToneDialogBgColor: appStyle.cardBackgroundColor,
-                        skinToneIndicatorColor: appStyle.primaryColor,
-                        enableSkinTones: true,
-                        // 移除 showRecentsTab 参数
-                        // showRecentsTab: true,
-                        recentsLimit: 28,
-                        noRecents: Text('没有最近的表情'),
-                        tabIndicatorAnimDuration:
-                            const Duration(milliseconds: 300),
-                        categoryIcons: const CategoryIcons(),
-                        buttonMode: ButtonMode.MATERIAL,
-                      ),
-                    ),
-                  )
-                : Container(),
           ],
         ),
       ),
@@ -528,9 +470,8 @@ class _FullScreenEditorPageState extends State<FullScreenEditorPage> {
     final appStyle = AppStyle(context);
     return WillPopScope(
       onWillPop: () async {
-        // 当用户点击返回按钮时，也返回当前文本
         Navigator.pop(context, _fullController.text);
-        return false; // 已经处理了pop
+        return false;
       },
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
@@ -567,9 +508,7 @@ class _FullScreenEditorPageState extends State<FullScreenEditorPage> {
               ),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               maxLines: null,
-              // 允许无限行
               textInputAction: TextInputAction.newline,
-              // 允许换行
               autofocus: true,
             ),
           ),

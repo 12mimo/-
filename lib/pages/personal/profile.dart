@@ -4,7 +4,7 @@ import 'package:xlfz/pages/personal/about.dart';
 import 'package:xlfz/pages/personal/privacy.dart';
 import 'package:xlfz/pages/personal/profile_page.dart';
 import '../../store/global.dart';
-import '../../styles/index.dart';
+import '../../styles/color.dart';
 import '../login/login.dart';
 import 'account_security.dart';
 import 'help.dart';
@@ -28,23 +28,20 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = context.watch<GlobalState>().login;
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-
-    final colors = _ThemeColors(isDarkMode);
+    final appStyle = AppStyle(context);
 
     return CupertinoPageScaffold(
-      backgroundColor: colors.backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           '个人中心',
           style: TextStyle(
-            color: colors.primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        backgroundColor: colors.backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
       ),
       child: CupertinoScrollbar(
         controller: _scrollController,
@@ -59,26 +56,27 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
             switch (index) {
               case 0:
                 return _buildFullWidthSection(_buildProfileHeaderSection(
-                    colors.primaryColor,
-                    colors.textColor,
-                    colors.cardBackgroundColor));
+                    appStyle.primaryColor,
+                    appStyle.textColor,
+                    appStyle.cardBackgroundColor));
               case 1:
                 return _buildFullWidthSection(_buildInsightsSection(
-                    colors.primaryColor,
-                    colors.contentColor,
-                    colors.cardBackgroundColor));
+                    appStyle.primaryColor,
+                    appStyle.contentColor,
+                    appStyle.cardBackgroundColor));
               case 2:
                 return _buildFullWidthSection(_buildSettingsAndAccountSection(
-                    colors.primaryColor,
-                    colors.contentColor,
-                    colors.cardBackgroundColor));
+                    isLoggedIn,
+                    appStyle.primaryColor,
+                    appStyle.contentColor,
+                    appStyle.cardBackgroundColor));
               case 3:
                 if (!isLoggedIn) {
-                  return _buildLoginButton(colors.primaryColor);
+                  return _buildLoginButton(appStyle.primaryColor);
                 }
                 return const SizedBox.shrink();
               case 4:
-                return _buildFooterSection(colors.contentColor);
+                return _buildFooterSection(appStyle.contentColor);
               default:
                 return const SizedBox.shrink();
             }
@@ -166,19 +164,29 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildSettingsAndAccountSection(
-      Color primaryColor, Color contentColor, Color cardBackgroundColor) {
+  Widget _buildSettingsAndAccountSection(bool isLoggedIn, Color primaryColor,
+      Color contentColor, Color cardBackgroundColor) {
     return _buildCardContainer(
       cardBackgroundColor,
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSettingItem('个人信息', CupertinoIcons.person, contentColor,
-              const PersonalInfoPage()),
-          _buildSettingItem('账号安全', CupertinoIcons.shield, contentColor,
-              const AccountSecurityPage()),
+          if (isLoggedIn)
+            _buildSettingItem(
+              '个人信息',
+              CupertinoIcons.person,
+              contentColor,
+              const PersonalInfoPage(),
+            ),
+          if (isLoggedIn)
+            _buildSettingItem(
+              '账号安全',
+              CupertinoIcons.shield,
+              contentColor,
+              const AccountSecurityPage(),
+            ),
           _buildSettingItem(
-              '隐私', CupertinoIcons.lock, contentColor, const PrivacyPage()),
+              '隐私设置', CupertinoIcons.lock, contentColor, const PrivacyPage()),
           _buildSettingItem('帮助与支持', CupertinoIcons.question_circle,
               contentColor, const HelpSupportPage()),
           _buildSettingItem(
@@ -190,6 +198,7 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
 
   Widget _buildLoginButton(Color primaryColor) {
     return CupertinoButton(
+      padding: EdgeInsets.zero,
       color: primaryColor,
       onPressed: () {
         Navigator.push(
@@ -205,7 +214,7 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('© 2024 上海天乙鑫科技有限公司 所有权利保留',
+          Text('© 2024 上海天乙鑫科技有限公司 版权所有',
               style: TextStyle(fontSize: 14, color: contentColor),
               textAlign: TextAlign.center),
           const SizedBox(height: 5),
@@ -246,27 +255,4 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
       child: child,
     );
   }
-}
-
-class _ThemeColors {
-  final bool isDarkMode;
-
-  _ThemeColors(this.isDarkMode);
-
-  Color get primaryColor =>
-      isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-
-  Color get backgroundColor => isDarkMode
-      ? AppColors.darkBackgroundColor
-      : AppColors.lightBackgroundColor;
-
-  Color get textColor =>
-      isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-
-  Color get contentColor =>
-      isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
-
-  Color get cardBackgroundColor => isDarkMode
-      ? AppColors.darkCardBackgroundColor
-      : AppColors.lightCardBackgroundColor;
 }

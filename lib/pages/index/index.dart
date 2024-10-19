@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:xlfz/styles/color.dart';
 
 import '../../styles/index.dart';
 
@@ -13,27 +14,20 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-     var cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
-    final accentColor = isDarkMode ? AppColors.darkAccentColor : AppColors.lightAccentColor;
-    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+    final appStyle = AppStyle(context);
 
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           '心理健康助手',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
         border: Border.all(color: Colors.transparent),
       ),
       child: SafeArea(
@@ -42,7 +36,7 @@ class HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeaderSection(primaryColor, accentColor),
+              _buildHeaderSection(appStyle.primaryColor, appStyle.accentColor),
               const SizedBox(height: 20),
               Expanded(
                 child: ListView(
@@ -50,37 +44,37 @@ class HomePageState extends State<HomePage> {
                     _buildCard(
                       title: '今日心理提示',
                       content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
-                      backgroundColor: cardBackgroundColor,
-                      titleColor: primaryColor,
-                      contentColor: textColor,
+                      backgroundColor: appStyle.cardBackgroundColor,
+                      titleColor: appStyle.primaryColor,
+                      contentColor: appStyle.textColor,
                       icon: Icons.self_improvement,
                     ),
                     const SizedBox(height: 16),
                     _buildCard(
                       title: '推荐活动',
                       content:
-                      '1. 每天进行10分钟的冥想，放松身心。\n2. 写下三件让你感到感激的事情。\n3. 与好友聊聊你最近的感受。',
-                      backgroundColor: cardBackgroundColor,
-                      titleColor: primaryColor,
-                      contentColor: textColor,
+                          '1. 每天进行10分钟的冥想，放松身心。\n2. 写下三件让你感到感激的事情。\n3. 与好友聊聊你最近的感受。',
+                      backgroundColor: appStyle.cardBackgroundColor,
+                      titleColor: appStyle.primaryColor,
+                      contentColor: appStyle.textColor,
                       icon: Icons.favorite,
                     ),
                     const SizedBox(height: 16),
                     _buildCard(
                       title: '心理知识',
                       content: '心理健康是指一种积极的心理状态...',
-                      backgroundColor: cardBackgroundColor,
-                      titleColor: primaryColor,
-                      contentColor: textColor,
+                      backgroundColor: appStyle.cardBackgroundColor,
+                      titleColor: appStyle.primaryColor,
+                      contentColor: appStyle.textColor,
                       icon: Icons.psychology,
                     ),
                     const SizedBox(height: 16),
                     _buildCard(
                       title: '感恩日记',
                       content: '写下今天你感激的三件事情...',
-                      backgroundColor: cardBackgroundColor,
-                      titleColor: primaryColor,
-                      contentColor: textColor,
+                      backgroundColor: appStyle.cardBackgroundColor,
+                      titleColor: appStyle.primaryColor,
+                      contentColor: appStyle.textColor,
                       icon: Icons.book,
                     ),
                   ],

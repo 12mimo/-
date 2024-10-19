@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../styles/color.dart';
 import '../../styles/index.dart';
 
 class VirtualConsultantPage extends StatelessWidget {
@@ -8,27 +9,19 @@ class VirtualConsultantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final contentColor = isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
-    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
-
+    final appStyle = AppStyle(context);
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           '心灵顾问',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 0.0),
@@ -37,11 +30,18 @@ class VirtualConsultantPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFullWidthSection(_buildWelcomeSection(cardBackgroundColor, contentColor)),
+              _buildFullWidthSection(_buildWelcomeSection(
+                  appStyle.cardBackgroundColor, appStyle.contentColor)),
               SizedBox(height: 15),
-              _buildFullWidthSection(_buildVirtualAdvisorSection(primaryColor, textColor, cardBackgroundColor)),
+              _buildFullWidthSection(_buildVirtualAdvisorSection(
+                  appStyle.primaryColor,
+                  appStyle.textColor,
+                  appStyle.cardBackgroundColor)),
               SizedBox(height: 15),
-              _buildFullWidthSection(_buildMindAdvisorSection(primaryColor, textColor, cardBackgroundColor)),
+              _buildFullWidthSection(_buildMindAdvisorSection(
+                  appStyle.primaryColor,
+                  appStyle.textColor,
+                  appStyle.cardBackgroundColor)),
             ],
           ),
         ),
@@ -70,7 +70,8 @@ class VirtualConsultantPage extends StatelessWidget {
     );
   }
 
-  Widget _buildVirtualAdvisorSection(Color primaryColor, Color textColor, Color cardBackgroundColor) {
+  Widget _buildVirtualAdvisorSection(
+      Color primaryColor, Color textColor, Color cardBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -88,7 +89,8 @@ class VirtualConsultantPage extends StatelessWidget {
           SizedBox(height: 20),
           Text(
             '虚拟咨询师',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: primaryColor),
+            style: TextStyle(
+                fontSize: 28, fontWeight: FontWeight.bold, color: primaryColor),
           ),
           SizedBox(height: 10),
           Text(
@@ -107,7 +109,8 @@ class VirtualConsultantPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMindAdvisorSection(Color primaryColor, Color textColor, Color cardBackgroundColor) {
+  Widget _buildMindAdvisorSection(
+      Color primaryColor, Color textColor, Color cardBackgroundColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -125,7 +128,8 @@ class VirtualConsultantPage extends StatelessWidget {
           SizedBox(height: 20),
           Text(
             '心灵顾问',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: primaryColor),
+            style: TextStyle(
+                fontSize: 28, fontWeight: FontWeight.bold, color: primaryColor),
           ),
           SizedBox(height: 10),
           Text(

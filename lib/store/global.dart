@@ -1,10 +1,6 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../utils/http.dart';
 
 class GlobalState with ChangeNotifier {
@@ -20,11 +16,16 @@ class GlobalState with ChangeNotifier {
   }
 
   bool _login = false;
-  Object _user = {};
+  Map<String, dynamic> _user = {}; // 确保 _user 不会是 null
 
   bool get login => _login;
 
-  Object get user => _user;
+  Map<String, dynamic> get user {
+    if (_user.isEmpty) {
+      getUserInfo();
+    }
+    return _user;
+  }
 
   // 从缓存中加载登录状态
   Future<void> _loadLoginStatus() async {
@@ -33,27 +34,25 @@ class GlobalState with ChangeNotifier {
     notifyListeners(); // 加载完成后通知监听者
   }
 
-  Future<void> setUser(Object value) async {
+  // 保存用户信息并存储到缓存
+  Future<void> setUser(Map<String, dynamic> value) async {
     _user = value;
     notifyListeners();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // 将对象转换为 JSON 字符串存储
     String userJson = jsonEncode(_user);
     prefs.setString('user', userJson);
   }
 
+  // 从缓存中加载用户信息
   Future<void> _loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // 从 SharedPreferences 中读取 JSON 字符串
     String? userJson = prefs.getString('user');
 
     if (userJson != null) {
-      _user = jsonDecode(userJson); // 将 JSON 字符串转换为对象
+      _user = jsonDecode(userJson);
     } else {
-      getUserInfo(); // 如果没有存储的用户数据，设置为空对象
+      _user = {}; // 确保 _user 初始化为一个空 Map 而不是 null
     }
 
     notifyListeners(); // 通知监听者数据已加载
@@ -61,15 +60,17 @@ class GlobalState with ChangeNotifier {
 
   // 设置登录状态并保存到缓存
   Future<void> setLogin(bool value) async {
-    if (value) {
-      getUserInfo();
-    } else {
-      setUser({});
-    }
     _login = value;
+
+    if (!value) {
+      setUser({}); // 清空用户信息
+    } else {
+      await getUserInfo(); // 获取用户信息
+    }
+
     notifyListeners();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('login', _login); // 将登录状态保存到缓存
+    prefs.setBool('login', _login);
   }
 
   // 通过API获取用户信息

@@ -135,11 +135,11 @@ class VoiceChatScreenState extends State<VoiceChatScreen> {
           ),
           FloatingActionButton(
             onPressed: _listen,
+            backgroundColor: _isListening ? Colors.red : Colors.blue,
             child: Icon(
               _isListening ? Icons.mic : Icons.mic_none,
               color: Colors.white,
             ),
-            backgroundColor: _isListening ? Colors.red : Colors.blue,
           ),
         ],
       ),

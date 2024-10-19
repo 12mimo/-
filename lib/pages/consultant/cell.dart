@@ -1,210 +1,147 @@
-import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:flutter_tts/flutter_tts.dart';
 
-import '../../styles/color.dart';
+class CounselorCallPage extends StatelessWidget {
+  const CounselorCallPage({super.key});
 
-class CounselorCallPage extends StatefulWidget {
   @override
-  _CounselorCallPageState createState() => _CounselorCallPageState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: VoiceChatScreen(),
+    );
+  }
 }
 
-class _CounselorCallPageState extends State<CounselorCallPage> {
-  Duration _callDuration = Duration();
-  Timer? _timer; // 将 Timer 声明为可空类型
+class VoiceChatScreen extends StatefulWidget {
+  const VoiceChatScreen({super.key});
+
+  @override
+  VoiceChatScreenState createState() => VoiceChatScreenState();
+}
+
+class VoiceChatScreenState extends State<VoiceChatScreen> {
+  late stt.SpeechToText _speech; // 语音识别实例
+  bool _isListening = false; // 是否在监听语音
+  String _text = ''; // 识别的文本
+  final List<Map<String, String>> _messages = []; // 聊天记录
+  late FlutterTts _flutterTts; // TTS实例
 
   @override
   void initState() {
     super.initState();
-    _startCallTimer();
+    _speech = stt.SpeechToText();
+    _flutterTts = FlutterTts();
   }
 
-  void _startCallTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        _callDuration = Duration(seconds: _callDuration.inSeconds + 1);
-      });
+  // 开始监听语音
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(onStatus: _onSpeechStatus);
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+            onResult: (val) => setState(() {
+                  _text = val.recognizedWords;
+                }));
+      }
+    }
+  }
+
+  // 监听语音状态，当结束时自动处理
+  void _onSpeechStatus(String status) {
+    if (status == 'done') {
+      setState(() => _isListening = false);
+      if (_text.isNotEmpty) {
+        _sendMessage(_text); // 将语音识别到的文本发送
+      }
+    }
+  }
+
+  // 发送消息并生成 AI 回复
+  void _sendMessage(String message) {
+    setState(() {
+      _messages.add({'sender': 'user', 'message': message});
+      String aiResponse = '这是 AI 的回复: $message'; // 模拟 AI 回复
+      _messages.add({'sender': 'ai', 'message': aiResponse});
+      _speak(aiResponse); // 使用 TTS 语音播放 AI 回复
     });
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel(); // 使用空安全操作符
-    super.dispose();
-  }
-
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    return "${twoDigits(duration.inHours)}:"
-        "${twoDigits(duration.inMinutes.remainder(60))}:"
-        "${twoDigits(duration.inSeconds.remainder(60))}";
+  // 播放 AI 的语音回复
+  void _speak(String text) async {
+    await _flutterTts.speak(text);
   }
 
   @override
   Widget build(BuildContext context) {
-    final appStyle = AppStyle(context);
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context); // 返回上一页
-          },
-          child: Icon(
-            CupertinoIcons.back,
-            color: appStyle.primaryColor,
-          ),
-        ),
-        backgroundColor: appStyle.backgroundColor,
-        border: null,
-        middle: Text(
-          '心理咨询通话',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: CupertinoColors.white,
-          ),
-        ),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('语音对话页面'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // 挂断通话的功能
+            Navigator.of(context).pop(); // 返回上一页
           },
-          child: Icon(
-            CupertinoIcons.phone_down_fill,
-            color: CupertinoColors.systemRed,
-          ),
         ),
       ),
-      child: SafeArea(
-        child: Stack(
-          children: [
-            // 背景
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    appStyle.backgroundColor,
-                    appStyle.cardBackgroundColor,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                return _buildMessage(_messages[index]);
+              },
             ),
-            // 内容
-            Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 60,
-                          // backgroundImage: NetworkImage(
-                          //     'https://example.com/counselor-avatar.jpg'),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          '正在与张医生通话中...',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: CupertinoColors.white,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          _formatDuration(_callDuration),
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: CupertinoColors.white.withOpacity(0.8),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Icon(
-                          CupertinoIcons.waveform,
-                          size: 100,
-                          color: CupertinoColors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                _buildSafetyTip(),
-              ],
-            ),
-            // 底部悬浮操作按钮
-            Positioned(
-              bottom: 30,
-              left: 20,
-              right: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildFloatingActionButton(
-                    CupertinoIcons.mic_off,
-                    '静音',
-                    CupertinoColors.white,
-                  ),
-                  _buildFloatingActionButton(
-                    CupertinoIcons.speaker_2_fill,
-                    '扬声器',
-                    CupertinoColors.white,
-                  ),
-                  _buildFloatingActionButton(
-                    CupertinoIcons.question_circle_fill,
-                    '帮助',
-                    CupertinoColors.white,
-                  ),
-                  _buildFloatingActionButton(
-                    CupertinoIcons.pencil_outline,
-                    '记录',
-                    CupertinoColors.white,
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
+          _buildVoiceInputArea(), // 优化的语音输入区域
+        ],
+      ),
+    );
+  }
+
+  // 构建消息显示，增加美观的 UI 设计
+  Widget _buildMessage(Map<String, String> message) {
+    bool isUser = message['sender'] == 'user';
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        color: isUser ? Colors.blue[100] : Colors.green[100],
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Text(
+            message['message']!,
+            style: TextStyle(fontSize: 16),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildFloatingActionButton(
-      IconData icon, String label, Color iconColor,
-      {Color backgroundColor = Colors.white24}) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            shape: BoxShape.circle,
-          ),
-          child: CupertinoButton(
-            onPressed: () {
-              // 功能实现
-            },
-            padding: EdgeInsets.all(15),
-            child: Icon(icon, color: iconColor, size: 30),
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(fontSize: 14, color: CupertinoColors.white),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSafetyTip() {
+  // 构建优化后的语音输入区域
+  Widget _buildVoiceInputArea() {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Text(
-        '提示：您的隐私受到保护，通话内容不会被记录。',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 14, color: CupertinoColors.white.withOpacity(0.8)),
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              _isListening ? '正在听，请讲话...' : '点击麦克风开始',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: _listen,
+            child: Icon(
+              _isListening ? Icons.mic : Icons.mic_none,
+              color: Colors.white,
+            ),
+            backgroundColor: _isListening ? Colors.red : Colors.blue,
+          ),
+        ],
       ),
     );
   }

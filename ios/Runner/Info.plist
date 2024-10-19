@@ -3,6 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>NSAllowsArbitraryLoads</key>
+    <true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

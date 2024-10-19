@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xlfz/styles/color.dart';
 
-import '../../styles/index.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../store/global.dart';
 import '../../styles/color.dart';
-import '../../styles/index.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});

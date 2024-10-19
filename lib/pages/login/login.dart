@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:xlfz/pages/login/register.dart';
 import 'package:xlfz/store/global.dart';
 
-import '../../styles/index.dart';
+import '../../styles/color.dart';
 import '../../utils/cache.dart';
 import '../../utils/http.dart';
 import '../../utils/sys.dart';
@@ -66,38 +66,27 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor =
-        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor = isDarkMode
-        ? AppColors.darkBackgroundColor
-        : AppColors.lightBackgroundColor;
-    final textColor =
-        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode
-        ? AppColors.darkCardBackgroundColor
-        : AppColors.lightCardBackgroundColor;
+    final appStyle = AppStyle(context);
 
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
           onTap: () => goBack(context),
           child: Icon(
             CupertinoIcons.back,
-            color: primaryColor,
+            color: appStyle.primaryColor,
           ),
         ),
         middle: Text(
           '登录',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
       ),
       child: SafeArea(
         child: Padding(
@@ -106,11 +95,11 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildTextField(_usernameController, '用户名', false, textColor,
-                  cardBackgroundColor),
+              _buildTextField(_usernameController, '用户名', false,
+                  appStyle.textColor, appStyle.cardBackgroundColor),
               const SizedBox(height: 20),
-              _buildTextField(_passwordController, '密码', true, textColor,
-                  cardBackgroundColor),
+              _buildTextField(_passwordController, '密码', true,
+                  appStyle.textColor, appStyle.cardBackgroundColor),
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
@@ -123,22 +112,23 @@ class LoginPageState extends State<LoginPage> {
                     '忘记密码？',
                     style: TextStyle(
                       fontSize: 14,
-                      color: primaryColor,
+                      color: appStyle.primaryColor,
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 40),
-              _buildButton('登录', primaryColor, textColor, _login),
+              _buildButton(
+                  '登录', appStyle.primaryColor, appStyle.textColor, _login),
               const SizedBox(height: 20),
-              _buildButton('注册', primaryColor, textColor, () {
+              _buildButton('注册', appStyle.primaryColor, appStyle.textColor, () {
                 Navigator.of(context).pushReplacement(
                     CupertinoPageRoute(builder: (context) => RegisterPage()));
               }),
               const SizedBox(height: 20),
-              _buildSocialLoginButtons(primaryColor),
+              _buildSocialLoginButtons(appStyle.primaryColor),
               const SizedBox(height: 20),
-              _buildPrivacyAgreement(textColor, primaryColor),
+              _buildPrivacyAgreement(appStyle.textColor, appStyle.primaryColor),
             ],
           ),
         ),

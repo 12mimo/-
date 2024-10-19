@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../styles/index.dart';
+import '../../styles/color.dart';
 import 'login.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -9,15 +9,9 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor = isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor =
-    isDarkMode ? AppColors.darkBackgroundColor : AppColors.lightBackgroundColor;
-    final textColor = isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode ? AppColors.darkCardBackgroundColor : AppColors.lightCardBackgroundColor;
+    final appStyle = AppStyle(context);
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
           onTap: () {
@@ -25,18 +19,18 @@ class RegisterPage extends StatelessWidget {
           },
           child: Icon(
             CupertinoIcons.back,
-            color: primaryColor, // 设置返回按钮的颜色
+            color: appStyle.primaryColor, // 设置返回按钮的颜色
           ),
         ),
         middle: Text(
           '注册',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
       ),
       child: SafeArea(
         child: Padding(
@@ -48,9 +42,9 @@ class RegisterPage extends StatelessWidget {
               CupertinoTextField(
                 placeholder: '用户名',
                 padding: const EdgeInsets.all(16.0),
-                style: TextStyle(color: textColor),
+                style: TextStyle(color: appStyle.textColor),
                 decoration: BoxDecoration(
-                  color: cardBackgroundColor,
+                  color: appStyle.cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
@@ -58,9 +52,9 @@ class RegisterPage extends StatelessWidget {
               CupertinoTextField(
                 placeholder: '邮箱',
                 padding: const EdgeInsets.all(16.0),
-                style: TextStyle(color: textColor),
+                style: TextStyle(color: appStyle.textColor),
                 decoration: BoxDecoration(
-                  color: cardBackgroundColor,
+                  color: appStyle.cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
@@ -69,15 +63,15 @@ class RegisterPage extends StatelessWidget {
                 placeholder: '密码',
                 padding: const EdgeInsets.all(16.0),
                 obscureText: true,
-                style: TextStyle(color: textColor),
+                style: TextStyle(color: appStyle.textColor),
                 decoration: BoxDecoration(
-                  color: cardBackgroundColor,
+                  color: appStyle.cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
               const SizedBox(height: 40),
               CupertinoButton(
-                color: primaryColor,
+                color: appStyle.primaryColor,
                 borderRadius: BorderRadius.circular(15.0),
                 onPressed: () {
                   // 注册按钮点击事件处理
@@ -96,11 +90,12 @@ class RegisterPage extends StatelessWidget {
                   '已有账号？登录',
                   style: TextStyle(
                     fontSize: 16,
-                    color: primaryColor,
+                    color: appStyle.primaryColor,
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => LoginPage()));
+                  Navigator.of(context).pushReplacement(
+                      CupertinoPageRoute(builder: (context) => LoginPage()));
                 },
               ),
               const SizedBox(height: 20),
@@ -111,7 +106,7 @@ class RegisterPage extends StatelessWidget {
                     '注册即表示同意',
                     style: TextStyle(
                       fontSize: 12,
-                      color: textColor,
+                      color: appStyle.textColor,
                     ),
                   ),
                   CupertinoButton(
@@ -123,7 +118,7 @@ class RegisterPage extends StatelessWidget {
                       '隐私协议',
                       style: TextStyle(
                         fontSize: 12,
-                        color: primaryColor,
+                        color: appStyle.primaryColor,
                       ),
                     ),
                   ),

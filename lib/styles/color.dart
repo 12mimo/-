@@ -30,4 +30,7 @@ class AppStyle {
 
   Color get contentColor =>
       isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
+
+  Color get dividerColor =>
+      isDarkMode ? AppColors.darkDividerColor : AppColors.lightDividerColor;
 }

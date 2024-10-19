@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../styles/index.dart';
+import '../../styles/color.dart';
 import 'login.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -16,21 +16,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor =
-        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor = isDarkMode
-        ? AppColors.darkBackgroundColor
-        : AppColors.lightBackgroundColor;
-    final textColor =
-        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode
-        ? AppColors.darkCardBackgroundColor
-        : AppColors.lightCardBackgroundColor;
+    final appStyle = AppStyle(context);
 
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
           onTap: () {
@@ -38,18 +27,18 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
           },
           child: Icon(
             CupertinoIcons.back,
-            color: primaryColor,
+            color: appStyle.primaryColor,
           ),
         ),
         middle: Text(
           '忘记密码',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
       ),
       child: SafeArea(
         child: Padding(
@@ -68,16 +57,16 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         child: Text('手机号找回',
                             style: TextStyle(
                                 color: isPhoneSelected
-                                    ? Colors.white
-                                    : primaryColor)),
+                                    ? appStyle.textColor
+                                    : appStyle.primaryColor)),
                       ),
                       false: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: Text('邮箱找回',
                             style: TextStyle(
                                 color: !isPhoneSelected
-                                    ? Colors.white
-                                    : primaryColor)),
+                                    ? appStyle.textColor
+                                    : appStyle.primaryColor)),
                       ),
                     },
                     groupValue: isPhoneSelected,
@@ -86,9 +75,9 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         isPhoneSelected = value;
                       });
                     },
-                    selectedColor: primaryColor,
-                    borderColor: primaryColor,
-                    unselectedColor: backgroundColor,
+                    selectedColor: appStyle.primaryColor,
+                    borderColor: appStyle.primaryColor,
+                    unselectedColor: appStyle.backgroundColor,
                   ),
                 ],
               ),
@@ -96,18 +85,18 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
               CupertinoTextField(
                 placeholder: isPhoneSelected ? '请输入您的手机号' : '请输入您的邮箱',
                 padding: const EdgeInsets.all(16.0),
-                style: TextStyle(color: textColor),
+                style: TextStyle(color: appStyle.textColor),
                 keyboardType: isPhoneSelected
                     ? TextInputType.phone
                     : TextInputType.emailAddress,
                 decoration: BoxDecoration(
-                  color: cardBackgroundColor,
+                  color: appStyle.cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
               const SizedBox(height: 20),
               CupertinoButton(
-                color: primaryColor,
+                color: appStyle.primaryColor,
                 borderRadius: BorderRadius.circular(15.0),
                 onPressed: () {
                   // Navigate to the next step after sending verification code or reset link
@@ -137,7 +126,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     '返回登录',
                     style: TextStyle(
                       fontSize: 16,
-                      color: primaryColor,
+                      color: appStyle.primaryColor,
                     ),
                   ),
                 ),
@@ -157,20 +146,9 @@ class VerificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final primaryColor =
-        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    final backgroundColor = isDarkMode
-        ? AppColors.darkBackgroundColor
-        : AppColors.lightBackgroundColor;
-    final textColor =
-        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    final cardBackgroundColor = isDarkMode
-        ? AppColors.darkCardBackgroundColor
-        : AppColors.lightCardBackgroundColor;
+    final appStyle = AppStyle(context);
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
           onTap: () {
@@ -178,18 +156,18 @@ class VerificationPage extends StatelessWidget {
           },
           child: Icon(
             CupertinoIcons.back,
-            color: primaryColor,
+            color: appStyle.primaryColor,
           ),
         ),
         middle: Text(
           isPhoneSelected ? '输入验证码' : '验证邮箱',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
         ),
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
       ),
       child: SafeArea(
         child: Padding(
@@ -201,16 +179,16 @@ class VerificationPage extends StatelessWidget {
               CupertinoTextField(
                 placeholder: isPhoneSelected ? '请输入收到的验证码' : '请输入您的邮箱中的验证码',
                 padding: const EdgeInsets.all(16.0),
-                style: TextStyle(color: textColor),
+                style: TextStyle(color: appStyle.textColor),
                 keyboardType: TextInputType.number,
                 decoration: BoxDecoration(
-                  color: cardBackgroundColor,
+                  color: appStyle.cardBackgroundColor,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
               const SizedBox(height: 20),
               CupertinoButton(
-                color: primaryColor,
+                color: appStyle.primaryColor,
                 borderRadius: BorderRadius.circular(15.0),
                 onPressed: () {
                   // Handle verification logic here

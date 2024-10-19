@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../styles/color.dart';
-import '../../styles/index.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({super.key});

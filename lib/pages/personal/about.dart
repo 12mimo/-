@@ -1,42 +1,29 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../styles/index.dart';
+import '../../styles/color.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    var primaryColor =
-        isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
-    var backgroundColor = isDarkMode
-        ? AppColors.darkBackgroundColor
-        : AppColors.lightBackgroundColor;
-    var textColor =
-        isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
-    var contentColor =
-        isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
-    var cardBackgroundColor = isDarkMode
-        ? AppColors.darkCardBackgroundColor
-        : AppColors.lightCardBackgroundColor;
+    final appStyle = AppStyle(context);
 
     return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: appStyle.backgroundColor,
         leading: GestureDetector(
           onTap: () => Navigator.of(context).pop(),
           child: Icon(
             CupertinoIcons.back,
-            color: primaryColor,
+            color: appStyle.primaryColor,
           ),
         ),
         middle: Text(
           '关于我们',
           style: TextStyle(
-            color: primaryColor,
+            color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -48,10 +35,10 @@ class AboutUsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildCompanyInfoSection(
-                  primaryColor, textColor, cardBackgroundColor),
+              _buildCompanyInfoSection(appStyle.primaryColor,
+                  appStyle.textColor, appStyle.cardBackgroundColor),
               const SizedBox(height: 20),
-              _buildFooterSection(contentColor),
+              _buildFooterSection(appStyle.contentColor),
             ],
           ),
         ),

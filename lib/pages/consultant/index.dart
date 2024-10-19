@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:xlfz/pages/consultant/test.dart';
 
 import '../../styles/color.dart';
-import '../../styles/index.dart';
+import 'chat.dart';
 
 class VirtualConsultantPage extends StatelessWidget {
   const VirtualConsultantPage({super.key});
@@ -30,18 +31,24 @@ class VirtualConsultantPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFullWidthSection(_buildWelcomeSection(
-                  appStyle.cardBackgroundColor, appStyle.contentColor)),
+              _buildFullWidthSection(_buildWelcomeSection(appStyle.primaryColor,
+                  appStyle.textColor, appStyle.cardBackgroundColor, context)),
+              SizedBox(height: 15),
+              Divider(color: appStyle.dividerColor ?? Colors.grey),
               SizedBox(height: 15),
               _buildFullWidthSection(_buildVirtualAdvisorSection(
                   appStyle.primaryColor,
                   appStyle.textColor,
-                  appStyle.cardBackgroundColor)),
+                  appStyle.cardBackgroundColor,
+                  context)),
+              SizedBox(height: 15),
+              Divider(color: appStyle.dividerColor ?? Colors.grey),
               SizedBox(height: 15),
               _buildFullWidthSection(_buildMindAdvisorSection(
                   appStyle.primaryColor,
                   appStyle.textColor,
-                  appStyle.cardBackgroundColor)),
+                  appStyle.cardBackgroundColor,
+                  context)),
             ],
           ),
         ),
@@ -56,22 +63,58 @@ class VirtualConsultantPage extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeSection(Color cardBackgroundColor, Color contentColor) {
+  Widget _buildWelcomeSection(Color primaryColor, Color textColor,
+      Color cardBackgroundColor, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: cardBackgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(
-        '欢迎来到心灵顾问，这里可以帮助您进行心理状态的评估和调节。请根据以下提示开始您的心理健康之旅。',
-        style: TextStyle(fontSize: 18, color: contentColor),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.favorite,
+            size: 60,
+            color: primaryColor,
+          ),
+          SizedBox(height: 20),
+          Text(
+            '欢迎来到心灵顾问',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: primaryColor,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            '这里可以帮助您进行心理状态的评估和调节。请根据以下提示开始您的心理健康之旅。',
+            style: TextStyle(fontSize: 18, color: textColor),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          CupertinoButton(
+            color: primaryColor,
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => PlaceholderPage(),
+                ),
+              );
+            },
+            child:
+                const Text('开始心理健康之旅', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildVirtualAdvisorSection(
-      Color primaryColor, Color textColor, Color cardBackgroundColor) {
+  Widget _buildVirtualAdvisorSection(Color primaryColor, Color textColor,
+      Color cardBackgroundColor, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -101,7 +144,14 @@ class VirtualConsultantPage extends StatelessWidget {
           SizedBox(height: 20),
           CupertinoButton(
             color: primaryColor,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const ChatPage(),
+                ),
+              );
+            },
             child: const Text('开始对话', style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -109,8 +159,8 @@ class VirtualConsultantPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMindAdvisorSection(
-      Color primaryColor, Color textColor, Color cardBackgroundColor) {
+  Widget _buildMindAdvisorSection(Color primaryColor, Color textColor,
+      Color cardBackgroundColor, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -140,7 +190,9 @@ class VirtualConsultantPage extends StatelessWidget {
           SizedBox(height: 20),
           CupertinoButton(
             color: primaryColor,
-            onPressed: () {},
+            onPressed: () {
+              // 在此添加导航逻辑，例如跳转到建议页面
+            },
             child: const Text('获取建议', style: TextStyle(color: Colors.white)),
           ),
         ],

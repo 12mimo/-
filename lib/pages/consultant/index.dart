@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:xlfz/pages/consultant/test.dart';
 
 import '../../styles/color.dart';
@@ -146,13 +147,18 @@ class VirtualConsultantPage extends StatelessWidget {
           SizedBox(height: 20),
           CupertinoButton(
             color: primaryColor,
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => SpeechRecognitionPage(),
-                ),
-              );
+            onPressed: () async {
+              var status = await Permission.microphone.request();
+              if (status.isGranted) {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => SpeechRecognitionPage(),
+                  ),
+                );
+              } else {
+                openAppSettings();
+              }
             },
             child: const Text('开始语音对话', style: TextStyle(color: Colors.white)),
           ),

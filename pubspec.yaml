@@ -27,6 +27,7 @@ dependencies:
   speech_to_text: ^7.0.0
   flutter_tts: ^4.0.2
   permission_handler: ^11.1.0+2
+  table_calendar: ^3.0.0
 
 
 dev_dependencies:

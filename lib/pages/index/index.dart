@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xlfz/styles/color.dart';
 
+import 'gratitude_diar.dart';
+import 'knowledge.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -46,6 +49,13 @@ class HomePageState extends State<HomePage> {
                       titleColor: appStyle.primaryColor,
                       contentColor: appStyle.textColor,
                       icon: Icons.self_improvement,
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   CupertinoPageRoute(
+                        //       builder: (context) => DailyTipsPage()),
+                        // );
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildCard(
@@ -56,6 +66,14 @@ class HomePageState extends State<HomePage> {
                       titleColor: appStyle.primaryColor,
                       contentColor: appStyle.textColor,
                       icon: Icons.favorite,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  RecommendedActivitiesPage()),
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildCard(
@@ -65,6 +83,14 @@ class HomePageState extends State<HomePage> {
                       titleColor: appStyle.primaryColor,
                       contentColor: appStyle.textColor,
                       icon: Icons.psychology,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  MentalHealthKnowledgePage()),
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
                     _buildCard(
@@ -74,6 +100,13 @@ class HomePageState extends State<HomePage> {
                       titleColor: appStyle.primaryColor,
                       contentColor: appStyle.textColor,
                       icon: Icons.book,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => GratitudeJournalPage()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -146,43 +179,47 @@ class HomePageState extends State<HomePage> {
     required Color titleColor,
     required Color contentColor,
     required IconData icon,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: _buildBoxDecoration(backgroundColor),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: titleColor,
-            size: 40,
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: titleColor,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  content,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: contentColor,
-                    height: 1.5,
-                  ),
-                ),
-              ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: _buildBoxDecoration(backgroundColor),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: titleColor,
+              size: 40,
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: titleColor,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: contentColor,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -198,6 +235,31 @@ class HomePageState extends State<HomePage> {
           offset: const Offset(0, 6),
         ),
       ],
+    );
+  }
+}
+
+// 示例页面的占位类（需要分别实现）
+class DailyTipsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('今日心理提示'),
+      ),
+      child: Center(child: Text('今日心理提示内容')),
+    );
+  }
+}
+
+class RecommendedActivitiesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('推荐活动'),
+      ),
+      child: Center(child: Text('推荐活动内容')),
     );
   }
 }

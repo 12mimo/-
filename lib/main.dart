@@ -7,6 +7,7 @@ import 'package:xlfz/store/global.dart';
 import 'package:xlfz/utils/sys.dart';
 
 void main() {
+  RequestMultiplePermissions().requestMultiplePermissions();
   runApp(
     MultiProvider(
       providers: [

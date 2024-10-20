@@ -2,20 +2,26 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>PermissionGroupNotification</key>
-    <string>Notification</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>需要使用麦克风进行语音输入。</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>需要访问相册以选择图片。</string>
     <key>NSCameraUsageDescription</key>
-    <string>需要使用相机拍摄照片。</string>
+    <string>App需要访问您的相机以拍摄照片或视频。</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>App需要访问您的麦克风以录制音频。</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>App需要访问您的照片库以选择和上传照片。</string>
+    <key>NSUserNotificationUsageDescription</key>
+    <string>App需要向您发送推送通知以提醒您重要信息。</string>
     <key>NSMotionUsageDescription</key>
-    <string>运动与健身</string>
-    <key>NSHealthUpdateUsageDescription</key>
-    <string>健康更新</string>
-    <key>NSHealthShareUsageDescription</key>
-    <string>健康分享</string>
+    <string>App需要访问您的活动数据以识别您的运动状态。</string>
+    <key>NSCriticalAlertsUsageDescription</key>
+    <string>App需要发送紧急通知，即使您的设备处于静音模式下。</string>
+    <key>NSSiriUsageDescription</key>
+    <string>App需要访问Siri以进行语音控制和交互。</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

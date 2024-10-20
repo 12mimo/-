@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../main.dart';
 
@@ -29,5 +30,23 @@ class NetworkUtil {
     } else {
       return 'No Network';
     }
+  }
+}
+
+class RequestMultiplePermissions {
+  Future<bool> requestMultiplePermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.camera,
+      Permission.microphone,
+      Permission.photos,
+      Permission.storage,
+      Permission.notification,
+      Permission.activityRecognition,
+      Permission.criticalAlerts,
+      Permission.assistant,
+      Permission.backgroundRefresh,
+    ].request();
+    return statuses.values
+        .every((status) => status == PermissionStatus.granted);
   }
 }

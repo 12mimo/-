@@ -4,6 +4,7 @@ import 'package:xlfz/pages/consultant/test.dart';
 
 import '../../styles/color.dart';
 import 'cell.dart';
+import 'cell_1.dart';
 import 'chat.dart';
 
 class VirtualConsultantPage extends StatelessWidget {
@@ -149,7 +150,7 @@ class VirtualConsultantPage extends StatelessWidget {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => CounselorCallPage(),
+                  builder: (context) => SpeechRecognitionPage(),
                 ),
               );
             },

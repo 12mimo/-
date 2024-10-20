@@ -156,6 +156,25 @@ class VirtualConsultantPage extends StatelessWidget {
                     builder: (context) => SpeechRecognitionPage(),
                   ),
                 );
+              } else if (status.isDenied) {
+                // 如果权限被拒绝，尝试再次请求权限
+                var result = await Permission.microphone.request();
+                if (result.isGranted) {
+                  // 如果用户在第二次请求时授予权限，跳转页面
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => SpeechRecognitionPage(),
+                    ),
+                  );
+                } else if (result.isDenied) {
+                  // 如果再次拒绝，可以提示用户
+                  print('麦克风权限被拒绝');
+                } else if (result.isPermanentlyDenied) {
+                  // 如果权限被永久拒绝，跳转到设置页面
+                  print('麦克风权限被永久拒绝，请到设置中手动开启权限');
+                  openAppSettings();
+                }
               } else {
                 openAppSettings();
               }

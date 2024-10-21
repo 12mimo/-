@@ -4,6 +4,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import '../../styles/color.dart';
+import '../../utils/sys.dart';
+
 class GratitudeJournalPage extends StatefulWidget {
   @override
   _GratitudeJournalPageState createState() => _GratitudeJournalPageState();
@@ -25,13 +28,25 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
   Widget build(BuildContext context) {
     int totalEntries = _diaryEntries.length;
     int consecutiveDays = _calculateConsecutiveDays();
-
+    final appStyle = AppStyle(context);
     return CupertinoPageScaffold(
+      backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
-        middle: Text('感恩日记'),
+        leading: GestureDetector(
+          onTap: () => goBack(context),
+          child: Icon(
+            CupertinoIcons.back,
+            color: appStyle.primaryColor,
+          ),
+        ),
+        middle: Text('感恩日记', style: TextStyle(
+          color: appStyle.primaryColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(CupertinoIcons.search),
+          child: Icon(CupertinoIcons.search,color: appStyle.primaryColor,),
           onPressed: () {
             // 跳转到搜索页面
             Navigator.push(
@@ -48,8 +63,8 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              CupertinoColors.systemBlue,
-              CupertinoColors.systemPurple,
+              appStyle.backgroundColor,
+              appStyle.primaryColor,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -72,12 +87,13 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
   }
 
   Widget _buildHeader(int totalEntries, int consecutiveDays) {
+    final appStyle = AppStyle(context);
     return Column(
       children: [
         Text(
           '欢迎回来！',
           style: TextStyle(
-            color: CupertinoColors.white,
+            color: appStyle.primaryColor,
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
@@ -86,7 +102,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
         Text(
           '总日记数：$totalEntries  连续天数：$consecutiveDays',
           style: TextStyle(
-            color: CupertinoColors.white,
+            color: appStyle.primaryColor,
             fontSize: 16,
           ),
         ),
@@ -95,7 +111,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
           _getDailyQuote(),
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: CupertinoColors.white,
+            color: appStyle.primaryColor,
             fontSize: 14,
             fontStyle: FontStyle.italic,
           ),
@@ -105,6 +121,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
   }
 
   Widget _buildCalendar() {
+    final appStyle = AppStyle(context);
     return Material(
       color: Colors.transparent,
       child: TableCalendar(
@@ -126,27 +143,27 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
           titleCentered: true,
           leftChevronIcon: Icon(
             CupertinoIcons.chevron_left,
-            color: CupertinoColors.white,
+            color: appStyle.primaryColor,
           ),
           rightChevronIcon: Icon(
             CupertinoIcons.chevron_right,
-            color: CupertinoColors.white,
+            color: appStyle.primaryColor,
           ),
           titleTextStyle: TextStyle(
-            color: CupertinoColors.white,
+            color: appStyle.primaryColor,
             fontSize: 18,
           ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: CupertinoColors.white),
-          weekendStyle: TextStyle(color: CupertinoColors.systemRed),
+          weekdayStyle: TextStyle(color: appStyle.primaryColor),
+          weekendStyle: TextStyle(color: appStyle.primaryColor),
         ),
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
-          defaultTextStyle: TextStyle(color: CupertinoColors.white),
-          weekendTextStyle: TextStyle(color: CupertinoColors.systemRed),
+          defaultTextStyle: TextStyle(color: appStyle.primaryColor),
+          weekendTextStyle: TextStyle(color: appStyle.primaryColor),
           todayDecoration: BoxDecoration(
-            color: CupertinoColors.systemYellow,
+            color: appStyle.primaryColor,
             shape: BoxShape.circle,
           ),
           selectedDecoration: BoxDecoration(

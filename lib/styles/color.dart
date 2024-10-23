@@ -11,26 +11,27 @@ class AppStyle {
     return brightness == Brightness.dark;
   }
 
+  Color _getColor(Color darkColor, Color lightColor) =>
+      isDarkMode ? darkColor : lightColor;
+
   Color get primaryColor =>
-      isDarkMode ? AppColors.darkPrimaryColor : AppColors.lightPrimaryColor;
+      _getColor(AppColors.darkPrimaryColor, AppColors.lightPrimaryColor);
 
-  Color get backgroundColor => isDarkMode
-      ? AppColors.darkBackgroundColor
-      : AppColors.lightBackgroundColor;
+  Color get backgroundColor =>
+      _getColor(AppColors.darkBackgroundColor, AppColors.lightBackgroundColor);
 
-  Color get cardBackgroundColor => isDarkMode
-      ? AppColors.darkCardBackgroundColor
-      : AppColors.lightCardBackgroundColor;
+  Color get cardBackgroundColor => _getColor(
+      AppColors.darkCardBackgroundColor, AppColors.lightCardBackgroundColor);
 
   Color get accentColor =>
-      isDarkMode ? AppColors.darkAccentColor : AppColors.lightAccentColor;
+      _getColor(AppColors.darkAccentColor, AppColors.lightAccentColor);
 
   Color get textColor =>
-      isDarkMode ? AppColors.darkTextColor : AppColors.lightTextColor;
+      _getColor(AppColors.darkTextColor, AppColors.lightTextColor);
 
   Color get contentColor =>
-      isDarkMode ? AppColors.darkContentColor : AppColors.lightContentColor;
+      _getColor(AppColors.darkContentColor, AppColors.lightContentColor);
 
   Color get dividerColor =>
-      isDarkMode ? AppColors.darkDividerColor : AppColors.lightDividerColor;
+      _getColor(AppColors.darkDividerColor, AppColors.lightDividerColor);
 }

@@ -10,6 +10,8 @@ import '../../styles/color.dart';
 import '../../utils/sys.dart';
 
 class GratitudeJournalPage extends StatefulWidget {
+  const GratitudeJournalPage({super.key});
+
   @override
   _GratitudeJournalPageState createState() => _GratitudeJournalPageState();
 }
@@ -41,14 +43,20 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
             color: appStyle.primaryColor,
           ),
         ),
-        middle: Text('感恩日记', style: TextStyle(
-          color: appStyle.primaryColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 24,
-        ),),
+        middle: Text(
+          '感恩日记',
+          style: TextStyle(
+            color: appStyle.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(CupertinoIcons.search,color: appStyle.primaryColor,),
+          child: Icon(
+            CupertinoIcons.search,
+            color: appStyle.primaryColor,
+          ),
           onPressed: () {
             // 跳转到搜索页面
             Navigator.push(

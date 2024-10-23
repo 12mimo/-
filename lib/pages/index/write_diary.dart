@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
 import 'package:super_editor/super_editor.dart';
 import '../../styles/color.dart';
 
@@ -15,10 +14,12 @@ class WriteDiaryPage extends StatefulWidget {
 }
 
 class WriteDiaryPageState extends State<WriteDiaryPage> {
-  final _document = MutableDocument(nodes: [
-    ParagraphNode(id: "1", text: AttributedText(''), metadata: {}),
+  final MutableDocument _document = MutableDocument(nodes: [
+    ParagraphNode(id: DocumentEditor.createNodeId(), text: AttributedText('')),
   ]);
-  late DocumentComposer _documentComposer;
+
+  late DocumentEditor _editor;
+  late DocumentComposer _composer;
   final _focusNode = FocusNode();
   String _selectedWeather = '晴天';
   String _selectedMood = '开心';
@@ -26,12 +27,14 @@ class WriteDiaryPageState extends State<WriteDiaryPage> {
   @override
   void initState() {
     super.initState();
-    _documentComposer = DocumentComposer(initialDocument: _document);
+    _editor = DocumentEditor(document: _document);
+    _composer = DocumentComposer();
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
+    _composer.dispose();
     super.dispose();
   }
 
@@ -39,27 +42,29 @@ class WriteDiaryPageState extends State<WriteDiaryPage> {
   Widget build(BuildContext context) {
     final appStyle = AppStyle(context);
     String formattedDate =
-    DateFormat('yyyy年MM月dd日 EEEE', 'zh_CN').format(widget.date);
+        DateFormat('yyyy年MM月dd日 EEEE', 'zh_CN').format(widget.date);
 
-    return Scaffold(
-      backgroundColor: appStyle.backgroundColor,
-      appBar: AppBar(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: appStyle.backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: appStyle.primaryColor),
+        middle: Text(
+          '写日记 - $formattedDate',
+          style: TextStyle(color: appStyle.primaryColor),
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: appStyle.primaryColor,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('写日记 - $formattedDate',
-            style: TextStyle(color: appStyle.primaryColor)),
-        actions: [
-          TextButton(
-            onPressed: _saveDiary,
-            child: Text('保存', style: TextStyle(color: appStyle.primaryColor)),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: _saveDiary,
+          child: Text(
+            '保存',
+            style: TextStyle(color: appStyle.primaryColor),
           ),
-        ],
+        ),
       ),
-      body: _buildBody(appStyle),
+      child: _buildBody(appStyle),
     );
   }
 
@@ -69,12 +74,18 @@ class WriteDiaryPageState extends State<WriteDiaryPage> {
         _buildSelection(appStyle),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.all(16),
-            child: SuperEditor(
-              editor: DocumentEditor(document: _document),
-              composer: _documentComposer,
-              focusNode: _focusNode,
-              padding: EdgeInsets.zero,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: SingleChildScrollView(
+              child: SuperEditor(
+                editor: _editor,
+                composer: _composer,
+                focusNode: _focusNode,
+                inputSource: TextInputSource.ime,
+                gestureMode: DocumentGestureMode.iOS,
+                stylesheet: defaultStylesheet.copyWith(
+                  documentPadding: EdgeInsets.zero,
+                ),
+              ),
             ),
           ),
         ),
@@ -90,80 +101,44 @@ class WriteDiaryPageState extends State<WriteDiaryPage> {
         children: [
           Text('天气', style: TextStyle(fontSize: 16, color: appStyle.textColor)),
           SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              _weatherOption('晴天', Icons.wb_sunny),
-              _weatherOption('多云', Icons.wb_cloudy),
-              _weatherOption('雨天', Icons.beach_access),
-              _weatherOption('雪天', Icons.ac_unit),
-            ],
+          CupertinoSegmentedControl<String>(
+            children: {
+              '晴天': Text('晴天'),
+              '多云': Text('多云'),
+              '雨天': Text('雨天'),
+              '雪天': Text('雪天'),
+            },
+            groupValue: _selectedWeather,
+            onValueChanged: (value) {
+              setState(() {
+                _selectedWeather = value!;
+              });
+            },
           ),
           SizedBox(height: 16),
           Text('心情', style: TextStyle(fontSize: 16, color: appStyle.textColor)),
           SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              _moodOption('开心', Icons.sentiment_satisfied),
-              _moodOption('平静', Icons.sentiment_neutral),
-              _moodOption('难过', Icons.sentiment_dissatisfied),
-              _moodOption('生气', Icons.sentiment_very_dissatisfied),
-            ],
+          CupertinoSegmentedControl<String>(
+            children: {
+              '开心': Text('开心'),
+              '平静': Text('平静'),
+              '难过': Text('难过'),
+              '生气': Text('生气'),
+            },
+            groupValue: _selectedMood,
+            onValueChanged: (value) {
+              setState(() {
+                _selectedMood = value!;
+              });
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _weatherOption(String label, IconData icon) {
-    final appStyle = AppStyle(context);
-    bool isSelected = _selectedWeather == label;
-    return ChoiceChip(
-      label: Text(label),
-      avatar: Icon(
-        icon,
-        color: isSelected ? Colors.white : appStyle.primaryColor,
-      ),
-      selected: isSelected,
-      onSelected: (selected) {
-        setState(() {
-          _selectedWeather = label;
-        });
-      },
-      selectedColor: appStyle.primaryColor,
-      backgroundColor: appStyle.backgroundColor,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : appStyle.textColor,
-      ),
-    );
-  }
-
-  Widget _moodOption(String label, IconData icon) {
-    final appStyle = AppStyle(context);
-    bool isSelected = _selectedMood == label;
-    return ChoiceChip(
-      label: Text(label),
-      avatar: Icon(
-        icon,
-        color: isSelected ? Colors.white : appStyle.primaryColor,
-      ),
-      selected: isSelected,
-      onSelected: (selected) {
-        setState(() {
-          _selectedMood = label;
-        });
-      },
-      selectedColor: appStyle.primaryColor,
-      backgroundColor: appStyle.backgroundColor,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : appStyle.textColor,
-      ),
-    );
-  }
-
   void _saveDiary() {
-    final content = _document.toPlainText();
+    final content = _getPlainTextFromDocument(_document);
 
     if (content.trim().isEmpty) {
       showCupertinoDialog(
@@ -187,5 +162,15 @@ class WriteDiaryPageState extends State<WriteDiaryPage> {
 
     widget.onSave(diaryContent);
     Navigator.pop(context);
+  }
+
+  String _getPlainTextFromDocument(MutableDocument document) {
+    final buffer = StringBuffer();
+    for (final node in document.nodes) {
+      if (node is ParagraphNode) {
+        buffer.writeln(node.text.text);
+      }
+    }
+    return buffer.toString();
   }
 }

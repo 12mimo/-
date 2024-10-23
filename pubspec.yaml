@@ -18,7 +18,7 @@ dependencies:
   percent_indicator: ^4.2.3
   fl_chart: ^0.69.0
   flutter_launcher_icons: ^0.14.1
-  http: ^1.2.2
+  http: ^0.13.6
   shared_preferences: ^2.3.2
   fluttertoast: ^8.2.8
   connectivity_plus: ^6.1.0
@@ -28,7 +28,7 @@ dependencies:
   flutter_tts: ^4.0.2
   permission_handler: ^11.3.1
   table_calendar: ^3.1.2
-  super_editor: ^0.3.0-dev.9
+  super_editor: ^0.2.7
 
 
 

@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../main.dart';
@@ -49,4 +50,13 @@ class RequestMultiplePermissions {
     return statuses.values
         .every((status) => status == PermissionStatus.granted);
   }
+}
+String formatDateTime(dynamic dateTime) {
+  // 如果输入是字符串类型，将其转换为DateTime类型
+  if (dateTime is String) {
+    dateTime = DateTime.parse(dateTime).toLocal();
+  }
+  // 定义日期格式，例如：2024年10月23日 14:30
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+  return formatter.format(dateTime);
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../store/global.dart';
 import '../../styles/color.dart';
+import '../../utils/sys.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({super.key});
@@ -60,7 +61,17 @@ class PersonalInfoPage extends StatelessWidget {
           },
           child: CircleAvatar(
             radius: 50, // 设置头像的大小
-            backgroundImage: NetworkImage("${user['avatar']}"), // 默认头像图片
+            backgroundImage: user['avatar'] != null && user['avatar'].isNotEmpty
+                ? NetworkImage("${user['avatar']}")
+                : null, // 如果没有头像，则显示默认图标
+            backgroundColor: contentColor.withOpacity(0.3), // 如果没有头像则不使用图片
+            child: user['avatar'] == null || user['avatar'].isEmpty
+                ? Icon(
+                    CupertinoIcons.person_solid,
+                    size: 60,
+                    color: CupertinoColors.white,
+                  )
+                : null, // 为默认图标提供背景色
           ),
         ),
         const SizedBox(height: 10),
@@ -94,6 +105,12 @@ class PersonalInfoPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  static const sexList = ["保密", "男", "女"];
+
+  String _sexModel(sex) {
+    return sexList[sex];
   }
 
   Widget _buildFullWidthSection(Widget child) {
@@ -141,27 +158,32 @@ class PersonalInfoPage extends StatelessWidget {
               );
             },
             child: _buildSettingItem('昵称', CupertinoIcons.person, contentColor,
-                '${user['nickname']}'),
+                '${user['nickname'] ?? '未设置'}'),
           ),
           const Divider(height: 20, thickness: 1),
           _buildSettingItemWithLimitedEdit('性别', CupertinoIcons.person_2,
-              contentColor, '${user['sex']}', context, (newGender) {
+              contentColor, user['sex'] != null ? _sexModel(user['sex']) : '未知', context, (newGender) {
             // 在这里保存修改后的性别
-          }, isGender: true, isEditable: user['sex'] == null), // 仅允许修改一次
+          }, isGender: true, isEditable: user['sex'] == null), // 仅允许修改一次_sexModel
           const Divider(height: 20, thickness: 1),
           _buildSettingItemWithLimitedEdit('生日', CupertinoIcons.calendar,
-              contentColor, "${user['birthday']}", context, (newDate) {
+              contentColor, user['birthday'] != null ? formatDateTime(user['birthday']) : '', context, (newDate) {
             // 在这里保存修改后的生日
           }, isDate: true, isEditable: user['birthday'] == null), // 仅允许修改一次
           const Divider(height: 20, thickness: 1),
-          _buildSettingItem('星座', CupertinoIcons.star, contentColor,
-              _calculateZodiacSign(user['birthday'])),
-          const Divider(height: 20, thickness: 1),
           _buildSettingItem(
-              'MBTI', CupertinoIcons.mail, contentColor, '${user['mbti']}'),
+              '星座',
+              CupertinoIcons.star,
+              contentColor,
+              user['birthday'] != null && user['birthday'].isNotEmpty
+                  ? _calculateZodiacSign(user['birthday'])
+                  : "未知"),
+          const Divider(height: 20, thickness: 1),
+          _buildSettingItem('MBTI', CupertinoIcons.mail, contentColor,
+              '${user['mbti'] ?? ''}'),
           const Divider(height: 20, thickness: 1),
           _buildSettingItem('位置', CupertinoIcons.location, contentColor,
-              '${user['location']}'),
+              '${user['location'] ?? ''}'),
         ],
       ),
     );

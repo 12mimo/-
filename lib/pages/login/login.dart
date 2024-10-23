@@ -19,23 +19,23 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final HttpHelper _httpHelper = HttpHelper();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   void _login() async {
-    String username = _usernameController.text;
+    String phone = _phoneController.text;
     String password = _passwordController.text;
 
-    if (username.isEmpty) {
-      showSimpleToast(context, "用户名不能为空");
+    if (phone.isEmpty) {
+      showSimpleToast(context, "手机号不能为空");
       return;
     }
     if (password.isEmpty) {
@@ -47,7 +47,7 @@ class LoginPageState extends State<LoginPage> {
     var postResponse = await _httpHelper.postRequest(
       "/login",
       {
-        'username': username,
+        'phone': phone,
         'password': password,
       },
       requireAuth: false,
@@ -95,7 +95,7 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildTextField(_usernameController, '用户名', false,
+              _buildTextField(_phoneController, '手机号', false,
                   appStyle.textColor, appStyle.cardBackgroundColor),
               const SizedBox(height: 20),
               _buildTextField(_passwordController, '密码', true,

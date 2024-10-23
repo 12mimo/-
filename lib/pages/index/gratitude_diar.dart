@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:xlfz/pages/index/see_diar.dart';
+import 'package:xlfz/pages/index/write_diary.dart';
 
 import '../../styles/color.dart';
 import '../../utils/sys.dart';
@@ -15,7 +17,7 @@ class GratitudeJournalPage extends StatefulWidget {
 class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  Map<String, String> _diaryEntries = {}; // 存储日记，Key为日期的字符串格式
+  final Map<String, String> _diaryEntries = {}; // 存储日记，Key为日期的字符串格式
 
   @override
   void initState() {
@@ -64,7 +66,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
           gradient: LinearGradient(
             colors: [
               appStyle.backgroundColor,
-              appStyle.primaryColor,
+              appStyle.backgroundColor,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -127,7 +129,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
       child: TableCalendar(
         locale: 'zh_CN',
         // 设置语言为中文
-        firstDay: DateTime.utc(2000, 1, 1),
+        firstDay: DateTime.utc(1970, 1, 1),
         lastDay: DateTime.utc(2100, 12, 31),
         focusedDay: _focusedDay,
         selectedDayPredicate: (day) {
@@ -143,25 +145,25 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
           titleCentered: true,
           leftChevronIcon: Icon(
             CupertinoIcons.chevron_left,
-            color: appStyle.primaryColor,
+            color: appStyle.textColor,
           ),
           rightChevronIcon: Icon(
             CupertinoIcons.chevron_right,
-            color: appStyle.primaryColor,
+            color: appStyle.textColor,
           ),
           titleTextStyle: TextStyle(
-            color: appStyle.primaryColor,
+            color: appStyle.textColor,
             fontSize: 18,
           ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: appStyle.primaryColor),
-          weekendStyle: TextStyle(color: appStyle.primaryColor),
+          weekdayStyle: TextStyle(color: appStyle.textColor),
+          weekendStyle: TextStyle(color: appStyle.textColor),
         ),
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
-          defaultTextStyle: TextStyle(color: appStyle.primaryColor),
-          weekendTextStyle: TextStyle(color: appStyle.primaryColor),
+          defaultTextStyle: TextStyle(color: appStyle.textColor),
+          weekendTextStyle: TextStyle(color: appStyle.textColor),
           todayDecoration: BoxDecoration(
             color: appStyle.primaryColor,
             shape: BoxShape.circle,
@@ -274,208 +276,5 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
       "微笑面对生活的挑战。",
     ];
     return quotes[DateTime.now().day % quotes.length];
-  }
-}
-
-// 编写日记页面
-class WriteDiaryPage extends StatefulWidget {
-  final DateTime date;
-  final ValueChanged<String> onSave;
-
-  WriteDiaryPage({required this.date, required this.onSave});
-
-  @override
-  _WriteDiaryPageState createState() => _WriteDiaryPageState();
-}
-
-class _WriteDiaryPageState extends State<WriteDiaryPage> {
-  TextEditingController _controller = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    String formattedDate =
-        DateFormat('yyyy年MM月dd日 EEEE', 'zh_CN').format(widget.date);
-
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('写日记 - $formattedDate'),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: Text('保存'),
-          onPressed: () {
-            if (_controller.text.isNotEmpty) {
-              widget.onSave(_controller.text);
-              Navigator.pop(context);
-            } else {
-              // 提示用户输入内容
-              showCupertinoDialog(
-                context: context,
-                builder: (context) => CupertinoAlertDialog(
-                  title: Text('提示'),
-                  content: Text('日记内容不能为空。'),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: Text('确定'),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-              );
-            }
-          },
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: CupertinoTextField(
-          controller: _controller,
-          placeholder: '写下今天的感恩日记...',
-          maxLines: null,
-          autofocus: true,
-        ),
-      ),
-    );
-  }
-}
-
-// 查看日记页面
-class ViewDiaryPage extends StatelessWidget {
-  final DateTime date;
-  final String content;
-  final VoidCallback onDelete;
-
-  ViewDiaryPage(
-      {required this.date, required this.content, required this.onDelete});
-
-  @override
-  Widget build(BuildContext context) {
-    String formattedDate = DateFormat('yyyy年MM月dd日 EEEE', 'zh_CN').format(date);
-
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('日记详情 - $formattedDate'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: Icon(CupertinoIcons.delete),
-              onPressed: () {
-                // 确认删除
-                showCupertinoDialog(
-                  context: context,
-                  builder: (context) => CupertinoAlertDialog(
-                    title: Text('删除日记'),
-                    content: Text('确定要删除这篇日记吗？'),
-                    actions: [
-                      CupertinoDialogAction(
-                        child: Text('取消'),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      CupertinoDialogAction(
-                        child: Text('删除'),
-                        isDestructiveAction: true,
-                        onPressed: () {
-                          onDelete();
-                          Navigator.pop(context); // 关闭对话框
-                          Navigator.pop(context); // 返回上一页
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Text(
-          content,
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// 搜索日记页面
-class SearchDiaryPage extends StatefulWidget {
-  final Map<String, String> diaryEntries;
-
-  SearchDiaryPage({required this.diaryEntries});
-
-  @override
-  _SearchDiaryPageState createState() => _SearchDiaryPageState();
-}
-
-class _SearchDiaryPageState extends State<SearchDiaryPage> {
-  TextEditingController _searchController = TextEditingController();
-  List<MapEntry<String, String>> _searchResults = [];
-
-  void _searchDiaries(String query) {
-    setState(() {
-      _searchResults = widget.diaryEntries.entries
-          .where((entry) => entry.value.contains(query))
-          .toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('搜索日记'),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: CupertinoSearchTextField(
-              controller: _searchController,
-              placeholder: '输入关键字搜索',
-              onChanged: _searchDiaries,
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (context, index) {
-                var entry = _searchResults[index];
-                DateTime date = DateTime.parse(entry.key);
-                String formattedDate =
-                    DateFormat('yyyy年MM月dd日', 'zh_CN').format(date);
-                return ListTile(
-                  title: Text(formattedDate),
-                  subtitle: Text(
-                    entry.value,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => ViewDiaryPage(
-                          date: date,
-                          content: entry.value,
-                          onDelete: () {
-                            setState(() {
-                              widget.diaryEntries.remove(entry.key);
-                              _searchResults.removeAt(index);
-                            });
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

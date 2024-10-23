@@ -75,7 +75,7 @@ class GlobalState with ChangeNotifier {
 
   // 通过API获取用户信息
   Future<void> getUserInfo() async {
-    HttpHelper().getRequest('/user/info').then((value) {
+    HttpHelper().getRequest('/user/info', requireAuth: true).then((value) {
       if (value['code'] == 0) {
         setUser(value['data']);
       } else {

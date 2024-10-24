@@ -6,111 +6,32 @@ on:
       - master  # 当推送到 main 分支时触发构建
 
 jobs:
-  #  build-android:
-  #    runs-on: ubuntu-latest
-  #
-  #    steps:
-  #      - name: Checkout code
-  #        uses: actions/checkout@v3
-  #
-  #      - name: Set up Flutter
-  #        uses: subosito/flutter-action@v2
-  #        with:
-  #          flutter-version: "3.24.3"  # 你使用的 Flutter 版本
-  #
-  #      - name: Install dependencies
-  #        run: flutter pub get
-  #
-  #      - name: Build Android APK
-  #        run: |
-  #          flutter build apk --release
-  #          flutter build appbundle --release
-  #
-  #      - name: Upload Android APK
-  #        uses: actions/upload-artifact@v3
-  #        with:
-  #          name: Android-APK
-  #          path: build/app/outputs/flutter-apk/app-release.apk
-  #          if-no-files-found: error
-  #
-  #      - name: Upload Android AppBundle
-  #        uses: actions/upload-artifact@v3
-  #        with:
-  #          name: Android-AppBundle
-  #          path: build/app/outputs/bundle/release/app-release.aab
-  #          if-no-files-found: error
-
   build-ios:
-    runs-on: macos-latest
+  runs-on: macos-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.24.3"  # 你使用的 Flutter 版本
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: "3.24.3"
 
-      - name: Install dependencies
-        run: flutter pub get
+    - name: Clean Flutter Project
+      run: flutter clean
 
-      - name: Check Info.plist
-        run: cat ios/Runner/Info.plist
+    - name: Install dependencies
+      run: flutter pub get
 
-      - name: Build iOS (Unsigned)
-        run: |
-          flutter build ios --release --no-codesign
+    - name: Verify Info.plist Content
+      run: cat ios/Runner/Info.plist
 
-      - name: Archive iOS build
-        run: |
-          flutter build ios --release --no-codesign
-          ln -sf ./build/ios/iphoneos Payload
-          zip -r9 app.ipa Payload/runner.app
-      #          xcodebuild -workspace ios/Runner.xcworkspace \
-      #                     -scheme Runner \
-      #                     -sdk iphoneos \
-      #                     -configuration Release \
-      #                     archive -archivePath $PWD/build/Runner.xcarchive \
-      #                     CODE_SIGN_IDENTITY="" \
-      #                     CODE_SIGNING_REQUIRED=NO \
-      #                     CODE_SIGN_ENTITLEMENTS="" \
-      #                     CODE_SIGNING_ALLOWED=NO
+    - name: Build iOS IPA (Unsigned)
+      run: flutter build ipa --release --no-codesign
 
-      - name: Export unsigned IPA
-        run: |
-          DATE=${{ steps.date.outputs.date }}
-          for file in app.ipa; do
-            new_file_name="build/i69-${{ steps.version.outputs.version }}.ipa"
-            mv "$file" "$new_file_name"
-          done
-
-      - name: Upload iOS IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: Runner.ipa
-          path: build/*.ipa
-#
-#  build-windows:
-#    runs-on: windows-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Flutter
-#        uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: "3.0.0"  # 你使用的 Flutter 版本
-#
-#      - name: Install dependencies
-#        run: flutter pub get
-#
-#      - name: Build Windows executable
-#        run: flutter build windows --release
-#
-#      - name: Upload Windows build
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: Windows-Build
-#          path: build/windows/runner/Release
+    - name: Upload iOS IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: Runner.ipa
+        path: build/ios/ipa/*.ipa

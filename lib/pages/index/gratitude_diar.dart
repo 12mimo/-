@@ -222,8 +222,8 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => WriteDiaryPage(
-                  date: selectedDay,
+                builder: (context) => EmotionPage(
+                  date: selectedDay.toString(),
                   onSave: (String content) {
                     setState(() {
                       _diaryEntries[dateKey] = content;

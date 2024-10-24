@@ -1,176 +1,111 @@
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
-import 'package:super_editor/super_editor.dart';
-import '../../styles/color.dart';
+import 'package:xlfz/pages/index/write_detail.dart';
 
-class WriteDiaryPage extends StatefulWidget {
-  final DateTime date;
-  final ValueChanged<String> onSave;
+class EmotionPage extends StatelessWidget {
+  final String date;
+  final Function(String) onSave;
 
-  const WriteDiaryPage({super.key, required this.date, required this.onSave});
+  EmotionPage({required this.date, required this.onSave});
 
-  @override
-  WriteDiaryPageState createState() => WriteDiaryPageState();
-}
-
-class WriteDiaryPageState extends State<WriteDiaryPage> {
-  final MutableDocument _document = MutableDocument(nodes: [
-    ParagraphNode(id: DocumentEditor.createNodeId(), text: AttributedText('')),
-  ]);
-
-  late DocumentEditor _editor;
-  late DocumentComposer _composer;
-  final _focusNode = FocusNode();
-  String _selectedWeather = '晴天';
-  String _selectedMood = '开心';
-
-  @override
-  void initState() {
-    super.initState();
-    _editor = DocumentEditor(document: _document);
-    _composer = DocumentComposer();
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _composer.dispose();
-    super.dispose();
-  }
+  final List<Map<String, dynamic>> emotions = [
+    {'label': '满足', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemBlue, darkColor: CupertinoColors.systemBlue)},
+    {'label': '快乐到起飞', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemOrange, darkColor: CupertinoColors.systemOrange)},
+    {'label': 'emo', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemBlue, darkColor: CupertinoColors.systemBlue)},
+    {'label': '孤独', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemGrey, darkColor: CupertinoColors.systemGrey)},
+    {'label': '自信满满', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemOrange, darkColor: CupertinoColors.systemOrange)},
+    {'label': '平静', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemGrey, darkColor: CupertinoColors.systemGrey)},
+    {'label': '哈嘴上提', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemOrange, darkColor: CupertinoColors.systemOrange)},
+    {'label': '悦意', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemRed, darkColor: CupertinoColors.systemRed)},
+    {'label': '委屈', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemGrey, darkColor: CupertinoColors.systemGrey)},
+    {'label': 'Chill', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemOrange, darkColor: CupertinoColors.systemOrange)},
+    {'label': '失眠', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemGrey, darkColor: CupertinoColors.systemGrey)},
+    {'label': '悲伤', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemBlue, darkColor: CupertinoColors.systemBlue)},
+    {'label': '焦虑', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemGrey, darkColor: CupertinoColors.systemGrey)},
+    {'label': '乏憾', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemRed, darkColor: CupertinoColors.systemRed)},
+    {'label': '气愤', 'color': CupertinoDynamicColor.withBrightness(color: CupertinoColors.systemRed, darkColor: CupertinoColors.systemRed)},
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final appStyle = AppStyle(context);
-    String formattedDate =
-        DateFormat('yyyy年MM月dd日 EEEE', 'zh_CN').format(widget.date);
-
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: appStyle.backgroundColor,
-        middle: Text(
-          '写日记 - $formattedDate',
-          style: TextStyle(color: appStyle.primaryColor),
-        ),
-        leading: CupertinoNavigationBarBackButton(
-          color: appStyle.primaryColor,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        trailing: CupertinoButton(
+        leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          onPressed: _saveDiary,
-          child: Text(
-            '保存',
-            style: TextStyle(color: appStyle.primaryColor),
-          ),
+          child: Icon(CupertinoIcons.back, color: CupertinoColors.black),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        middle: Text(
+          '今天心情怎么样',
+          style: TextStyle(color: CupertinoColors.black),
         ),
       ),
-      child: _buildBody(appStyle),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: emotions.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                onSave(emotions[index]['label']);
+                Navigator.of(context).push(
+                  CupertinoPageRoute(builder: (context) => DiaryPage()),
+                );
+              },
+              child: EmotionItem(
+                label: emotions[index]['label'],
+                color: emotions[index]['color'],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
+}
 
-  Widget _buildBody(AppStyle appStyle) {
+class EmotionItem extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const EmotionItem({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildSelection(appStyle),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: SingleChildScrollView(
-              child: SuperEditor(
-                editor: _editor,
-                composer: _composer,
-                focusNode: _focusNode,
-                inputSource: TextInputSource.ime,
-                gestureMode: DocumentGestureMode.iOS,
-                stylesheet: defaultStylesheet.copyWith(
-                  documentPadding: EdgeInsets.zero,
-                ),
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: CupertinoColors.white,
+                fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(fontSize: 16),
+          textAlign: TextAlign.center,
         ),
       ],
     );
-  }
-
-  Widget _buildSelection(AppStyle appStyle) {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('天气', style: TextStyle(fontSize: 16, color: appStyle.textColor)),
-          SizedBox(height: 8),
-          CupertinoSegmentedControl<String>(
-            children: {
-              '晴天': Text('晴天'),
-              '多云': Text('多云'),
-              '雨天': Text('雨天'),
-              '雪天': Text('雪天'),
-            },
-            groupValue: _selectedWeather,
-            onValueChanged: (value) {
-              setState(() {
-                _selectedWeather = value!;
-              });
-            },
-          ),
-          SizedBox(height: 16),
-          Text('心情', style: TextStyle(fontSize: 16, color: appStyle.textColor)),
-          SizedBox(height: 8),
-          CupertinoSegmentedControl<String>(
-            children: {
-              '开心': Text('开心'),
-              '平静': Text('平静'),
-              '难过': Text('难过'),
-              '生气': Text('生气'),
-            },
-            groupValue: _selectedMood,
-            onValueChanged: (value) {
-              setState(() {
-                _selectedMood = value!;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _saveDiary() {
-    final content = _getPlainTextFromDocument(_document);
-
-    if (content.trim().isEmpty) {
-      showCupertinoDialog(
-        context: context,
-        builder: (context) => CupertinoAlertDialog(
-          title: Text('提示'),
-          content: Text('日记内容不能为空。'),
-          actions: [
-            CupertinoDialogAction(
-              child: Text('确定'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-
-    String diaryContent =
-        '天气: $_selectedWeather\n心情: $_selectedMood\n内容: $content';
-
-    widget.onSave(diaryContent);
-    Navigator.pop(context);
-  }
-
-  String _getPlainTextFromDocument(MutableDocument document) {
-    final buffer = StringBuffer();
-    for (final node in document.nodes) {
-      if (node is ParagraphNode) {
-        buffer.writeln(node.text.text);
-      }
-    }
-    return buffer.toString();
   }
 }

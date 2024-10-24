@@ -149,19 +149,23 @@ class VirtualConsultantPage extends StatelessWidget {
             color: primaryColor,
             onPressed: () async {
               var status = await Permission.microphone.status;
-              if (status.isDenied) {
-                if (await Permission.microphone.request().isGranted) {
-                  // 权限已授予
-                  print("Location permission granted.");
-                } else {
-                  // 权限被拒绝
-                  print("Location permission denied.");
-                }
+
+// 检查是否被拒绝或是初次申请
+              if (status.isDenied || status.isRestricted) {
+                // 请求权限
+                status = await Permission.microphone.request();
               }
-              // 检查是否永久拒绝了权限
-              if (status.isPermanentlyDenied) {
-                // 提示用户去设置中打开权限
+
+// 检查是否已经授予权限
+              if (status.isGranted) {
+                print("Microphone permission granted.");
+              }
+// 检查是否永久拒绝
+              else if (status.isPermanentlyDenied) {
+                // 打开设置页面
                 openAppSettings();
+              } else {
+                print("Microphone permission denied.");
               }
             },
             child: const Text('开始语音对话', style: TextStyle(color: Colors.white)),

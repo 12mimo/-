@@ -3,35 +3,35 @@ name: Build Flutter App
 on:
   push:
     branches:
-      - master  # 当推送到 main 分支时触发构建
+      - master  # 当推送到 master 分支时触发构建
 
 jobs:
   build-ios:
-  runs-on: macos-latest
+    runs-on: macos-latest
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: "3.24.3"
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.3"
 
-    - name: Clean Flutter Project
-      run: flutter clean
+      - name: Clean Flutter Project
+        run: flutter clean
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Verify Info.plist Content
-      run: cat ios/Runner/Info.plist
+      - name: Verify Info.plist Content
+        run: cat ios/Runner/Info.plist
 
-    - name: Build iOS IPA (Unsigned)
-      run: flutter build ipa --release --no-codesign
+      - name: Build iOS IPA (Unsigned)
+        run: flutter build ipa --release --no-codesign
 
-    - name: Upload iOS IPA
-      uses: actions/upload-artifact@v4
-      with:
-        name: Runner.ipa
-        path: build/ios/ipa/*.ipa
+      - name: Upload iOS IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Runner.ipa
+          path: build/ios/ipa/*.ipa

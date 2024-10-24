@@ -167,7 +167,14 @@ class VirtualConsultantPage extends StatelessWidget {
               } else {
                 print("Microphone permission denied.");
               }
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CounselorCallPage(),
+                ),
+              );
             },
+
             child: const Text('开始语音对话', style: TextStyle(color: Colors.white)),
           ),
         ],

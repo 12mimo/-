@@ -42,21 +42,6 @@ class HomePageState extends State<HomePage> {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildCard(
-                      title: '今日心理提示',
-                      content: '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
-                      backgroundColor: appStyle.cardBackgroundColor,
-                      titleColor: appStyle.primaryColor,
-                      contentColor: appStyle.textColor,
-                      icon: Icons.self_improvement,
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   CupertinoPageRoute(
-                        //       builder: (context) => DailyTipsPage()),
-                        // );
-                      },
-                    ),
                     const SizedBox(height: 16),
                     _buildCard(
                       title: '推荐活动',
@@ -89,22 +74,6 @@ class HomePageState extends State<HomePage> {
                           CupertinoPageRoute(
                               builder: (context) =>
                                   MentalHealthKnowledgePage()),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    _buildCard(
-                      title: '感恩日记',
-                      content: '写下今天你感激的三件事情...',
-                      backgroundColor: appStyle.cardBackgroundColor,
-                      titleColor: appStyle.primaryColor,
-                      contentColor: appStyle.textColor,
-                      icon: Icons.book,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => GratitudeJournalPage()),
                         );
                       },
                     ),
@@ -161,7 +130,7 @@ class HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 12),
           Text(
-            '帮助你保持心理健康，找到内心的平静。',
+            '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
             style: TextStyle(
               fontSize: 18,
               color: Colors.white70,

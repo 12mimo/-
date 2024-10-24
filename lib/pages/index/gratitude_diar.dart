@@ -4,7 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:xlfz/pages/index/see_diar.dart';
-import 'package:xlfz/pages/index/write_diary.dart';
+import 'package:xlfz/pages/index/write_detail.dart';
 
 import '../../styles/color.dart';
 import '../../utils/sys.dart';
@@ -36,6 +36,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
     return CupertinoPageScaffold(
       backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
+        backgroundColor: appStyle.backgroundColor,
         leading: GestureDetector(
           onTap: () => goBack(context),
           child: Icon(
@@ -222,7 +223,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => EmotionPage(
+                builder: (context) => DiaryPage(
                   date: selectedDay.toString(),
                   onSave: (String content) {
                     setState(() {

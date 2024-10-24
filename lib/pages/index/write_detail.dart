@@ -1,171 +1,142 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import '../../styles/color.dart';
+import '../../utils/sys.dart';
 
 class DiaryPage extends StatefulWidget {
+  final String date;
+  final Function(String) onSave;
+  const DiaryPage({super.key, required this.date, required this.onSave});
+
   @override
-  _DiaryPageState createState() => _DiaryPageState();
+  DiaryPageState createState() => DiaryPageState();
 }
 
-class _DiaryPageState extends State<DiaryPage> {
-  String _selectedWeather = '晴天'; // 默认天气
-  Color _dateColor = CupertinoColors.black; // 日期默认颜色
-  Color _dateBackgroundColor = CupertinoColors.white; // 日期背景颜色
+class DiaryPageState extends State<DiaryPage> {
+  final TextEditingController _textController = TextEditingController();
+  final DateTime _selectedDate = DateTime.now();
+  File? _image;
 
-  // 天气选择列表
-  final List<String> _weatherOptions = ['晴天', '阴天', '雨天', '雪天'];
-
-  void _updateWeather(int index) {
-    setState(() {
-      _selectedWeather = _weatherOptions[index];
-      // 根据选择的天气更改日期的样式
-      switch (_selectedWeather) {
-        case '晴天':
-          _dateColor = CupertinoColors.systemYellow;
-          _dateBackgroundColor = CupertinoColors.white;
-          break;
-        case '阴天':
-          _dateColor = CupertinoColors.systemGrey;
-          _dateBackgroundColor = CupertinoColors.white;
-          break;
-        case '雨天':
-          _dateColor = CupertinoColors.activeBlue;
-          _dateBackgroundColor = CupertinoColors.systemGrey6;
-          break;
-        case '雪天':
-          _dateColor = CupertinoColors.systemBlue;
-          _dateBackgroundColor = CupertinoColors.systemGrey4;
-          break;
-      }
-    });
+  Future<void> _pickImage() async {
+    // 使用图片选择插件获取图片
   }
 
   @override
   Widget build(BuildContext context) {
+    final appStyle = AppStyle(context);
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
-          child: Icon(CupertinoIcons.back),
-          onTap: () => Navigator.of(context).pop(),
+          onTap: () => goBack(context),
+          child: Icon(
+            CupertinoIcons.back,
+            color: appStyle.primaryColor,
+          ),
         ),
-        middle: Text('2024 October 24'),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: Text('就这样'),
-          onPressed: () {
-            // 提交操作
-          },
+        middle: Text(
+          '写日记',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: appStyle.primaryColor),
         ),
+        backgroundColor: appStyle.backgroundColor,
+        border: null,
       ),
+      backgroundColor: appStyle.backgroundColor,
       child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16.0),
-              // 用户头像和名称部分
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 24.0,
-                    backgroundColor: CupertinoColors.systemBlue,
-                    child: Icon(CupertinoIcons.smiley, color: CupertinoColors.white),
-                  ),
-                  SizedBox(width: 8.0),
-                  Text(
-                    '满足',
-                    style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: appStyle.cardBackgroundColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(CupertinoIcons.person_fill, size: 24, color: appStyle.primaryColor),
+                        SizedBox(width: 8),
+                        Text(
+                          '用户今日状态',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: appStyle.textColor),
+                        ),
+                      ],
                     ),
-                  ),
-                  Expanded(child: SizedBox()), // 占位符，右侧对齐
-                  // 日期部分，右侧显示
-                  Container(
-                    color: _dateBackgroundColor,
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    child: Text(
-                      '2024年10月24日',
-                      style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                        color: _dateColor,
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.systemYellow.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '晴 23°C  ${_selectedDate.toIso8601String().substring(0, 10)}',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: appStyle.textColor),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.0),
-              // 天气选择器
-              Text('选择天气:'),
-              SizedBox(height: 8.0),
-              CupertinoPicker(
-                itemExtent: 32.0,
-                onSelectedItemChanged: (int index) {
-                  _updateWeather(index);
-                },
-                children: _weatherOptions.map((String weather) {
-                  return Center(child: Text(weather));
-                }).toList(),
-              ),
-              SizedBox(height: 16.0),
-              // 图片按钮部分
-              Align(
-                alignment: Alignment.centerRight,
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: Row(
-                    children: [
-                      Icon(CupertinoIcons.photo_camera),
-                      SizedBox(width: 4.0),
-                      Text('配张图片'),
-                    ],
-                  ),
-                  onPressed: () {
-                    // 处理图片选择
-                  },
+                  ],
                 ),
               ),
-              SizedBox(height: 16.0),
-              // 生成金句提示文本
-              Text(
-                '不知道写什么？ 一键生成金句',
-                style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // 提示用户输入的文本
-              Container(
-                padding: EdgeInsets.all(12.0),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
                 decoration: BoxDecoration(
                   color: CupertinoColors.systemGrey6,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: CupertinoColors.systemGrey4),
                 ),
-                child: Text(
-                  '发生了什么事，让你有这样的心情呢？来讲讲吧...',
-                  style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                    fontSize: 14.0,
-                    color: CupertinoColors.secondaryLabel,
+                child: CupertinoTextField(
+                  controller: _textController,
+                  maxLines: 10,
+                  placeholder: '记录你的心情与经历...',
+                  padding: EdgeInsets.all(20),
+                  decoration: null,
+                  style: TextStyle(fontSize: 18, color: appStyle.textColor, height: 1.5),
+                  placeholderStyle: TextStyle(color: CupertinoColors.systemGrey, fontSize: 16),
+                ),
+              ),
+            ),
+            SizedBox(height: 24),
+            CupertinoButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(CupertinoIcons.cloud_upload, color: CupertinoColors.white),
+                  SizedBox(width: 8),
+                  Text('上传图片', style: TextStyle(fontSize: 18, color: CupertinoColors.white)),
+                ],
+              ),
+              color: appStyle.primaryColor,
+              onPressed: _pickImage,
+              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            SizedBox(height: 16),
+            if (_image != null)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.file(
+                      _image!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 16.0),
-              // 输入框部分
-              CupertinoTextField(
-                placeholder: '在这里写下你的想法...',
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
-                maxLines: 5,
-                decoration: BoxDecoration(
-                  color: CupertinoColors.white,
-                  border: Border.all(color: CupertinoColors.systemGrey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              SizedBox(height: 16.0),
-            ],
-          ),
+          ],
         ),
       ),
     );

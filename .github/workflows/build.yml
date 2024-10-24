@@ -28,7 +28,13 @@ jobs:
         run: cat ios/Runner/Info.plist
 
       - name: Build iOS Archive (Unsigned)
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --release --no-codesign
+          mkdir -p build/ios/archive
+          mv build/ios/iphoneos/Runner.xcarchive build/ios/archive/Runner.xcarchive
+
+      - name: List archive directory
+        run: ls -R build/ios/archive
 
       - name: Export IPA from xcarchive (Unsigned)
         run: |

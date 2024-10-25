@@ -38,8 +38,8 @@ class ChatPageState extends State<ChatPage> {
   final HttpHelper _httpHelper = HttpHelper();
 
   int _currentLines = 1;
-  final int _maxVisibleLines = 5;
-  final int _lineThreshold = 3; // 超过多少行时显示全屏编辑按钮
+  final int _maxVisibleLines = 7;
+  final int _lineThreshold = 5; // 超过多少行时显示全屏编辑按钮
   bool _showEmojiPicker = false;
   late AppStyle appStyle;
 

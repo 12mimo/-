@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../styles/color.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -27,10 +26,10 @@ class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  ChatPageState createState() => ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class ChatPageState extends State<ChatPage> {
   final List<Message> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -39,21 +38,12 @@ class _ChatPageState extends State<ChatPage> {
   final int _maxVisibleLines = 5;
   final int _lineThreshold = 3; // 超过多少行时显示全屏编辑按钮
   bool _showEmojiPicker = false;
-  bool _isListening = false;
-  late stt.SpeechToText? _speech;
   late AppStyle appStyle;
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(_updateLineCount);
-
-    // 初始化语音识别，仅在安卓和iOS上
-    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-      _speech = stt.SpeechToText();
-    } else {
-      _speech = null;
-    }
   }
 
   @override
@@ -61,12 +51,6 @@ class _ChatPageState extends State<ChatPage> {
     _controller.removeListener(_updateLineCount);
     _controller.dispose();
     _scrollController.dispose();
-
-    // 停止语音识别，仅在安卓和iOS上
-    if (_speech != null) {
-      _speech!.stop();
-    }
-
     super.dispose();
   }
 
@@ -79,9 +63,7 @@ class _ChatPageState extends State<ChatPage> {
       maxLines: _maxVisibleLines,
       textDirection: TextDirection.ltr,
     );
-    tp.layout(
-        maxWidth:
-            MediaQuery.of(context).size.width - 32 - 50); // 减去Padding和按钮宽度
+    tp.layout(maxWidth: MediaQuery.of(context).size.width - 82); // 减去Padding和按钮宽度
     final numLines = tp.computeLineMetrics().length;
     setState(() {
       _currentLines = numLines;
@@ -132,8 +114,7 @@ class _ChatPageState extends State<ChatPage> {
     final fullText = await Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) =>
-            FullScreenEditorPage(initialText: _controller.text),
+        builder: (context) => FullScreenEditorPage(initialText: _controller.text),
       ),
     );
 
@@ -152,7 +133,7 @@ class _ChatPageState extends State<ChatPage> {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile =
-          await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+      await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
       if (pickedFile != null) {
         _sendMessage('', image: File(pickedFile.path));
@@ -163,59 +144,16 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  /// 开始语音识别，仅在安卓和iOS上有效
-  Future<void> _listen() async {
-    if (!_isListening && _speech != null) {
-      bool available = await _speech!.initialize(
-        onStatus: (val) {
-          print('Speech status: $val');
-          if (val == 'done' || val == 'notListening') {
-            setState(() {
-              _isListening = false;
-            });
-          }
-        },
-        onError: (val) {
-          print('Speech error: $val');
-          setState(() {
-            _isListening = false;
-          });
-        },
-      );
-      if (available) {
-        setState(() => _isListening = true);
-        _speech!.listen(
-          onResult: (val) {
-            setState(() {
-              _controller.text = val.recognizedWords;
-              _controller.selection = TextSelection.fromPosition(
-                  TextPosition(offset: _controller.text.length));
-            });
-            _updateLineCount();
-          },
-          listenFor: Duration(seconds: 60),
-          pauseFor: Duration(seconds: 3),
-          partialResults: true,
-          localeId: 'zh_CN',
-          cancelOnError: true,
-          listenMode: stt.ListenMode.confirmation,
-        );
-      } else {
-        _showErrorDialog('无法启动语音识别，请检查权限设置。');
-      }
-    }
-  }
-
   /// 显示错误对话框
   void _showErrorDialog(String message) {
     showCupertinoDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: Text('错误'),
+        title: const Text('错误'),
         content: Text(message),
         actions: [
           CupertinoDialogAction(
-            child: Text('确定'),
+            child: const Text('确定'),
             onPressed: () => Navigator.pop(context),
           ),
         ],
@@ -237,9 +175,7 @@ class _ChatPageState extends State<ChatPage> {
       backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context); // 返回上一页
-          },
+          onTap: () => Navigator.pop(context),
           child: Icon(
             CupertinoIcons.back,
             color: appStyle.primaryColor,
@@ -285,9 +221,9 @@ class _ChatPageState extends State<ChatPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!isUser)
-                            CircleAvatar(
+                            const CircleAvatar(
                               backgroundImage:
-                                  AssetImage('assets/consultant_avatar.png'),
+                              AssetImage('assets/consultant_avatar.png'),
                             ),
                           const SizedBox(width: 8),
                           Flexible(
@@ -344,9 +280,9 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           const SizedBox(width: 8),
                           if (isUser)
-                            CircleAvatar(
+                            const CircleAvatar(
                               backgroundImage:
-                                  AssetImage('assets/user_avatar.png'),
+                              AssetImage('assets/user_avatar.png'),
                             ),
                         ],
                       ),
@@ -358,22 +294,9 @@ class _ChatPageState extends State<ChatPage> {
             Divider(color: appStyle.dividerColor ?? Colors.grey),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
                 children: [
-                  if (_speech != null)
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: _listen,
-                      child: Icon(
-                        _isListening
-                            ? CupertinoIcons.mic_fill
-                            : CupertinoIcons.mic,
-                        color: appStyle.primaryColor,
-                        size: 28,
-                      ),
-                    ),
-                  const SizedBox(width: 5),
                   Expanded(
                     child: CupertinoTextField(
                       controller: _controller,

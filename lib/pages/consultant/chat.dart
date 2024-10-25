@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import '../../store/global.dart';
 import '../../styles/color.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -46,6 +48,15 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _messages.add(Message(
+        text: "今天我有什么可以帮助你的吗?",
+        isUser: false,
+        timestamp: DateTime.now(),
+      ));
+    });
+    _controller.clear();
+    _scrollToBottom();
     _controller.addListener(_updateLineCount);
   }
 
@@ -184,6 +195,8 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> user =
+    (context.watch<GlobalState>().user as Map).cast<String, dynamic>();
     appStyle = AppStyle(context);
     return CupertinoPageScaffold(
       backgroundColor: appStyle.backgroundColor,
@@ -235,9 +248,17 @@ class ChatPageState extends State<ChatPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!isUser)
-                            const CircleAvatar(
-                              backgroundImage:
-                              AssetImage('assets/consultant_avatar.png'),
+                            CircleAvatar(
+                              radius: 20.0, // 调整半径大小以适应你的设计
+                              // backgroundImage: user['avatar'] != null && user['avatar'].isNotEmpty
+                              //     ? NetworkImage(user['avatar'])
+                              //     : null,
+                              // backgroundColor: Colors.grey,
+                              child: Icon(
+                                Icons.person, // 使用默认的人物图标
+                                size: 20.0,
+                                color: Colors.white,
+                              ), // 背景色适用于默认头像的情况
                             ),
                           const SizedBox(width: 8),
                           Flexible(
@@ -294,9 +315,10 @@ class ChatPageState extends State<ChatPage> {
                           ),
                           const SizedBox(width: 8),
                           if (isUser)
-                            const CircleAvatar(
-                              backgroundImage:
-                              AssetImage('assets/user_avatar.png'),
+                            CircleAvatar(
+                              backgroundImage:user['avatar'] != null && user['avatar'].isNotEmpty
+                                  ? NetworkImage("${user['avatar']}")
+                                  : null,
                             ),
                         ],
                       ),

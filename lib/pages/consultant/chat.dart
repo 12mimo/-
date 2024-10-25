@@ -295,59 +295,61 @@ class ChatPageState extends State<ChatPage> {
             Padding(
               padding:
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CupertinoTextField(
-                      controller: _controller,
-                      placeholder: '输入您的消息...',
-                      decoration: BoxDecoration(
-                        color: appStyle.cardBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
+              child: SafeArea( // 添加安全距离
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CupertinoTextField(
+                        controller: _controller,
+                        placeholder: '输入您的消息...',
+                        decoration: BoxDecoration(
+                          color: appStyle.cardBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                        maxLines: _maxVisibleLines,
+                        minLines: 1,
+                        textInputAction: TextInputAction.newline,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 16),
-                      maxLines: _maxVisibleLines,
-                      minLines: 1,
-                      textInputAction: TextInputAction.newline,
                     ),
-                  ),
-                  const SizedBox(width: 5),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: _pickImage,
-                    child: Icon(
-                      CupertinoIcons.paperclip,
-                      color: appStyle.primaryColor,
-                      size: 28,
+                    const SizedBox(width: 5),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _pickImage,
+                      child: Icon(
+                        CupertinoIcons.paperclip,
+                        color: appStyle.primaryColor,
+                        size: 28,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 5),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (_currentLines > _lineThreshold)
+                    const SizedBox(width: 5),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_currentLines > _lineThreshold)
+                          CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: _openFullScreenEditor,
+                            child: const Icon(
+                              CupertinoIcons.arrow_up_right_square,
+                              color: Color(0xFF4A90E2),
+                              size: 28,
+                            ),
+                          ),
                         CupertinoButton(
                           padding: EdgeInsets.zero,
-                          onPressed: _openFullScreenEditor,
-                          child: const Icon(
-                            CupertinoIcons.arrow_up_right_square,
-                            color: Color(0xFF4A90E2),
-                            size: 28,
+                          onPressed: () => _sendMessage(_controller.text),
+                          child: Icon(
+                            CupertinoIcons.arrow_up_circle_fill,
+                            color: appStyle.primaryColor,
+                            size: 32,
                           ),
                         ),
-                      CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => _sendMessage(_controller.text),
-                        child: Icon(
-                          CupertinoIcons.arrow_up_circle_fill,
-                          color: appStyle.primaryColor,
-                          size: 32,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

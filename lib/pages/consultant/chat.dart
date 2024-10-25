@@ -6,6 +6,8 @@ import '../../styles/color.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import '../../utils/http.dart';
+
 /// 消息模型
 class Message {
   final String text;
@@ -33,6 +35,7 @@ class ChatPageState extends State<ChatPage> {
   final List<Message> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final HttpHelper _httpHelper = HttpHelper();
 
   int _currentLines = 1;
   final int _maxVisibleLines = 5;
@@ -71,7 +74,7 @@ class ChatPageState extends State<ChatPage> {
   }
 
   /// 发送消息
-  void _sendMessage(String text, {File? image}) {
+  void _sendMessage(String text, {File? image}) async {
     if (text.trim().isEmpty && image == null) return;
     setState(() {
       _messages.add(Message(
@@ -80,20 +83,31 @@ class ChatPageState extends State<ChatPage> {
         timestamp: DateTime.now(),
         image: image,
       ));
+    });
+    _controller.clear();
+    _scrollToBottom();
+    await _getBotResponse(text);
+  }
+
+  /// 模拟虚拟咨询师回复
+  Future<void> _getBotResponse(String userMessage) async {
+    // 发送登录请求
+    var postResponse = await _httpHelper.postRequest(
+      "/chat/send_message",
+      {
+        'content': userMessage,
+      },
+      requireAuth: true,
+    );
+    setState(() {
       // 模拟虚拟咨询师回复
       _messages.add(Message(
-        text: _getBotResponse(text),
+        text: postResponse['data'],
         isUser: false,
         timestamp: DateTime.now(),
       ));
     });
-    _controller.clear();
     _scrollToBottom();
-  }
-
-  /// 模拟虚拟咨询师回复
-  String _getBotResponse(String userMessage) {
-    return "感谢您的分享。您能详细说明一下吗？";
   }
 
   /// 滚动到聊天底部

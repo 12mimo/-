@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../store/global.dart';
-import '../../styles/color.dart';
+import 'package:path/path.dart' as p;
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
-
+import '../../store/global.dart';
+import '../../styles/color.dart';
 import '../../utils/http.dart';
 
 /// 消息模型
@@ -15,14 +17,32 @@ class Message {
   final String text;
   final bool isUser;
   final DateTime timestamp;
-  final File? image; // 图片附件
+  final String? imagePath; // 图片路径
 
   Message({
     required this.text,
     required this.isUser,
     required this.timestamp,
-    this.image,
+    this.imagePath,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'text': text,
+      'isUser': isUser ? 1 : 0,
+      'timestamp': timestamp.toIso8601String(),
+      'imagePath': imagePath,
+    };
+  }
+
+  static Message fromMap(Map<String, dynamic> map) {
+    return Message(
+      text: map['text'],
+      isUser: map['isUser'] == 1,
+      timestamp: DateTime.parse(map['timestamp']),
+      imagePath: map['imagePath'],
+    );
+  }
 }
 
 /// 聊天页面
@@ -38,6 +58,7 @@ class ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final HttpHelper _httpHelper = HttpHelper();
+  late Database _database;
 
   int _currentLines = 1;
   final int _maxVisibleLines = 7;
@@ -48,15 +69,8 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _messages.add(Message(
-        text: "今天我有什么可以帮助你的吗?",
-        isUser: false,
-        timestamp: DateTime.now(),
-      ));
-    });
+    _initDatabase();
     _controller.clear();
-    _scrollToBottom();
     _controller.addListener(_updateLineCount);
   }
 
@@ -65,7 +79,47 @@ class ChatPageState extends State<ChatPage> {
     _controller.removeListener(_updateLineCount);
     _controller.dispose();
     _scrollController.dispose();
+    _database.close();
     super.dispose();
+  }
+
+  /// 初始化数据库
+  Future<void> _initDatabase() async {
+    // Initialize FFI for all platforms
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+    // Initialize FFI for non-mobile platforms
+    if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+    final databasePath = await getDatabasesPath();
+    final path = p.join(databasePath, 'chat.db');
+
+    _database = await openDatabase(
+      path,
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE messages(id INTEGER PRIMARY KEY, text TEXT, isUser INTEGER, timestamp TEXT, imagePath TEXT)',
+        );
+      },
+      version: 1,
+    );
+    _loadMessages();
+  }
+
+  /// 加载消息
+  Future<void> _loadMessages() async {
+    final List<Map<String, dynamic>> maps = await _database.query('messages');
+    setState(() {
+      _messages.addAll(maps.map((map) => Message.fromMap(map)).toList());
+    });
+    _scrollToBottom();
+  }
+
+  /// 保存消息到数据库
+  Future<void> _saveMessage(Message message) async {
+    await _database.insert('messages', message.toMap());
   }
 
   /// 更新输入框当前行数
@@ -87,14 +141,16 @@ class ChatPageState extends State<ChatPage> {
   /// 发送消息
   void _sendMessage(String text, {File? image}) async {
     if (text.trim().isEmpty && image == null) return;
+    final newMessage = Message(
+      text: text,
+      isUser: true,
+      timestamp: DateTime.now(),
+      imagePath: image?.path,
+    );
     setState(() {
-      _messages.add(Message(
-        text: text,
-        isUser: true,
-        timestamp: DateTime.now(),
-        image: image,
-      ));
+      _messages.add(newMessage);
     });
+    await _saveMessage(newMessage);
     _controller.clear();
     _scrollToBottom();
     await _getBotResponse(text);
@@ -102,7 +158,6 @@ class ChatPageState extends State<ChatPage> {
 
   /// 模拟虚拟咨询师回复
   Future<void> _getBotResponse(String userMessage) async {
-    // 发送登录请求
     var postResponse = await _httpHelper.postRequest(
       "/chat/send_message",
       {
@@ -110,14 +165,15 @@ class ChatPageState extends State<ChatPage> {
       },
       requireAuth: true,
     );
+    final botMessage = Message(
+      text: postResponse['data'],
+      isUser: false,
+      timestamp: DateTime.now(),
+    );
     setState(() {
-      // 模拟虚拟咨询师回复
-      _messages.add(Message(
-        text: postResponse['data'],
-        isUser: false,
-        timestamp: DateTime.now(),
-      ));
+      _messages.add(botMessage);
     });
+    await _saveMessage(botMessage);
     _scrollToBottom();
   }
 
@@ -132,25 +188,6 @@ class ChatPageState extends State<ChatPage> {
         );
       }
     });
-  }
-
-  /// 打开全屏编辑页面
-  Future<void> _openFullScreenEditor() async {
-    final fullText = await Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => FullScreenEditorPage(initialText: _controller.text),
-      ),
-    );
-
-    if (fullText != null && fullText is String) {
-      setState(() {
-        _controller.text = fullText;
-        _controller.selection =
-            TextSelection.fromPosition(TextPosition(offset: fullText.length));
-      });
-      _updateLineCount();
-    }
   }
 
   /// 选择图片附件
@@ -184,13 +221,6 @@ class ChatPageState extends State<ChatPage> {
         ],
       ),
     );
-  }
-
-  /// 格式化时间戳
-  String _formatTimestamp(DateTime timestamp) {
-    final hours = timestamp.hour.toString().padLeft(2, '0');
-    final minutes = timestamp.minute.toString().padLeft(2, '0');
-    return '$hours:$minutes';
   }
 
   @override
@@ -227,7 +257,6 @@ class ChatPageState extends State<ChatPage> {
         },
         child: Column(
           children: [
-            // 消息列表
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
@@ -249,16 +278,12 @@ class ChatPageState extends State<ChatPage> {
                         children: [
                           if (!isUser)
                             CircleAvatar(
-                              radius: 20.0, // 调整半径大小以适应你的设计
-                              // backgroundImage: user['avatar'] != null && user['avatar'].isNotEmpty
-                              //     ? NetworkImage(user['avatar'])
-                              //     : null,
-                              // backgroundColor: Colors.grey,
+                              radius: 20.0,
                               child: Icon(
-                                Icons.person, // 使用默认的人物图标
+                                Icons.person,
                                 size: 20.0,
                                 color: Colors.white,
-                              ), // 背景色适用于默认头像的情况
+                              ),
                             ),
                           const SizedBox(width: 8),
                           Flexible(
@@ -281,12 +306,12 @@ class ChatPageState extends State<ChatPage> {
                                         ? CrossAxisAlignment.end
                                         : CrossAxisAlignment.start,
                                     children: [
-                                      if (message.image != null)
+                                      if (message.imagePath != null)
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               bottom: 8.0),
                                           child: Image.file(
-                                            message.image!,
+                                            File(message.imagePath!),
                                             width: 200,
                                           ),
                                         ),
@@ -316,7 +341,8 @@ class ChatPageState extends State<ChatPage> {
                           const SizedBox(width: 8),
                           if (isUser)
                             CircleAvatar(
-                              backgroundImage:user['avatar'] != null && user['avatar'].isNotEmpty
+                              backgroundImage: user['avatar'] != null &&
+                                  user['avatar'].isNotEmpty
                                   ? NetworkImage("${user['avatar']}")
                                   : null,
                             ),
@@ -331,7 +357,7 @@ class ChatPageState extends State<ChatPage> {
             Padding(
               padding:
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: SafeArea( // 添加安全距离
+              child: SafeArea(
                 child: Row(
                   children: [
                     Expanded(
@@ -392,6 +418,32 @@ class ChatPageState extends State<ChatPage> {
         ),
       ),
     );
+  }
+
+  /// 格式化时间戳
+  String _formatTimestamp(DateTime timestamp) {
+    final hours = timestamp.hour.toString().padLeft(2, '0');
+    final minutes = timestamp.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
+  }
+
+  /// 打开全屏编辑页面
+  Future<void> _openFullScreenEditor() async {
+    final fullText = await Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => FullScreenEditorPage(initialText: _controller.text),
+      ),
+    );
+
+    if (fullText != null && fullText is String) {
+      setState(() {
+        _controller.text = fullText;
+        _controller.selection =
+            TextSelection.fromPosition(TextPosition(offset: fullText.length));
+      });
+      _updateLineCount();
+    }
   }
 }
 

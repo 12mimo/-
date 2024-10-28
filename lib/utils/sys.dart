@@ -34,7 +34,7 @@ class NetworkUtil {
   }
 }
 
-class Notification {
+class NotificationUtil {
   Future<bool> checkNotification() async {
     var status = await Permission.notification.status;
     if (status.isDenied || status.isRestricted) {

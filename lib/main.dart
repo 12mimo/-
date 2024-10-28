@@ -45,11 +45,13 @@ class CupertinoStoreHomePage extends StatefulWidget {
 class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
   int _selectedIndex = 0;
   final NetworkUtil _networkUtil = NetworkUtil();
+  final _notificationUtil = NotificationUtil();
 
   @override
   void initState() {
     super.initState();
     _networkUtil.checkConnectivity();
+    _notificationUtil.checkNotification();
   }
 
   void _onTabTapped(int index) {

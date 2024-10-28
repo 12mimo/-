@@ -10,7 +10,7 @@ import '../../styles/color.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../utils/http.dart';
-import '../../utils/sqlite_mobile.dart';
+// import '../../utils/sqlite_mobile.dart';
 
 /// 消息模型
 class Message {
@@ -35,13 +35,24 @@ class Message {
     };
   }
 
-  static Message fromMap(Map<String, dynamic> map) {
-    return Message(
-      text: map['text'],
-      isUser: map['isUser'] == 1,
-      timestamp: DateTime.parse(map['timestamp']),
-      imagePath: map['imagePath'],
+  static List<Message> fromMap(Map<String, dynamic> map) {
+    // 用户提问消息
+    final userMessage = Message(
+      text: map['content'] ?? '',           // 用户提问内容
+      isUser: true,                         // 标记为用户消息
+      timestamp: DateTime.fromMillisecondsSinceEpoch(map['send_time'] * 1000),
+      imagePath: map['type'] == 2 ? map['content'] : null, // 如果是图片消息，则设置路径
     );
+
+    // 系统回复消息
+    final answerMessage = Message(
+      text: map['answer'] ?? '',            // 系统回复内容
+      isUser: false,                        // 标记为机器人消息
+      timestamp: DateTime.fromMillisecondsSinceEpoch(map['answer_time'] * 1000),
+      imagePath: null,                      // 系统回复一般不包含图片路径
+    );
+
+    return [userMessage, answerMessage];
   }
 }
 
@@ -54,11 +65,11 @@ class ChatPage extends StatefulWidget {
 }
 
 class ChatPageState extends State<ChatPage> {
-  late List<Message> _messages = [];
+  late final List<Message> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final HttpHelper _httpHelper = HttpHelper();
-  final dbHelper = DatabaseHelper();
+  // final dbHelper = DatabaseHelper();
 
   int _currentLines = 1;
   final int _maxVisibleLines = 7;
@@ -75,10 +86,23 @@ class ChatPageState extends State<ChatPage> {
   }
 
   void initChatMessage() async {
-     final messagesFromDb = await dbHelper.queryAllMessages();
-     setState(() {
-       _messages = messagesFromDb.map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
-     });
+    var postResponse = await _httpHelper.getRequest(
+      "/chat/get_messages",
+      requireAuth: true,
+    );
+    var data = postResponse['data'];
+    if (data != null && data is List) {
+      setState(() {
+        _messages.clear();
+        data.cast<Map<String, dynamic>>().forEach((messageData) {
+          _messages.addAll(Message.fromMap(messageData));
+        });
+      });
+    }
+     // final messagesFromDb = await dbHelper.queryAllMessages();
+     // setState(() {
+     //   _messages = messagesFromDb.map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
+     // });
   }
 
   @override
@@ -108,10 +132,6 @@ class ChatPageState extends State<ChatPage> {
 
   /// 发送消息
   void _sendMessage(String text, {File? image}) async {
-    if (kIsWeb) {
-      _showErrorDialog('该功能在Web平台不可用。');
-      return;
-    }
     if (text.trim().isEmpty && image == null) return;
     final newMessage = Message(
       text: text,
@@ -119,18 +139,6 @@ class ChatPageState extends State<ChatPage> {
       timestamp: DateTime.now(),
       imagePath: image?.path,
     );
-    try {
-      if (!kIsWeb) {
-        await dbHelper.insertMessage(ChatMessagesCompanion(
-          content: drift.Value(text),
-          isUser: drift.Value(1),
-          timestamp: drift.Value(DateTime.now()),
-          imagePath: drift.Value(image?.path),
-        ));
-      }
-    } catch (e) {
-      _showErrorDialog('消息保存失败，请重试。');
-    }
     setState(() {
       _messages.add(newMessage);
     });
@@ -141,10 +149,6 @@ class ChatPageState extends State<ChatPage> {
 
   /// 模拟虚拟咨询师回复
   Future<void> _getBotResponse(String userMessage) async {
-    if (kIsWeb) {
-      _showErrorDialog('该功能在Web平台不可用。');
-      return;
-    }
     var postResponse = await _httpHelper.postRequest(
       "/chat/send_message",
       {
@@ -157,17 +161,17 @@ class ChatPageState extends State<ChatPage> {
       isUser: false,
       timestamp: DateTime.now(),
     );
-    try {
-      if (!kIsWeb) {
-        await dbHelper?.insertMessage(ChatMessagesCompanion(
-          content: drift.Value(postResponse['data']),
-          isUser: drift.Value(1),
-          timestamp: drift.Value(DateTime.now()),
-        ));
-      }
-    } catch (e) {
-      _showErrorDialog('消息保存失败，请重试。');
-    }
+    // try {
+    //   if (!kIsWeb) {
+    //     await dbHelper?.insertMessage(ChatMessagesCompanion(
+    //       content: drift.Value(postResponse['data']),
+    //       isUser: drift.Value(1),
+    //       timestamp: drift.Value(DateTime.now()),
+    //     ));
+    //   }
+    // } catch (e) {
+    //   _showErrorDialog('消息保存失败，请重试。');
+    // }
     setState(() {
       _messages.add(botMessage);
     });

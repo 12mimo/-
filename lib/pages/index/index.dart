@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:xlfz/pages/index/psychology_test.dart';
 import 'package:xlfz/styles/color.dart';
+
+import '../consultant/test_result.dart';
+import 'article_detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -190,13 +194,7 @@ class HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: appStyle.cardBackgroundColor,
           borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
+
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -266,20 +264,46 @@ class HomePageState extends State<HomePage> {
     required Color contentColor,
     required VoidCallback onTap,
   }) {
+    final List<String> questions = ['问题1', '问题2'];
+    final List<List<String>> options = [
+      ['选项1', '选项2', '选项3'],
+      ['选项A', '选项B', '选项C'],
+    ];
+    final List<List<Map<String, int>>> optionScores = [
+      [{'A': 1}, {'B': 2}, {'C': 3}],
+      [{'A': 1}, {'B': 2}, {'C': 3}],
+    ];
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) =>
+                PsychologyTestPage(
+                  title: '通用测试',
+                  description: '请回答以下问题',
+                  questions: questions,
+                  options: options,
+                  optionScores: optionScores,
+                  resultCalculator: (scores) {
+                    // 自定义计算结果逻辑
+                    return scores.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+                  },
+                  resultPageBuilder: (result) {
+                    // 自定义结果页面
+                    return ResultsPage(mbtiType: '',);
+                  },
+                ),
+          ),
+        );
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
+
         ),
         child: Row(
           children: [
@@ -359,20 +383,26 @@ class HomePageState extends State<HomePage> {
   Widget _buildKnowledgeCard(AppStyle appStyle, PsychologyKnowledge knowledge) {
     return GestureDetector(
       onTap: () {
-        // TODO: 添加心理知识的详情页导航
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) =>
+                ArticleDetailPage(
+                  title: knowledge.title,
+                  content: knowledge.description,
+                  author: '',
+                  date: '',
+                  id: "1",
+                ),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
           color: appStyle.cardBackgroundColor,
           borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
+
         ),
         child: Row(
           children: [

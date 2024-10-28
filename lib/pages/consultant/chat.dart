@@ -54,7 +54,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class ChatPageState extends State<ChatPage> {
-  final List<Message> _messages = [];
+  late List<Message> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final HttpHelper _httpHelper = HttpHelper();
@@ -69,8 +69,14 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    initChatMessage();
     _controller.clear();
     _controller.addListener(_updateLineCount);
+  }
+
+  void initChatMessage() async {
+     final m = await dbHelper.queryAllMessages();
+     _messages = m.cast<Message>();
   }
 
   @override
@@ -113,7 +119,7 @@ class ChatPageState extends State<ChatPage> {
     );
     try {
       if (!kIsWeb) {
-        await dbHelper?.insertMessage(ChatMessagesCompanion(
+        await dbHelper.insertMessage(ChatMessagesCompanion(
           content: drift.Value(text),
           isUser: drift.Value(1),
           timestamp: drift.Value(DateTime.now()),

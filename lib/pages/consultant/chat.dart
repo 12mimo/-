@@ -1,16 +1,16 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:path/path.dart' as p;
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../store/global.dart';
 import '../../styles/color.dart';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../utils/http.dart';
+import '../../utils/sqlite_mobile.dart';
 
 /// 消息模型
 class Message {
@@ -58,7 +58,7 @@ class ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final HttpHelper _httpHelper = HttpHelper();
-  late Database _database;
+  final dbHelper = DatabaseHelper();
 
   int _currentLines = 1;
   final int _maxVisibleLines = 7;
@@ -69,7 +69,6 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _initDatabase();
     _controller.clear();
     _controller.addListener(_updateLineCount);
   }
@@ -79,47 +78,7 @@ class ChatPageState extends State<ChatPage> {
     _controller.removeListener(_updateLineCount);
     _controller.dispose();
     _scrollController.dispose();
-    _database.close();
     super.dispose();
-  }
-
-  /// 初始化数据库
-  Future<void> _initDatabase() async {
-    // Initialize FFI for all platforms
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-    // Initialize FFI for non-mobile platforms
-    if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
-    final databasePath = await getDatabasesPath();
-    final path = p.join(databasePath, 'chat.db');
-
-    _database = await openDatabase(
-      path,
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE messages(id INTEGER PRIMARY KEY, text TEXT, isUser INTEGER, timestamp TEXT, imagePath TEXT)',
-        );
-      },
-      version: 1,
-    );
-    _loadMessages();
-  }
-
-  /// 加载消息
-  Future<void> _loadMessages() async {
-    final List<Map<String, dynamic>> maps = await _database.query('messages');
-    setState(() {
-      _messages.addAll(maps.map((map) => Message.fromMap(map)).toList());
-    });
-    _scrollToBottom();
-  }
-
-  /// 保存消息到数据库
-  Future<void> _saveMessage(Message message) async {
-    await _database.insert('messages', message.toMap());
   }
 
   /// 更新输入框当前行数
@@ -131,7 +90,8 @@ class ChatPageState extends State<ChatPage> {
       maxLines: _maxVisibleLines,
       textDirection: TextDirection.ltr,
     );
-    tp.layout(maxWidth: MediaQuery.of(context).size.width - 82); // 减去Padding和按钮宽度
+    tp.layout(
+        maxWidth: MediaQuery.of(context).size.width - 82); // 减去Padding和按钮宽度
     final numLines = tp.computeLineMetrics().length;
     setState(() {
       _currentLines = numLines;
@@ -140,6 +100,10 @@ class ChatPageState extends State<ChatPage> {
 
   /// 发送消息
   void _sendMessage(String text, {File? image}) async {
+    if (kIsWeb) {
+      _showErrorDialog('该功能在Web平台不可用。');
+      return;
+    }
     if (text.trim().isEmpty && image == null) return;
     final newMessage = Message(
       text: text,
@@ -147,10 +111,21 @@ class ChatPageState extends State<ChatPage> {
       timestamp: DateTime.now(),
       imagePath: image?.path,
     );
+    try {
+      if (!kIsWeb) {
+        await dbHelper?.insertMessage(ChatMessagesCompanion(
+          content: drift.Value(text),
+          isUser: drift.Value(1),
+          timestamp: drift.Value(DateTime.now()),
+          imagePath: drift.Value(image?.path),
+        ));
+      }
+    } catch (e) {
+      _showErrorDialog('消息保存失败，请重试。');
+    }
     setState(() {
       _messages.add(newMessage);
     });
-    await _saveMessage(newMessage);
     _controller.clear();
     _scrollToBottom();
     await _getBotResponse(text);
@@ -158,6 +133,10 @@ class ChatPageState extends State<ChatPage> {
 
   /// 模拟虚拟咨询师回复
   Future<void> _getBotResponse(String userMessage) async {
+    if (kIsWeb) {
+      _showErrorDialog('该功能在Web平台不可用。');
+      return;
+    }
     var postResponse = await _httpHelper.postRequest(
       "/chat/send_message",
       {
@@ -170,10 +149,20 @@ class ChatPageState extends State<ChatPage> {
       isUser: false,
       timestamp: DateTime.now(),
     );
+    try {
+      if (!kIsWeb) {
+        await dbHelper?.insertMessage(ChatMessagesCompanion(
+          content: drift.Value(postResponse['data']),
+          isUser: drift.Value(1),
+          timestamp: drift.Value(DateTime.now()),
+        ));
+      }
+    } catch (e) {
+      _showErrorDialog('消息保存失败，请重试。');
+    }
     setState(() {
       _messages.add(botMessage);
     });
-    await _saveMessage(botMessage);
     _scrollToBottom();
   }
 
@@ -195,7 +184,7 @@ class ChatPageState extends State<ChatPage> {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile =
-      await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+          await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
       if (pickedFile != null) {
         _sendMessage('', image: File(pickedFile.path));
@@ -226,7 +215,7 @@ class ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> user =
-    (context.watch<GlobalState>().user as Map).cast<String, dynamic>();
+        (context.watch<GlobalState>().user as Map).cast<String, dynamic>();
     appStyle = AppStyle(context);
     return CupertinoPageScaffold(
       backgroundColor: appStyle.backgroundColor,
@@ -342,7 +331,7 @@ class ChatPageState extends State<ChatPage> {
                           if (isUser)
                             CircleAvatar(
                               backgroundImage: user['avatar'] != null &&
-                                  user['avatar'].isNotEmpty
+                                      user['avatar'].isNotEmpty
                                   ? NetworkImage("${user['avatar']}")
                                   : null,
                             ),
@@ -356,7 +345,7 @@ class ChatPageState extends State<ChatPage> {
             Divider(color: appStyle.dividerColor ?? Colors.grey),
             Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: SafeArea(
                 child: Row(
                   children: [
@@ -432,7 +421,8 @@ class ChatPageState extends State<ChatPage> {
     final fullText = await Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => FullScreenEditorPage(initialText: _controller.text),
+        builder: (context) =>
+            FullScreenEditorPage(initialText: _controller.text),
       ),
     );
 

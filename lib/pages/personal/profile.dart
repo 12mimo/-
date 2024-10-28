@@ -210,14 +210,14 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
 
   Widget _buildFooterSection(Color contentColor) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 5, left: 16, right: 16),
+      padding: const EdgeInsets.only(bottom: 5, left: 16, right: 16, top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text('© 2024 上海天乙鑫科技有限公司 版权所有',
               style: TextStyle(fontSize: 14, color: contentColor),
               textAlign: TextAlign.center),
-          const SizedBox(height: 5),
+          const SizedBox(height: 8),
           Text('备案号：沪ICP备2022034017号',
               style: TextStyle(fontSize: 14, color: contentColor),
               textAlign: TextAlign.center),

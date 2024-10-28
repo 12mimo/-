@@ -5,8 +5,10 @@ import 'package:xlfz/pages/index/index.dart';
 import 'package:xlfz/pages/personal/profile.dart';
 import 'package:xlfz/store/global.dart';
 import 'package:xlfz/utils/sys.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
+  print('Is this running on the web? $kIsWeb');
   // RequestMultiplePermissions().requestMultiplePermissions();
   runApp(
     MultiProvider(

@@ -35,23 +35,23 @@ class HomePageState extends State<HomePage> {
 
   final List<PsychologyKnowledge> testList = [
     PsychologyKnowledge(
-      title: '人格类型测试：了解真正的自己',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模式。',
+      title: '人格类型测试',
+      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=11',
     ),
     PsychologyKnowledge(
-      title: '人格类型测试：了解真正的自己',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模式。',
+      title: '人格类型测试',
+      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=12',
     ),
     PsychologyKnowledge(
-      title: '人格类型测试：了解真正的自己',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模式。',
+      title: '人格类型测试',
+      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=13',
     ),
     PsychologyKnowledge(
-      title: '人格类型测试：了解真正的自己',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模式。',
+      title: '人格类型测试',
+      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=14',
     ),
   ];
@@ -81,7 +81,8 @@ class HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderSection(appStyle.primaryColor, appStyle.accentColor),
+                _buildHeaderSection(
+                    appStyle.primaryColor, appStyle.accentColor),
                 const SizedBox(height: 20),
                 _buildCategoryGrid(appStyle),
                 const SizedBox(height: 20),
@@ -203,7 +204,7 @@ class HomePageState extends State<HomePage> {
             Icon(
               icon,
               color: appStyle.primaryColor,
-              size: 30,
+              size: 20,
             ),
             const SizedBox(height: 8),
             Text(

@@ -75,8 +75,10 @@ class ChatPageState extends State<ChatPage> {
   }
 
   void initChatMessage() async {
-     final m = await dbHelper.queryAllMessages();
-     _messages = m.cast<Message>();
+     final messagesFromDb = await dbHelper.queryAllMessages();
+     setState(() {
+       _messages = messagesFromDb.map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
+     });
   }
 
   @override

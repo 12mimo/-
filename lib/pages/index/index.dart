@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:xlfz/pages/index/psychology_test.dart';
 import 'package:xlfz/styles/color.dart';
 
+import '../../utils/http.dart';
 import '../consultant/test_result.dart';
 import 'article_detail.dart';
 
@@ -14,51 +16,64 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  final List<PsychologyKnowledge> knowledgeList = [
-    PsychologyKnowledge(
-      title: '如何管理焦虑情绪？',
-      description: '学会识别和理解焦虑的来源，掌握有效的应对策略，帮助自己更好地应对生活中的压力与挑战。',
-      imageUrl: 'https://picsum.photos/200/150?random=1',
-    ),
-    PsychologyKnowledge(
-      title: '如何管理焦虑情绪？',
-      description: '学会识别和理解焦虑的来源，掌握有效的应对策略，帮助自己更好地应对生活中的压力与挑战。',
-      imageUrl: 'https://picsum.photos/200/150?random=2',
-    ),
-    PsychologyKnowledge(
-      title: '如何管理焦虑情绪？',
-      description: '学会识别和理解焦虑的来源，掌握有效的应对策略，帮助自己更好地应对生活中的压力与挑战。',
-      imageUrl: 'https://picsum.photos/200/150?random=3',
-    ),
-    PsychologyKnowledge(
-      title: '如何管理焦虑情绪？',
-      description: '学会识别和理解焦虑的来源，掌握有效的应对策略，帮助自己更好地应对生活中的压力与挑战。',
-      imageUrl: 'https://picsum.photos/200/150?random=4',
-    ),
-  ];
+  final HttpHelper _httpHelper = HttpHelper();
+  final List<PsychologyKnowledge> knowledgeList = [];
 
   final List<PsychologyKnowledge> testList = [
     PsychologyKnowledge(
       title: '人格类型测试',
       description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=11',
+      content: "",
+      id: "1",
     ),
     PsychologyKnowledge(
       title: '人格类型测试',
       description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=12',
+      content: "",
+      id: "1",
     ),
     PsychologyKnowledge(
       title: '人格类型测试',
       description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=13',
+      content: "",
+      id: "1",
     ),
     PsychologyKnowledge(
       title: '人格类型测试',
       description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
       imageUrl: 'https://picsum.photos/200/150?random=14',
+      content: "",
+      id: "1",
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    getIndexApi();
+  }
+
+  void getIndexApi() async {
+    var postResponse = await _httpHelper.postRequest(
+      "/",
+      {},
+      requireAuth: false,
+    );
+    if (postResponse != null &&
+        postResponse['data'] != null &&
+        postResponse['data']['articles'] != null) {
+      setState(() {
+        knowledgeList.addAll(
+          (postResponse['data']['articles'] as List).map((article) {
+            return PsychologyKnowledge.fromMap(article);
+          }).toList(),
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +209,6 @@ class HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: appStyle.cardBackgroundColor,
           borderRadius: BorderRadius.circular(8.0),
-
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -270,8 +284,16 @@ class HomePageState extends State<HomePage> {
       ['选项A', '选项B', '选项C'],
     ];
     final List<List<Map<String, int>>> optionScores = [
-      [{'A': 1}, {'B': 2}, {'C': 3}],
-      [{'A': 1}, {'B': 2}, {'C': 3}],
+      [
+        {'A': 1},
+        {'B': 2},
+        {'C': 3}
+      ],
+      [
+        {'A': 1},
+        {'B': 2},
+        {'C': 3}
+      ],
     ];
 
     return GestureDetector(
@@ -279,22 +301,25 @@ class HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) =>
-                PsychologyTestPage(
-                  title: '通用测试',
-                  description: '请回答以下问题',
-                  questions: questions,
-                  options: options,
-                  optionScores: optionScores,
-                  resultCalculator: (scores) {
-                    // 自定义计算结果逻辑
-                    return scores.entries.reduce((a, b) => a.value > b.value ? a : b).key;
-                  },
-                  resultPageBuilder: (result) {
-                    // 自定义结果页面
-                    return ResultsPage(mbtiType: '',);
-                  },
-                ),
+            builder: (context) => PsychologyTestPage(
+              title: '通用测试',
+              description: '请回答以下问题',
+              questions: questions,
+              options: options,
+              optionScores: optionScores,
+              resultCalculator: (scores) {
+                // 自定义计算结果逻辑
+                return scores.entries
+                    .reduce((a, b) => a.value > b.value ? a : b)
+                    .key;
+              },
+              resultPageBuilder: (result) {
+                // 自定义结果页面
+                return ResultsPage(
+                  mbtiType: '',
+                );
+              },
+            ),
           ),
         );
       },
@@ -303,7 +328,6 @@ class HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(16.0),
-
         ),
         child: Row(
           children: [
@@ -386,14 +410,13 @@ class HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) =>
-                ArticleDetailPage(
-                  title: knowledge.title,
-                  content: knowledge.description,
-                  author: '',
-                  date: '',
-                  id: "1",
-                ),
+            builder: (context) => ArticleDetailPage(
+              title: knowledge.title,
+              content: knowledge.content,
+              author: '',
+              date: '',
+              id: knowledge.id,
+            ),
           ),
         );
       },
@@ -402,7 +425,6 @@ class HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: appStyle.cardBackgroundColor,
           borderRadius: BorderRadius.circular(16.0),
-
         ),
         child: Row(
           children: [
@@ -427,7 +449,7 @@ class HomePageState extends State<HomePage> {
                     Text(
                       knowledge.title,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: appStyle.primaryColor,
                       ),
@@ -458,10 +480,25 @@ class PsychologyKnowledge {
   final String title;
   final String description;
   final String imageUrl;
+  final String id;
+  final String content;
 
   PsychologyKnowledge({
     required this.title,
     required this.description,
     required this.imageUrl,
+    required this.id,
+    required this.content,
   });
+
+  // 手动添加一个工厂构造函数
+  factory PsychologyKnowledge.fromMap(Map<String, dynamic> data) {
+    return PsychologyKnowledge(
+      title: data['title'] ?? '',
+      content: data['content'] ?? '',
+      description: data['describe'] ?? '',
+      imageUrl: 'https://picsum.photos/200/150?random=${data['id']}',
+      id: data["id"].toString(),
+    );
+  }
 }

@@ -154,6 +154,7 @@ class VirtualConsultantPage extends StatelessWidget {
               if (status.isDenied || status.isRestricted) {
                 // 请求权限
                 status = await Permission.microphone.request();
+                await Permission.speech.request();
               }
 
 // 检查是否已经授予权限

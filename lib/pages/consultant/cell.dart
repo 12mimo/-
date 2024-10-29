@@ -12,7 +12,7 @@ class _CallPageState extends State<CounselorCallPage> {
   late Stopwatch _stopwatch;
   bool _isCalling = false;
   String _duration = "00:00";
-  SpeechToText _speechToText = SpeechToText();
+  final SpeechToText _speechToText = SpeechToText();
   bool _isListening = false;
   String _lastWords = "";
 

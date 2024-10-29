@@ -6,6 +6,8 @@
     <string>App需要访问您的相机以拍摄照片或视频。</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>App需要访问您的麦克风以录制音频。</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>我们需要您的许可来进行语音识别，以便转换您的语音为文字。</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>App需要访问您的照片库以选择和上传照片。</string>
     <key>NSUserNotificationUsageDescription</key>

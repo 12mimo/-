@@ -94,9 +94,13 @@ class ChatPageState extends State<ChatPage> {
     if (data != null && data is List) {
       setState(() {
         _messages.clear();
+        // _messages.insert(0, Message.fromMap(newMessageData));
         data.cast<Map<String, dynamic>>().forEach((messageData) {
-          _messages.addAll(Message.fromMap(messageData));
+          _messages.insertAll(0, Message.fromMap(messageData)); // 将每条消息插入到最前面
         });
+        // data.cast<Map<String, dynamic>>().forEach((messageData) {
+        //   _messages.addAll(Message.fromMap(messageData));
+        // });
       });
     }
      // final messagesFromDb = await dbHelper.queryAllMessages();

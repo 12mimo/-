@@ -1,90 +1,111 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class CounselorCallPage extends StatefulWidget {
   @override
-  _CounselorCallPageState createState() => _CounselorCallPageState();
+  _CallPageState createState() => _CallPageState();
 }
 
-class _CounselorCallPageState extends State<CounselorCallPage> {
-  final stt.SpeechToText _speech = stt.SpeechToText();
+class _CallPageState extends State<CounselorCallPage> {
+  late Stopwatch _stopwatch;
+  bool _isCalling = false;
+  String _duration = "00:00";
+  SpeechToText _speechToText = SpeechToText();
   bool _isListening = false;
-  String _recognizedText = "";
+  String _lastWords = "";
 
-  void _toggleListening() async {
-    if (_isListening) {
-      await _speech.stop();
-    } else {
-      bool available = await _speech.initialize();
-      if (available) {
-        _speech.listen(onResult: (result) {
-          setState(() {
-            _recognizedText = result.recognizedWords;
-          });
-        });
-      }
-    }
+  @override
+  void initState() {
+    super.initState();
+    _stopwatch = Stopwatch();
+    _requestMicrophonePermission();
+  }
+
+  void _requestMicrophonePermission() async {
+    await Permission.microphone.request();
+  }
+
+  void _startCall() {
     setState(() {
-      _isListening = !_isListening;
+      _isCalling = true;
     });
+    _stopwatch.start();
+    _startListening();
+    _updateDuration();
+  }
+
+  void _endCall() {
+    setState(() {
+      _isCalling = false;
+      _duration = "00:00";
+      _lastWords = "";
+    });
+    _stopwatch.stop();
+    _speechToText.stop();
+  }
+
+  void _startListening() async {
+    if (await _speechToText.initialize()) {
+      setState(() {
+        _isListening = true;
+      });
+      _speechToText.listen(onResult: (result) {
+        setState(() {
+          _lastWords = result.recognizedWords;
+        });
+      });
+    }
+  }
+
+  void _updateDuration() {
+    if (_isCalling) {
+      setState(() {
+        _duration = _formatDuration(_stopwatch.elapsed);
+      });
+      Future.delayed(Duration(seconds: 1), _updateDuration);
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('与心理咨询师对话'),
-        trailing: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Icon(CupertinoIcons.clear),
-        ),
+        middle: Text('拨打电话'),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFE0F7FA), Color(0xFFB2EBF2)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _isListening ? '正在听取...' : '点击开始对话',
-                  style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle.copyWith(
-                    color: Colors.black87,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 20),
-                CupertinoButton(
-                  color: _isListening ? CupertinoColors.destructiveRed : CupertinoColors.activeBlue,
-                  onPressed: _toggleListening,
-                  child: Text(_isListening ? '停止对话' : '开始对话'),
-                ),
-                SizedBox(height: 20),
-                if (_isListening)
-                  CupertinoActivityIndicator(radius: 20) // 加载指示器
-                else
-                  Icon(
-                    CupertinoIcons.mic,
-                    size: 50,
-                    color: CupertinoColors.systemGrey,
-                  ),
-                SizedBox(height: 20),
-                Text(
-                  _recognizedText,
-                  style: TextStyle(fontSize: 18, color: Colors.black87),
-                ),
-              ],
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _isCalling ? '通话中...' : '通话已结束',
+              style: TextStyle(fontSize: 24),
             ),
-          ),
+            SizedBox(height: 20),
+            Text(
+              '通话时长: $_duration',
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(height: 20),
+            if (_lastWords.isNotEmpty)
+              Text(
+                '你刚刚说: $_lastWords',
+                style: TextStyle(fontSize: 18),
+              ),
+            SizedBox(height: 20),
+            CupertinoButton(
+              child: Text(_isCalling ? '结束通话' : '拨打电话'),
+              onPressed: _isCalling ? _endCall : _startCall,
+            ),
+          ],
         ),
       ),
     );

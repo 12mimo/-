@@ -40,7 +40,7 @@ class ArticleDetailPage extends StatelessWidget {
           style: TextStyle(
             color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
         backgroundColor: appStyle.backgroundColor,
@@ -61,25 +61,25 @@ class ArticleDetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Text(
-                    '作者: $author',
-                    style: TextStyle(
-                      color: appStyle.textColor.withOpacity(0.7),
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    '发布日期: $date',
-                    style: TextStyle(
-                      color: appStyle.textColor.withOpacity(0.7),
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       '作者: $author',
+              //       style: TextStyle(
+              //         color: appStyle.textColor.withOpacity(0.7),
+              //         fontSize: 16,
+              //       ),
+              //     ),
+              //     const SizedBox(width: 16),
+              //     Text(
+              //       '发布日期: $date',
+              //       style: TextStyle(
+              //         color: appStyle.textColor.withOpacity(0.7),
+              //         fontSize: 16,
+              //       ),
+              //     ),
+              //   ],
+              // ),
               const SizedBox(height: 20),
               Divider(
                 color: appStyle.accentColor.withOpacity(0.5),

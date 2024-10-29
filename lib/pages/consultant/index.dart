@@ -34,10 +34,10 @@ class VirtualConsultantPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFullWidthSection(_buildWelcomeSection(appStyle.primaryColor,
-                  appStyle.textColor, appStyle.cardBackgroundColor, context)),
-              SizedBox(height: 15),
-              Divider(color: appStyle.dividerColor ?? Colors.grey),
+              // _buildFullWidthSection(_buildWelcomeSection(appStyle.primaryColor,
+              //     appStyle.textColor, appStyle.cardBackgroundColor, context)),
+              // SizedBox(height: 15),
+              // Divider(color: appStyle.dividerColor ?? Colors.grey),
               SizedBox(height: 15),
               _buildFullWidthSection(_buildVirtualAdvisorSection(
                   appStyle.primaryColor,

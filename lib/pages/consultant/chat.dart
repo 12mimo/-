@@ -94,19 +94,12 @@ class ChatPageState extends State<ChatPage> {
     if (data != null && data is List) {
       setState(() {
         _messages.clear();
-        // _messages.insert(0, Message.fromMap(newMessageData));
         data.cast<Map<String, dynamic>>().forEach((messageData) {
           _messages.insertAll(0, Message.fromMap(messageData)); // 将每条消息插入到最前面
         });
-        // data.cast<Map<String, dynamic>>().forEach((messageData) {
-        //   _messages.addAll(Message.fromMap(messageData));
-        // });
       });
+      _scrollToBottom();
     }
-     // final messagesFromDb = await dbHelper.queryAllMessages();
-     // setState(() {
-     //   _messages = messagesFromDb.map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
-     // });
   }
 
   @override
@@ -380,16 +373,16 @@ class ChatPageState extends State<ChatPage> {
                         textInputAction: TextInputAction.newline,
                       ),
                     ),
-                    const SizedBox(width: 5),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: _pickImage,
-                      child: Icon(
-                        CupertinoIcons.paperclip,
-                        color: appStyle.primaryColor,
-                        size: 28,
-                      ),
-                    ),
+                    // const SizedBox(width: 5),
+                    // CupertinoButton(
+                    //   padding: EdgeInsets.zero,
+                    //   onPressed: _pickImage,
+                    //   child: Icon(
+                    //     CupertinoIcons.paperclip,
+                    //     color: appStyle.primaryColor,
+                    //     size: 28,
+                    //   ),
+                    // ),
                     const SizedBox(width: 5),
                     Column(
                       mainAxisSize: MainAxisSize.min,

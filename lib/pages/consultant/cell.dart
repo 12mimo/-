@@ -1,147 +1,91 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:flutter_tts/flutter_tts.dart';
 
-class CounselorCallPage extends StatelessWidget {
-  const CounselorCallPage({super.key});
-
+class CounselorCallPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: VoiceChatScreen(),
-    );
-  }
+  _CounselorCallPageState createState() => _CounselorCallPageState();
 }
 
-class VoiceChatScreen extends StatefulWidget {
-  const VoiceChatScreen({super.key});
+class _CounselorCallPageState extends State<CounselorCallPage> {
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
+  String _recognizedText = "";
 
-  @override
-  VoiceChatScreenState createState() => VoiceChatScreenState();
-}
-
-class VoiceChatScreenState extends State<VoiceChatScreen> {
-  late stt.SpeechToText _speech; // 语音识别实例
-  bool _isListening = false; // 是否在监听语音
-  String _text = ''; // 识别的文本
-  final List<Map<String, String>> _messages = []; // 聊天记录
-  late FlutterTts _flutterTts; // TTS实例
-
-  @override
-  void initState() {
-    super.initState();
-    _speech = stt.SpeechToText();
-    _flutterTts = FlutterTts();
-  }
-
-  // 开始监听语音
-  void _listen() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(onStatus: _onSpeechStatus);
+  void _toggleListening() async {
+    if (_isListening) {
+      await _speech.stop();
+    } else {
+      bool available = await _speech.initialize();
       if (available) {
-        setState(() => _isListening = true);
-        _speech.listen(
-            onResult: (val) => setState(() {
-                  _text = val.recognizedWords;
-                }));
+        _speech.listen(onResult: (result) {
+          setState(() {
+            _recognizedText = result.recognizedWords;
+          });
+        });
       }
     }
-  }
-
-  // 监听语音状态，当结束时自动处理
-  void _onSpeechStatus(String status) {
-    if (status == 'done') {
-      setState(() => _isListening = false);
-      if (_text.isNotEmpty) {
-        _sendMessage(_text); // 将语音识别到的文本发送
-      }
-    }
-  }
-
-  // 发送消息并生成 AI 回复
-  void _sendMessage(String message) {
     setState(() {
-      _messages.add({'sender': 'user', 'message': message});
-      String aiResponse = '这是 AI 的回复: $message'; // 模拟 AI 回复
-      _messages.add({'sender': 'ai', 'message': aiResponse});
-      _speak(aiResponse); // 使用 TTS 语音播放 AI 回复
+      _isListening = !_isListening;
     });
   }
 
-  // 播放 AI 的语音回复
-  void _speak(String text) async {
-    await _flutterTts.speak(text);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('语音对话页面'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop(); // 返回上一页
-          },
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('与心理咨询师对话'),
+        trailing: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Icon(CupertinoIcons.clear),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildMessage(_messages[index]);
-              },
-            ),
-          ),
-          _buildVoiceInputArea(), // 优化的语音输入区域
-        ],
-      ),
-    );
-  }
-
-  // 构建消息显示，增加美观的 UI 设计
-  Widget _buildMessage(Map<String, String> message) {
-    bool isUser = message['sender'] == 'user';
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        color: isUser ? Colors.blue[100] : Colors.green[100],
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text(
-            message['message']!,
-            style: TextStyle(fontSize: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE0F7FA), Color(0xFFB2EBF2)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
-      ),
-    );
-  }
-
-  // 构建优化后的语音输入区域
-  Widget _buildVoiceInputArea() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              _isListening ? '正在听，请讲话...' : '点击麦克风开始',
-              style: TextStyle(fontSize: 16),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _isListening ? '正在听取...' : '点击开始对话',
+                  style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle.copyWith(
+                    color: Colors.black87,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
+                CupertinoButton(
+                  color: _isListening ? CupertinoColors.destructiveRed : CupertinoColors.activeBlue,
+                  onPressed: _toggleListening,
+                  child: Text(_isListening ? '停止对话' : '开始对话'),
+                ),
+                SizedBox(height: 20),
+                if (_isListening)
+                  CupertinoActivityIndicator(radius: 20) // 加载指示器
+                else
+                  Icon(
+                    CupertinoIcons.mic,
+                    size: 50,
+                    color: CupertinoColors.systemGrey,
+                  ),
+                SizedBox(height: 20),
+                Text(
+                  _recognizedText,
+                  style: TextStyle(fontSize: 18, color: Colors.black87),
+                ),
+              ],
             ),
           ),
-          FloatingActionButton(
-            onPressed: _listen,
-            backgroundColor: _isListening ? Colors.red : Colors.blue,
-            child: Icon(
-              _isListening ? Icons.mic : Icons.mic_none,
-              color: Colors.white,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

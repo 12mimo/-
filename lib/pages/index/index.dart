@@ -19,36 +19,7 @@ class HomePageState extends State<HomePage> {
   final HttpHelper _httpHelper = HttpHelper();
   final List<PsychologyKnowledge> knowledgeList = [];
 
-  final List<PsychologyKnowledge> testList = [
-    PsychologyKnowledge(
-      title: '人格类型测试',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
-      imageUrl: 'https://picsum.photos/200/150?random=11',
-      content: "",
-      id: "1",
-    ),
-    PsychologyKnowledge(
-      title: '人格类型测试',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
-      imageUrl: 'https://picsum.photos/200/150?random=12',
-      content: "",
-      id: "1",
-    ),
-    PsychologyKnowledge(
-      title: '人格类型测试',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
-      imageUrl: 'https://picsum.photos/200/150?random=13',
-      content: "",
-      id: "1",
-    ),
-    PsychologyKnowledge(
-      title: '人格类型测试',
-      description: '通过这个人格测试，了解自己的性格类型及其独特的优缺点，帮助你更好地了解自己在生活中的行为模',
-      imageUrl: 'https://picsum.photos/200/150?random=14',
-      content: "",
-      id: "1",
-    ),
-  ];
+  final List<PsychologyKnowledge> testList = [];
 
   @override
   void initState() {
@@ -71,6 +42,11 @@ class HomePageState extends State<HomePage> {
             return PsychologyKnowledge.fromMap(article);
           }).toList(),
         );
+        testList.addAll(
+          (postResponse['data']['tests'] as List).map((tests) {
+            return PsychologyKnowledge.fromTest(tests);
+          }).toList(),
+        );
       });
     }
   }
@@ -83,7 +59,7 @@ class HomePageState extends State<HomePage> {
       backgroundColor: appStyle.backgroundColor,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
-          '心理健康助手',
+          '心灵方舟小助手',
           style: TextStyle(
             color: appStyle.primaryColor,
             fontWeight: FontWeight.bold,
@@ -103,8 +79,8 @@ class HomePageState extends State<HomePage> {
                 _buildHeaderSection(
                     appStyle.primaryColor, appStyle.accentColor),
                 const SizedBox(height: 20),
-                _buildCategoryGrid(appStyle),
-                const SizedBox(height: 20),
+                // _buildCategoryGrid(appStyle),
+                // const SizedBox(height: 20),
                 _buildPsychologyTestSection(appStyle),
                 const SizedBox(height: 20),
                 _buildKnowledgeSection(appStyle),
@@ -147,7 +123,7 @@ class HomePageState extends State<HomePage> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  '欢迎来到心理健康助手',
+                  '欢迎来到心灵方舟',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -238,12 +214,14 @@ class HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '心理测试',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: appStyle.primaryColor,
+        Center(
+          child: Text(
+            '方舟小测验',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: appStyle.primaryColor,
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -256,6 +234,7 @@ class HomePageState extends State<HomePage> {
               title: testList[index].title,
               content: testList[index].description,
               imageUrl: testList[index].imageUrl,
+              id: testList[index].id.toString(),
               backgroundColor: appStyle.cardBackgroundColor,
               titleColor: appStyle.primaryColor,
               contentColor: appStyle.textColor,
@@ -273,52 +252,21 @@ class HomePageState extends State<HomePage> {
     required String title,
     required String content,
     required String imageUrl,
+    required String id,
     required Color backgroundColor,
     required Color titleColor,
     required Color contentColor,
     required VoidCallback onTap,
   }) {
-    final List<String> questions = ['问题1', '问题2'];
-    final List<List<String>> options = [
-      ['选项1', '选项2', '选项3'],
-      ['选项A', '选项B', '选项C'],
-    ];
-    final List<List<Map<String, int>>> optionScores = [
-      [
-        {'A': 1},
-        {'B': 2},
-        {'C': 3}
-      ],
-      [
-        {'A': 1},
-        {'B': 2},
-        {'C': 3}
-      ],
-    ];
-
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           CupertinoPageRoute(
             builder: (context) => PsychologyTestPage(
-              title: '通用测试',
-              description: '请回答以下问题',
-              questions: questions,
-              options: options,
-              optionScores: optionScores,
-              resultCalculator: (scores) {
-                // 自定义计算结果逻辑
-                return scores.entries
-                    .reduce((a, b) => a.value > b.value ? a : b)
-                    .key;
-              },
-              resultPageBuilder: (result) {
-                // 自定义结果页面
-                return ResultsPage(
-                  mbtiType: '',
-                );
-              },
+              title: title,
+              description: content,
+              id: id,
             ),
           ),
         );
@@ -380,12 +328,14 @@ class HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '心理小知识',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: appStyle.primaryColor,
+        Center(
+          child: Text(
+            '方舟小贴士',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: appStyle.primaryColor,
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -499,6 +449,16 @@ class PsychologyKnowledge {
       description: data['describe'] ?? '',
       imageUrl: 'https://picsum.photos/200/150?random=${data['id']}',
       id: data["id"].toString(),
+    );
+  }
+
+  factory PsychologyKnowledge.fromTest(Map<String, dynamic> data) {
+    return PsychologyKnowledge(
+      title: data['Title'] ?? '',
+      content: data['Description'] ?? '',
+      description: data['Description'] ?? '',
+      imageUrl: 'https://picsum.photos/200/150?random=${data['id']}',
+      id: data["Id"].toString(),
     );
   }
 }

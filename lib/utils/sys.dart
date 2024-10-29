@@ -34,6 +34,22 @@ class NetworkUtil {
   }
 }
 
+class NotificationUtil {
+  Future<bool> checkNotification() async {
+    var status = await Permission.notification.status;
+    if (status.isDenied || status.isRestricted) {
+      // 请求权限
+      status = await Permission.notification.request();
+    }
+    if (status.isGranted) {
+      print("Microphone permission granted.");
+    } else {
+      print("Microphone permission denied.");
+    }
+    return true;
+  }
+}
+
 class RequestMultiplePermissions {
   Future<bool> requestMultiplePermissions() async {
     Map<Permission, PermissionStatus> statuses = await [
@@ -51,6 +67,7 @@ class RequestMultiplePermissions {
         .every((status) => status == PermissionStatus.granted);
   }
 }
+
 String formatDateTime(dynamic dateTime) {
   // 如果输入是字符串类型，将其转换为DateTime类型
   if (dateTime is String) {

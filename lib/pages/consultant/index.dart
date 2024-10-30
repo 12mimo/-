@@ -27,7 +27,8 @@ class VirtualConsultantPage extends StatelessWidget {
         ),
         backgroundColor: appStyle.backgroundColor,
       ),
-      child: Padding(
+      child: Container(
+        height: double.infinity, // 确保容器占满整个高度
         padding: const EdgeInsets.only(bottom: 0.0),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

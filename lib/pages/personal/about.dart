@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import '../../styles/color.dart';
 
 class AboutUsPage extends StatelessWidget {
-  const AboutUsPage({super.key});
+  const AboutUsPage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

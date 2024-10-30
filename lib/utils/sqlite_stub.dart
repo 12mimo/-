@@ -2,15 +2,15 @@ class ChatMessage {
   final int id;
   final int isUser;
   final DateTime timestamp;
-  final String? imagePath;
+  final String imagePath;
   final String content;
 
   ChatMessage(
-      {required this.id,
-      required this.isUser,
-      required this.timestamp,
+      { this.id,
+       this.isUser,
+       this.timestamp,
       this.imagePath,
-      required this.content});
+       this.content});
 }
 
 class ChatMessagesCompanion {
@@ -32,7 +32,7 @@ abstract class DatabaseHelperInterface {
 
   Future<int> deleteMessage(int messageId);
 
-  Future<ChatMessage?> queryMessage(int messageId);
+  Future<ChatMessage> queryMessage(int messageId);
 
   Future<List<ChatMessage>> queryAllMessages();
 }

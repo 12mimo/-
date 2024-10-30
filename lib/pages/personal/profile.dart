@@ -10,7 +10,8 @@ import 'account_security.dart';
 import 'help.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key key}) : super(key: key);
+
 
   @override
   ProfilePageState createState() => ProfilePageState();

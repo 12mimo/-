@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../utils/sys.dart';
 
 class MentalHealthKnowledgePage extends StatelessWidget {
-  const MentalHealthKnowledgePage({super.key});
+  const MentalHealthKnowledgePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,32 +49,32 @@ class MentalHealthKnowledgePage extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   child: ListView(
                     children: const [
                       KnowledgeCard(
                         title: '心理健康的重要性',
                         content:
-                        '心理健康对于保持身心平衡和幸福感至关重要。它帮助我们应对压力，保持积极的人际关系，并在工作和生活中实现自我价值。',
+                            '心理健康对于保持身心平衡和幸福感至关重要。它帮助我们应对压力，保持积极的人际关系，并在工作和生活中实现自我价值。',
                         imageUrl: 'https://cunqa.com/static/spa/banner-1.jpeg',
                       ),
                       KnowledgeCard(
                         title: '常见心理问题',
                         content:
-                        '常见的心理问题包括焦虑症、抑郁症、强迫症等。这些问题可能会影响日常生活，但通过适当的治疗和支持，可以得到有效管理。',
+                            '常见的心理问题包括焦虑症、抑郁症、强迫症等。这些问题可能会影响日常生活，但通过适当的治疗和支持，可以得到有效管理。',
                         imageUrl: 'https://cunqa.com/static/spa/banner-2.jpeg',
                       ),
                       KnowledgeCard(
                         title: '如何应对压力',
                         content:
-                        '应对压力的方法有很多，比如保持规律的运动、进行冥想练习、与信任的人交流等。找到适合自己的方式尤为重要。',
+                            '应对压力的方法有很多，比如保持规律的运动、进行冥想练习、与信任的人交流等。找到适合自己的方式尤为重要。',
                         imageUrl: 'https://cunqa.com/static/spa/banner-1.jpeg',
                       ),
                       KnowledgeCard(
                         title: '寻求专业帮助',
                         content:
-                        '如果您感觉到心理上的不适且难以应对，不要犹豫，及时寻求专业心理咨询师的帮助，这是对自己健康负责任的表现。',
+                            '如果您感觉到心理上的不适且难以应对，不要犹豫，及时寻求专业心理咨询师的帮助，这是对自己健康负责任的表现。',
                         imageUrl: 'https://cunqa.com/static/spa/banner-2.jpeg',
                       ),
                     ],
@@ -95,10 +95,11 @@ class KnowledgeCard extends StatelessWidget {
   final String imageUrl;
 
   const KnowledgeCard({
-    required this.title,
-    required this.content,
-    required this.imageUrl,
-  });
+    Key key,
+    this.title,
+    this.content,
+    this.imageUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,8 @@ class KnowledgeCard extends StatelessWidget {
         children: [
           // 添加图片
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20.0)),
             child: Image.network(
               imageUrl,
               height: 180,
@@ -151,7 +153,7 @@ class CupertinoCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry margin;
 
-  const CupertinoCard({required this.child, this.margin = EdgeInsets.zero});
+  const CupertinoCard({Key key, this.child, this.margin = EdgeInsets.zero}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

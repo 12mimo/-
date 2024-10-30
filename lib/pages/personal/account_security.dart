@@ -5,7 +5,8 @@ import '../../styles/color.dart';
 import '../../utils/cache.dart';
 
 class AccountSecurityPage extends StatelessWidget {
-  const AccountSecurityPage({super.key});
+  const AccountSecurityPage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

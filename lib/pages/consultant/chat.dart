@@ -1,6 +1,4 @@
-import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -8,21 +6,19 @@ import 'dart:io';
 import '../../store/global.dart';
 import '../../styles/color.dart';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../utils/http.dart';
-// import '../../utils/sqlite_mobile.dart';
 
 /// 消息模型
 class Message {
   final String text;
   final bool isUser;
   final DateTime timestamp;
-  final String? imagePath; // 图片路径
+  final String imagePath; // 图片路径
 
   Message({
-    required this.text,
-    required this.isUser,
-    required this.timestamp,
+    this.text,
+    this.isUser,
+    this.timestamp,
     this.imagePath,
   });
 
@@ -38,18 +34,18 @@ class Message {
   static List<Message> fromMap(Map<String, dynamic> map) {
     // 用户提问消息
     final userMessage = Message(
-      text: map['content'] ?? '',           // 用户提问内容
-      isUser: true,                         // 标记为用户消息
+      text: map['content'] ?? '', // 用户提问内容
+      isUser: true, // 标记为用户消息
       timestamp: DateTime.fromMillisecondsSinceEpoch(map['send_time'] * 1000),
       imagePath: map['type'] == 2 ? map['content'] : null, // 如果是图片消息，则设置路径
     );
 
     // 系统回复消息
     final answerMessage = Message(
-      text: map['answer'] ?? '',            // 系统回复内容
-      isUser: false,                        // 标记为机器人消息
+      text: map['answer'] ?? '', // 系统回复内容
+      isUser: false, // 标记为机器人消息
       timestamp: DateTime.fromMillisecondsSinceEpoch(map['answer_time'] * 1000),
-      imagePath: null,                      // 系统回复一般不包含图片路径
+      imagePath: null, // 系统回复一般不包含图片路径
     );
 
     return [userMessage, answerMessage];
@@ -58,24 +54,27 @@ class Message {
 
 /// 聊天页面
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  const ChatPage({Key key}) : super(key: key);
+
+  // const ChatPage({super.key});
 
   @override
   ChatPageState createState() => ChatPageState();
 }
 
 class ChatPageState extends State<ChatPage> {
-  late final List<Message> _messages = [];
+  final List<Message> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final HttpHelper _httpHelper = HttpHelper();
+
   // final dbHelper = DatabaseHelper();
 
   int _currentLines = 1;
   final int _maxVisibleLines = 7;
   final int _lineThreshold = 5; // 超过多少行时显示全屏编辑按钮
   bool _showEmojiPicker = false;
-  late AppStyle appStyle;
+  AppStyle appStyle;
 
   @override
   void initState() {
@@ -128,7 +127,7 @@ class ChatPageState extends State<ChatPage> {
   }
 
   /// 发送消息
-  void _sendMessage(String text, {File? image}) async {
+  void _sendMessage(String text, {File image}) async {
     if (text.trim().isEmpty && image == null) return;
     final newMessage = Message(
       text: text,
@@ -192,7 +191,7 @@ class ChatPageState extends State<ChatPage> {
   Future<void> _pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile =
+      final XFile pickedFile =
           await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
       if (pickedFile != null) {
@@ -275,7 +274,7 @@ class ChatPageState extends State<ChatPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!isUser)
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 20.0,
                               child: Icon(
                                 Icons.person,
@@ -309,7 +308,7 @@ class ChatPageState extends State<ChatPage> {
                                           padding: const EdgeInsets.only(
                                               bottom: 8.0),
                                           child: Image.file(
-                                            File(message.imagePath!),
+                                            File(message.imagePath),
                                             width: 200,
                                           ),
                                         ),
@@ -450,14 +449,15 @@ class ChatPageState extends State<ChatPage> {
 class FullScreenEditorPage extends StatefulWidget {
   final String initialText;
 
-  const FullScreenEditorPage({super.key, required this.initialText});
+  const FullScreenEditorPage({Key key, this.initialText}) : super(key: key);
+
 
   @override
   _FullScreenEditorPageState createState() => _FullScreenEditorPageState();
 }
 
 class _FullScreenEditorPageState extends State<FullScreenEditorPage> {
-  late TextEditingController _fullController;
+   TextEditingController _fullController;
 
   @override
   void initState() {

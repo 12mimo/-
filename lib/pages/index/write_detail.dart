@@ -7,7 +7,7 @@ import '../../utils/sys.dart';
 class DiaryPage extends StatefulWidget {
   final String date;
   final Function(String) onSave;
-  const DiaryPage({super.key, required this.date, required this.onSave});
+  const DiaryPage({Key key,   this.date,  this.onSave}) : super(key: key);
 
   @override
   DiaryPageState createState() => DiaryPageState();
@@ -16,7 +16,7 @@ class DiaryPage extends StatefulWidget {
 class DiaryPageState extends State<DiaryPage> {
   final TextEditingController _textController = TextEditingController();
   final DateTime _selectedDate = DateTime.now();
-  File? _image;
+  File _image;
 
   Future<void> _pickImage() async {
     // 使用图片选择插件获取图片
@@ -128,7 +128,7 @@ class DiaryPageState extends State<DiaryPage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.file(
-                      _image!,
+                      _image,
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,

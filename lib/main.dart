@@ -1,42 +1,40 @@
 import 'package:flutter/cupertino.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:xlfz/pages/consultant/index.dart';
 import 'package:xlfz/pages/index/index.dart';
 import 'package:xlfz/pages/personal/profile.dart';
 import 'package:xlfz/store/global.dart';
 import 'package:xlfz/utils/sys.dart';
-import 'package:flutter/foundation.dart';
 
 void main() {
-  print('Is this running on the web? $kIsWeb');
-  // RequestMultiplePermissions().requestMultiplePermissions();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GlobalState()), // 提供全局状态
       ],
-      child: CupertinoStoreApp(),
+      child: const CupertinoStoreApp(),
     ),
   );
 }
 
 class CupertinoStoreApp extends StatelessWidget {
-  const CupertinoStoreApp({super.key});
+  const CupertinoStoreApp({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      theme: const CupertinoThemeData(
+    return const CupertinoApp(
+      theme: CupertinoThemeData(
         primaryColor: CupertinoColors.systemBlue,
       ),
-      home: const CupertinoStoreHomePage(),
+      home: CupertinoStoreHomePage(),
     );
   }
 }
 
 class CupertinoStoreHomePage extends StatefulWidget {
-  const CupertinoStoreHomePage({super.key});
+  const CupertinoStoreHomePage({Key key}) : super(key: key);
+
 
   @override
   CupertinoStoreHomePageState createState() => CupertinoStoreHomePageState();
@@ -66,7 +64,7 @@ class CupertinoStoreHomePageState extends State<CupertinoStoreHomePage> {
     final isDarkMode = brightness == Brightness.dark;
 
     // 自定义页面列表
-    final List<Widget> pages = const [
+    const List<Widget> pages = [
       HomePage(),
       VirtualConsultantPage(),
       ProfilePage(),

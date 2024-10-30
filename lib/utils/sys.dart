@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../main.dart';
 
-void goBack(BuildContext context, [Widget? page, bool shouldRefresh = false]) {
+void goBack(BuildContext context, [Widget page, bool shouldRefresh = false]) {
   if (Navigator.canPop(context)) {
     Navigator.of(context).pop(shouldRefresh); // 如果可以返回上一页，传递 shouldRefresh 值
   } else {
@@ -60,8 +60,8 @@ class RequestMultiplePermissions {
       Permission.notification,
       Permission.activityRecognition,
       Permission.criticalAlerts,
-      Permission.assistant,
-      Permission.backgroundRefresh,
+      // Permission.assistant,
+      // Permission.backgroundRefresh,
     ].request();
     return statuses.values
         .every((status) => status == PermissionStatus.granted);

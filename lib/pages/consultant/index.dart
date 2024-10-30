@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:xlfz/pages/consultant/test.dart';
 
 import '../../styles/color.dart';
 import 'cell.dart';
@@ -9,7 +8,8 @@ import 'cell_1.dart';
 import 'chat.dart';
 
 class VirtualConsultantPage extends StatelessWidget {
-  const VirtualConsultantPage({super.key});
+  const VirtualConsultantPage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,12 +101,12 @@ class VirtualConsultantPage extends StatelessWidget {
           CupertinoButton(
             color: primaryColor,
             onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => PlaceholderPage(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   CupertinoPageRoute(
+              //     builder: (context) => PlaceholderPage(),
+              //   ),
+              // );
             },
             child:
                 const Text('开始心理健康之旅', style: TextStyle(color: Colors.white)),

@@ -12,7 +12,8 @@ import '../../utils/toast.dart';
 import 'forgot_password.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key key}) : super(key: key);
+
 
   @override
   LoginPageState createState() => LoginPageState();

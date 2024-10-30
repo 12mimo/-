@@ -5,7 +5,7 @@ Future<void> saveToCache(String key, String value) async {
   await prefs.setString(key, value);
 }
 
-Future<String?> loadFromCache(String key) async {
+Future<String> loadFromCache(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString(key);
 }

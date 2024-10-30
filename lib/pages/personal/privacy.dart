@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import '../../styles/color.dart';
 
 class PrivacyPage extends StatelessWidget {
-  const PrivacyPage({super.key});
+  const PrivacyPage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,7 @@ class PrivacyPage extends StatelessWidget {
   }
 
   Widget _buildSettingItem(String label, IconData icon, Color contentColor,
-      BuildContext context, Widget? page) {
+      BuildContext context, Widget page) {
     return GestureDetector(
       onTap: () {
         if (page != null) {

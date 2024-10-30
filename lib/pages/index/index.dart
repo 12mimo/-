@@ -5,11 +5,10 @@ import 'package:xlfz/pages/index/psychology_test.dart';
 import 'package:xlfz/styles/color.dart';
 
 import '../../utils/http.dart';
-import '../consultant/test_result.dart';
 import 'article_detail.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key key}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();
@@ -121,7 +120,7 @@ class HomePageState extends State<HomePage> {
                 size: 40,
               ),
               const SizedBox(width: 10),
-              Expanded(
+              const Expanded(
                 child: Text(
                   '欢迎来到心灵方舟',
                   style: TextStyle(
@@ -134,7 +133,7 @@ class HomePageState extends State<HomePage> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
+          const Text(
             '保持内心的平静，对自己温柔一些。每天给自己一点独处的时间。',
             style: TextStyle(
               fontSize: 18,
@@ -249,14 +248,14 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _buildTestCard({
-    required String title,
-    required String content,
-    required String imageUrl,
-    required String id,
-    required Color backgroundColor,
-    required Color titleColor,
-    required Color contentColor,
-    required VoidCallback onTap,
+    String title,
+    String content,
+    String imageUrl,
+    String id,
+    Color backgroundColor,
+    Color titleColor,
+    Color contentColor,
+    VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: () {
@@ -434,11 +433,11 @@ class PsychologyKnowledge {
   final String content;
 
   PsychologyKnowledge({
-    required this.title,
-    required this.description,
-    required this.imageUrl,
-    required this.id,
-    required this.content,
+    this.title,
+    this.description,
+    this.imageUrl,
+    this.id,
+    this.content,
   });
 
   // 手动添加一个工厂构造函数

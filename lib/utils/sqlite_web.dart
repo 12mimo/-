@@ -20,7 +20,7 @@ class DatabaseHelper implements DatabaseHelperInterface {
   }
 
   @override
-  Future<ChatMessage?> queryMessage(int messageId) async {
+  Future<ChatMessage> queryMessage(int messageId) async {
     print("该功能在Web平台不可用。");
     return null;
   }

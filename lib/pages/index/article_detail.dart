@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xlfz/styles/color.dart';
@@ -13,13 +12,13 @@ class ArticleDetailPage extends StatelessWidget {
   final String id;
 
   const ArticleDetailPage({
-    super.key,
-    required this.title,
-    required this.author,
-    required this.date,
-    required this.content,
-    required this.id,
-  });
+    Key key,
+    this.title,
+    this.author,
+    this.date,
+    this.content,
+    this.id,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

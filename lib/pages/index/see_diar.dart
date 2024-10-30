@@ -1,4 +1,3 @@
-
 // 查看日记页面
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,8 @@ class ViewDiaryPage extends StatelessWidget {
   final String content;
   final VoidCallback onDelete;
 
-  const ViewDiaryPage(
-      {super.key, required this.date, required this.content, required this.onDelete});
+  const ViewDiaryPage({Key key, this.date, this.content, this.onDelete})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +23,17 @@ class ViewDiaryPage extends StatelessWidget {
           children: [
             CupertinoButton(
               padding: EdgeInsets.zero,
-              child: Icon(CupertinoIcons.delete),
+              child: const Icon(CupertinoIcons.delete),
               onPressed: () {
                 // 确认删除
                 showCupertinoDialog(
                   context: context,
                   builder: (context) => CupertinoAlertDialog(
-                    title: Text('删除日记'),
-                    content: Text('确定要删除这篇日记吗？'),
+                    title: const Text('删除日记'),
+                    content: const Text('确定要删除这篇日记吗？'),
                     actions: [
                       CupertinoDialogAction(
-                        child: Text('取消'),
+                        child: const Text('取消'),
                         onPressed: () => Navigator.pop(context),
                       ),
                       CupertinoDialogAction(
@@ -69,7 +68,7 @@ class ViewDiaryPage extends StatelessWidget {
 class SearchDiaryPage extends StatefulWidget {
   final Map<String, String> diaryEntries;
 
-  const SearchDiaryPage({super.key, required this.diaryEntries});
+  const SearchDiaryPage({Key key,   this.diaryEntries}) : super(key: key);
 
   @override
   SearchDiaryPageState createState() => SearchDiaryPageState();
@@ -110,7 +109,7 @@ class SearchDiaryPageState extends State<SearchDiaryPage> {
                 var entry = _searchResults[index];
                 DateTime date = DateTime.parse(entry.key);
                 String formattedDate =
-                DateFormat('yyyy年MM月dd日', 'zh_CN').format(date);
+                    DateFormat('yyyy年MM月dd日', 'zh_CN').format(date);
                 return ListTile(
                   title: Text(formattedDate),
                   subtitle: Text(

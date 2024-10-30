@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class CounselorCallPage extends StatefulWidget {
+  const CounselorCallPage({Key key}) : super(key: key);
+
   @override
   _CallPageState createState() => _CallPageState();
 }
 
 class _CallPageState extends State<CounselorCallPage> {
-  late Stopwatch _stopwatch;
+  Stopwatch _stopwatch;
   bool _isCalling = false;
   String _duration = "00:00";
   final SpeechToText _speechToText = SpeechToText();

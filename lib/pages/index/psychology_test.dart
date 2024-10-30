@@ -10,11 +10,11 @@ class PsychologyTestPage extends StatefulWidget {
   final String id;
 
   const PsychologyTestPage({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.id,
-  });
+    Key key,
+    this.title,
+    this.description,
+    this.id,
+  }) : super(key: key);
 
   @override
   GenericTestPageState createState() => GenericTestPageState();
@@ -23,13 +23,15 @@ class PsychologyTestPage extends StatefulWidget {
 class GenericTestPageState extends State<PsychologyTestPage> {
   final Map<int, int> _selectedOptions = {};
   int _currentQuestionIndex = 0;
-  late final List<String> questions = [];
-  late final List<List<String>> options = [];
-  late final List<List<Map<String, int>>> optionScores = [];
-  late final Function(Map<String, int>) resultCalculator;
-  late final Widget Function(String result) resultPageBuilder;
+  final List<String> questions = [];
+  final List<List<String>> options = [];
+  final List<List<Map<String, int>>> optionScores = [];
+  Function(Map<String, int>) resultCalculator;
+  Widget Function(String result) resultPageBuilder;
   final HttpHelper _httpHelper = HttpHelper();
-  bool _isLoading = true; // 增加加载状态
+  bool _isLoading = true;
+
+  // GenericTestPageState(this.resultCalculator, this.resultPageBuilder); // 增加加载状态
   @override
   void initState() {
     super.initState();

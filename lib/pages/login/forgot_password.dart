@@ -5,7 +5,7 @@ import '../../styles/color.dart';
 import 'login.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+  const ForgotPasswordPage({Key key}) : super(key: key);
 
   @override
   ForgotPasswordPageState createState() => ForgotPasswordPageState();
@@ -142,7 +142,10 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
 class VerificationPage extends StatelessWidget {
   final bool isPhoneSelected;
 
-  const VerificationPage({required this.isPhoneSelected, super.key});
+  const VerificationPage({
+    Key key,
+    this.isPhoneSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import '../../styles/color.dart';
 
 class HelpSupportPage extends StatelessWidget {
-  const HelpSupportPage({super.key});
+  const HelpSupportPage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class HelpSupportPage extends StatelessWidget {
   }
 
   Widget _buildSettingItem(String label, IconData icon, Color contentColor,
-      BuildContext context, Widget? page) {
+      BuildContext context, Widget page) {
     return GestureDetector(
       onTap: () {
         if (page != null) {
@@ -173,7 +174,7 @@ class FAQListPage extends StatelessWidget {
 class FAQDetailPage extends StatelessWidget {
   final int index;
 
-  FAQDetailPage({required this.index});
+  const FAQDetailPage({Key key,  this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -407,7 +408,7 @@ class UserGuidePage extends StatelessWidget {
 class UserGuideDetailPage extends StatelessWidget {
   final int index;
 
-  UserGuideDetailPage({required this.index});
+  const UserGuideDetailPage({Key key,  this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

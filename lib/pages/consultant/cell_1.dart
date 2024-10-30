@@ -5,7 +5,7 @@ import 'package:flutter/services.dart'; // 用于平台通道
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SpeechRecognitionPage extends StatefulWidget {
-  const SpeechRecognitionPage({Key? key}) : super(key: key);
+  const SpeechRecognitionPage({Key key}) : super(key: key);
 
   @override
   _SpeechRecognitionPageState createState() => _SpeechRecognitionPageState();
@@ -16,7 +16,7 @@ class _SpeechRecognitionPageState extends State<SpeechRecognitionPage> {
   String _recognizedText = "开始说话...";
   String _responseText = "";
 
-  late stt.SpeechToText _speech;
+  stt.SpeechToText _speech;
   bool _isListening = false;
 
   @override

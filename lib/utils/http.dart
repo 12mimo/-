@@ -36,7 +36,7 @@ class HttpHelper {
   }
 
   // GET Request
-  Future<dynamic> getRequest(String endpoint, {Map<String, String>? headers, bool requireAuth = false}) async {
+  Future<dynamic> getRequest(String endpoint, {Map<String, String> headers, bool requireAuth = false}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final mergedHeaders = {...defaultHeaders, if (headers != null) ...headers};
     if (!mergedHeaders.containsKey('Content-Type')) {
@@ -51,7 +51,7 @@ class HttpHelper {
   }
 
   // POST Request
-  Future<dynamic> postRequest(String endpoint, Map<String, dynamic> body, {Map<String, String>? headers, bool requireAuth = false}) async {
+  Future<dynamic> postRequest(String endpoint, Map<String, dynamic> body, {Map<String, String> headers, bool requireAuth = false}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final mergedHeaders = {...defaultHeaders, if (headers != null) ...headers};
     if (!mergedHeaders.containsKey('Content-Type')) {
@@ -66,7 +66,7 @@ class HttpHelper {
   }
 
   // File Upload (Multipart)
-  Future<dynamic> uploadFile(String endpoint, File file, {Map<String, String>? headers, bool requireAuth = false}) async {
+  Future<dynamic> uploadFile(String endpoint, File file, {Map<String, String> headers, bool requireAuth = false}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final mergedHeaders = {...defaultHeaders, if (headers != null) ...headers};
 

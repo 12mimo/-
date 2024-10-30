@@ -7,7 +7,8 @@ import '../../styles/color.dart';
 import '../../utils/sys.dart';
 
 class PersonalInfoPage extends StatelessWidget {
-  const PersonalInfoPage({super.key});
+  const PersonalInfoPage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +387,7 @@ class PersonalInfoPage extends StatelessWidget {
 }
 
 class NicknameEditPage extends StatelessWidget {
-  const NicknameEditPage({super.key});
+  const NicknameEditPage({Key key, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

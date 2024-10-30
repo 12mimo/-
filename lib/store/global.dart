@@ -47,7 +47,7 @@ class GlobalState with ChangeNotifier {
   // 从缓存中加载用户信息
   Future<void> _loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userJson = prefs.getString('user');
+    String userJson = prefs.getString('user');
 
     if (userJson != null) {
       _user = jsonDecode(userJson);

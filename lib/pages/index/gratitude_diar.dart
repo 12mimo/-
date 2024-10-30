@@ -10,7 +10,8 @@ import '../../styles/color.dart';
 import '../../utils/sys.dart';
 
 class GratitudeJournalPage extends StatefulWidget {
-  const GratitudeJournalPage({super.key});
+  const GratitudeJournalPage({Key key}) : super(key: key);
+
 
   @override
   _GratitudeJournalPageState createState() => _GratitudeJournalPageState();
@@ -18,7 +19,7 @@ class GratitudeJournalPage extends StatefulWidget {
 
 class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime _selectedDay;
   final Map<String, String> _diaryEntries = {}; // 存储日记，Key为日期的字符串格式
 
   @override
@@ -177,15 +178,15 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
             color: appStyle.primaryColor,
             shape: BoxShape.circle,
           ),
-          selectedDecoration: BoxDecoration(
+          selectedDecoration: const BoxDecoration(
             color: CupertinoColors.activeBlue,
             shape: BoxShape.circle,
           ),
-          markerDecoration: BoxDecoration(
+          markerDecoration: const BoxDecoration(
             color: CupertinoColors.systemGrey,
             shape: BoxShape.circle,
           ),
-          disabledTextStyle: TextStyle(
+          disabledTextStyle: const TextStyle(
             color: CupertinoColors.inactiveGray, // 禁用日期的文本样式
           ),
         ),
@@ -209,7 +210,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
               CupertinoPageRoute(
                 builder: (context) => ViewDiaryPage(
                   date: selectedDay,
-                  content: _diaryEntries[dateKey]!,
+                  content: _diaryEntries[dateKey],
                   onDelete: () {
                     setState(() {
                       _diaryEntries.remove(dateKey);
@@ -256,7 +257,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
     dates.sort((a, b) => b.compareTo(a)); // 按日期从近到远排序
 
     int count = 0;
-    DateTime? lastDate;
+    DateTime lastDate;
 
     for (String dateStr in dates) {
       DateTime date = DateTime.parse(dateStr);
@@ -264,7 +265,7 @@ class _GratitudeJournalPageState extends State<GratitudeJournalPage> {
         lastDate = date;
         count++;
       } else {
-        if (lastDate.subtract(Duration(days: 1)).isAtSameMomentAs(date)) {
+        if (lastDate.subtract(const Duration(days: 1)).isAtSameMomentAs(date)) {
           count++;
           lastDate = date;
         } else {

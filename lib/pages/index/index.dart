@@ -447,7 +447,7 @@ class PsychologyKnowledge {
       title: data['title'] ?? '',
       content: data['content'] ?? '',
       description: data['describe'] ?? '',
-      imageUrl: data['Thumbnail'] ??  'https://picsum.photos/200/150?random=${data['id']}',
+      imageUrl: data['Thumbnail'] != "" ?data['Thumbnail'] :  'https://picsum.photos/200/150?random=${data['id']}',
       id: data["id"].toString(),
     );
   }
@@ -457,7 +457,7 @@ class PsychologyKnowledge {
       title: data['Title'] ?? '',
       content: data['Description'] ?? '',
       description: data['Description'] ?? '',
-      imageUrl: data['Thumbnail'] ?? 'https://picsum.photos/200/150?random=${data['id']}',
+      imageUrl: data['Thumbnail'] != "" ?data['Thumbnail'] : 'https://picsum.photos/200/150?random=${data['id']}',
       id: data["Id"].toString(),
     );
   }

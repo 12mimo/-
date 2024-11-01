@@ -185,8 +185,8 @@ class ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
               contentColor,
               const AccountSecurityPage(),
             ),
-          _buildSettingItem(
-              '隐私设置', CupertinoIcons.lock, contentColor, const PrivacyPage()),
+          // _buildSettingItem(
+          //     '隐私设置', CupertinoIcons.lock, contentColor, const PrivacyPage()),
           _buildSettingItem('帮助与支持', CupertinoIcons.question_circle,
               contentColor, const HelpSupportPage()),
           _buildSettingItem(

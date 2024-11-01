@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:xlfz/pages/consultant/test.dart';
 
+import '../../store/global.dart';
 import '../../styles/color.dart';
+import '../login/login.dart';
 import 'cell.dart';
 import 'cell_1.dart';
 import 'chat.dart';
@@ -119,6 +122,8 @@ class VirtualConsultantPage extends StatelessWidget {
 
   Widget _buildVirtualAdvisorSection(Color primaryColor, Color textColor,
       Color cardBackgroundColor, BuildContext context) {
+
+    bool isLoggedIn = context.watch<GlobalState>().login;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -149,32 +154,43 @@ class VirtualConsultantPage extends StatelessWidget {
           CupertinoButton(
             color: primaryColor,
             onPressed: () async {
-              var status = await Permission.microphone.status;
+              if (!isLoggedIn){
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                );
+                // return
+              }else{
+                var status = await Permission.microphone.status;
 
 // 检查是否被拒绝或是初次申请
-              if (status.isDenied || status.isRestricted) {
-                // 请求权限
-                status = await Permission.microphone.request();
-                await Permission.speech.request();
-              }
+                if (status.isDenied || status.isRestricted) {
+                  // 请求权限
+                  status = await Permission.microphone.request();
+                  await Permission.speech.request();
+                }
 
 // 检查是否已经授予权限
-              if (status.isGranted) {
-                print("Microphone permission granted.");
-              }
+                if (status.isGranted) {
+                  print("Microphone permission granted.");
+                }
 // 检查是否永久拒绝
-              else if (status.isPermanentlyDenied) {
-                // 打开设置页面
-                openAppSettings();
-              } else {
-                print("Microphone permission denied.");
+                else if (status.isPermanentlyDenied) {
+                  // 打开设置页面
+                  openAppSettings();
+                } else {
+                  print("Microphone permission denied.");
+                }
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => CounselorCallPage(),
+                  ),
+                );
               }
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => CounselorCallPage(),
-                ),
-              );
+
             },
 
             child: const Text('开始语音对话', style: TextStyle(color: Colors.white)),
@@ -186,6 +202,7 @@ class VirtualConsultantPage extends StatelessWidget {
 
   Widget _buildMindAdvisorSection(Color primaryColor, Color textColor,
       Color cardBackgroundColor, BuildContext context) {
+    bool isLoggedIn = context.watch<GlobalState>().login;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -216,12 +233,23 @@ class VirtualConsultantPage extends StatelessWidget {
           CupertinoButton(
             color: primaryColor,
             onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => const ChatPage(),
-                ),
-              );
+              if (!isLoggedIn){
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                );
+                // return
+              }else{
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => const ChatPage(),
+                  ),
+                );
+              }
+
             },
             child: const Text('开启对话', style: TextStyle(color: Colors.white)),
           ),

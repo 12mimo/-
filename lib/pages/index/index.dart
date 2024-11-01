@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:xlfz/pages/index/psychology_test.dart';
+import 'package:xlfz/pages/login/login.dart';
 import 'package:xlfz/styles/color.dart';
 
+import '../../store/global.dart';
 import '../../utils/http.dart';
 import '../consultant/test_result.dart';
 import 'article_detail.dart';
@@ -258,18 +261,31 @@ class HomePageState extends State<HomePage> {
     required Color contentColor,
     required VoidCallback onTap,
   }) {
+
+    bool isLoggedIn = context.watch<GlobalState>().login;
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => PsychologyTestPage(
-              title: title,
-              description: content,
-              id: id,
+        if (!isLoggedIn){
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => LoginPage(),
             ),
-          ),
-        );
+          );
+          // return
+        }else{
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => PsychologyTestPage(
+                title: title,
+                description: content,
+                id: id,
+              ),
+            ),
+          );
+        }
+
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
